@@ -1,0 +1,157 @@
+// src/components/marketing/HeroHeader.tsx
+import React from "react";
+// If you're using React Router, uncomment the next line and replace <a> with <Link>
+// import { Link } from 'react-router-dom'
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Logo } from "@/components/logo"; // keep your existing logo
+
+const menuItems = [
+  { name: "Gallery", href: "#gallery" },
+  { name: "Book an appointment", href: "#book" },
+  { name: "About us", href: "#about" },
+];
+
+export function Navbar() {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [isScrolled, setIsScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // optional: close the menu when resizing to desktop
+  React.useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setMenuOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  return (
+    <header role="banner" className="relative">
+      <nav
+        role="navigation"
+        aria-label="Main"
+        className="fixed inset-x-0 top-0 z-20 w-full px-2"
+      >
+        <div
+          className={cn(
+            "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
+            isScrolled &&
+              // feature-detect backdrop-filter so it degrades gracefully
+              "max-w-4xl rounded-2xl border bg-background/50 lg:px-5 supports-[backdrop-filter]:bg-background/40 supports-[backdrop-filter]:backdrop-blur-lg"
+          )}
+        >
+          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+            {/* Brand + mobile toggle */}
+            <div className="flex w-full items-center justify-between lg:w-auto">
+              {/* Replace <a> with <Link to="/"> if using React Router */}
+              <a href="/" aria-label="Home" className="flex items-center gap-2">
+                <Logo />
+              </a>
+
+              <button
+                type="button"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-controls="mobile-menu"
+                onClick={() => setMenuOpen((v) => !v)}
+                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+              >
+                {/* Toggle icons via state (no fancy variants needed) */}
+                <Menu
+                  className={cn(
+                    "m-auto size-6 transition duration-200",
+                    menuOpen && "rotate-180 scale-0 opacity-0"
+                  )}
+                />
+                <X
+                  className={cn(
+                    "absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 transition duration-200",
+                    menuOpen && "rotate-0 scale-100 opacity-100"
+                  )}
+                />
+              </button>
+            </div>
+
+            {/* Desktop menu (centered) */}
+            <div className="absolute inset-0 m-auto hidden size-fit lg:block">
+              <ul className="flex gap-8 text-sm">
+                {menuItems.map((item) => (
+                  <li key={item.name}>
+                    {/* <Link to={item.href} ...> if using router */}
+                    <a
+                      href={item.href}
+                      className="block text-muted-foreground duration-150 hover:text-accent-foreground"
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Actions + Mobile menu panel */}
+            <div
+              id="mobile-menu"
+              className={cn(
+                "mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border bg-background p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none",
+                menuOpen && "block lg:flex"
+              )}
+            >
+              {/* Mobile links */}
+              <div className="lg:hidden">
+                <ul className="space-y-6 text-base">
+                  {menuItems.map((item) => (
+                    <li key={item.name}>
+                      <a
+                        href={item.href}
+                        className="block text-muted-foreground duration-150 hover:text-accent-foreground"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Auth/CTA */}
+              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                {/* On mobile, show Login/Sign Up; on scroll, show Get Started on desktop */}
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className={cn(isScrolled && "lg:hidden")}
+                >
+                  <a href="#login">Login</a>
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  className={cn(isScrolled && "lg:hidden")}
+                >
+                  <a href="#signup">Sign Up</a>
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+                >
+                  <a href="#get-started">Get Started</a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+export default Navbar;
