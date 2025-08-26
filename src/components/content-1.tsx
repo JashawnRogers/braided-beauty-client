@@ -1,4 +1,4 @@
-import headshot from "../../public/featured-work/placeholder.webp";
+import headshot from "../assets/featured-work/placeholder.webp";
 
 export default function About() {
   return (

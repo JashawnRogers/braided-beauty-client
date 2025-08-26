@@ -1,10 +1,10 @@
-// src/components/marketing/HeroHeader.tsx
 import React from "react";
-// If you're using React Router, uncomment the next line and replace <a> with <Link>
-// import { Link } from 'react-router-dom'
+import Logo from "../../../../assets/bb-logo.svg";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router";
+
 const menuItems = [
   { name: "Gallery", href: "#gallery" },
   { name: "Book an appointment", href: "#book" },
@@ -48,17 +48,20 @@ export function Navbar() {
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             {/* Brand + mobile toggle */}
             <div className="flex w-full items-center justify-between lg:w-auto">
-              {/* Replace <a> with <Link to="/"> if using React Router */}
-              <a href="/" aria-label="Home" className="flex items-center gap-2">
+              <Link
+                to="/"
+                aria-label="Home"
+                className="flex items-center gap-2"
+              >
                 <img
-                  src="../../../../public/bb-logo.svg"
+                  src={Logo}
                   alt="Braided Beauty Logo"
                   loading="eager"
                   fetchPriority="high"
                   className="h-10 w-auto rounded-md"
                 />
                 <h3 className="font-semibold">Braided Beauty</h3>
-              </a>
+              </Link>
 
               <button
                 type="button"
@@ -134,7 +137,7 @@ export function Navbar() {
                   size="sm"
                   className={cn(isScrolled)}
                 >
-                  <a href="#login">Login</a>
+                  <Link to="/login">Login</Link>
                 </Button>
                 <Button asChild size="sm" className={cn(isScrolled)}>
                   <a href="#signup">Sign Up</a>
