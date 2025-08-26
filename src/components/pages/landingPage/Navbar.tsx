@@ -5,12 +5,10 @@ import React from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Logo } from "@/components/logo"; // keep your existing logo
-
 const menuItems = [
   { name: "Gallery", href: "#gallery" },
   { name: "Book an appointment", href: "#book" },
-  { name: "About us", href: "#about" },
+  { name: "Meet your braider", href: "#about" },
 ];
 
 export function Navbar() {
@@ -33,7 +31,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <header role="banner" className="relative">
+    <header role="banner" className="relative overflow-x-hidden">
       <nav
         role="navigation"
         aria-label="Main"
@@ -52,7 +50,14 @@ export function Navbar() {
             <div className="flex w-full items-center justify-between lg:w-auto">
               {/* Replace <a> with <Link to="/"> if using React Router */}
               <a href="/" aria-label="Home" className="flex items-center gap-2">
-                <Logo />
+                <img
+                  src="../../../../public/bb-logo.svg"
+                  alt="Braided Beauty Logo"
+                  loading="eager"
+                  fetchPriority="high"
+                  className="h-10 w-auto rounded-md"
+                />
+                <h3 className="font-semibold">Braided Beauty</h3>
               </a>
 
               <button
@@ -99,12 +104,12 @@ export function Navbar() {
             <div
               id="mobile-menu"
               className={cn(
-                "mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border bg-background p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none",
+                "mb-6 mx-auto hidden max-w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border bg-background px-4 shadow-2xl shadow-zinc-300/20 sm:px-6 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none",
                 menuOpen && "block lg:flex"
               )}
             >
               {/* Mobile links */}
-              <div className="lg:hidden">
+              <div className="lg:hidden pt-3">
                 <ul className="space-y-6 text-base">
                   {menuItems.map((item) => (
                     <li key={item.name}>
@@ -121,29 +126,18 @@ export function Navbar() {
               </div>
 
               {/* Auth/CTA */}
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                {/* On mobile, show Login/Sign Up; on scroll, show Get Started on desktop */}
+              <div className="flex w-full flex-col space-y-3 pb-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                {/* On mobile, show Login/Sign Up; on scroll */}
                 <Button
                   asChild
                   variant="outline"
                   size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
+                  className={cn(isScrolled)}
                 >
                   <a href="#login">Login</a>
                 </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
-                >
+                <Button asChild size="sm" className={cn(isScrolled)}>
                   <a href="#signup">Sign Up</a>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                >
-                  <a href="#get-started">Get Started</a>
                 </Button>
               </div>
             </div>

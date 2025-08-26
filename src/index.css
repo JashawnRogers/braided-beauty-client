@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  overflow-x: hidden;
+}
+
+img {
+  max-inline-size: 100%;
+}
+
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 30%;
+}
+.embla__slide {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+@media (min-width: 768px) {
+  .embla__slide {
+    margin-right: 20px; /* Breakpoint SM gap*/
+  }
+}
 /* shadcn/ui color variables and base styles */
 @layer base {
   :root {
