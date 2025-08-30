@@ -1,9 +1,9 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Banner from "./components/Banner";
-import CallToAction from "@/components/call-to-action";
-import About from "@/components/content-1";
-import Footer from "@/components/footer";
+import CallToAction from "@/components/ui/call-to-action";
+import About from "@/components/ui/content-1";
+import Footer from "@/components/shared/footer";
 
 function LandingPage() {
   return (

@@ -140,7 +140,7 @@ export function Navbar() {
                   <Link to="/login">Login</Link>
                 </Button>
                 <Button asChild size="sm" className={cn(isScrolled)}>
-                  <a href="#signup">Sign Up</a>
+                  <Link to="/signup">Sign Up</Link>
                 </Button>
               </div>
             </div>
