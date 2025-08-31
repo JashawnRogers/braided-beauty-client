@@ -1,12 +1,15 @@
 import { useState, useMemo } from "react";
-import Logo from "../../assets/bb-logo.svg";
+import Logo from "@/assets/bb-logo.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router";
-import formatPhone, { normalizePhone } from "../utils/formatPhone";
-import { passwordIssues, sanitizePasswordInput } from "../utils/password";
-import ChecklistItem from "../shared/CheckListItem";
+import formatPhone, { normalizePhone } from "@/components/utils/formatPhone";
+import {
+  passwordIssues,
+  sanitizePasswordInput,
+} from "@/components/utils/password";
+import ChecklistItem from "@/components/shared/CheckListItem";
 export default function SignUpPage() {
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");

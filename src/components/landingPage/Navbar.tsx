@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../../../../assets/bb-logo.svg";
+import Logo from "@/assets/bb-logo.svg";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-
+import Logo from "@/assets/bb-logo.svg";
 const links = [
   {
     title: "Contact",
@@ -25,7 +25,7 @@ export default function Footer() {
           className="mx-auto flex size-fit items-center gap-2"
         >
           <img
-            src="../../../../public/bb-logo.svg"
+            src={Logo}
             alt="Braided Beauty Logo"
             className="h-10 w-auto rounded-md"
           />

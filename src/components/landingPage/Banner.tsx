@@ -10,11 +10,11 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AutoScroll from "embla-carousel-auto-scroll";
 
-import featuredPic1 from "../../../../assets/featured-work/featured-pic1.webp";
-import featuredPic2 from "../../../../assets/featured-work/featured-pic2.webp";
-import featuredPic3 from "../../../../assets/featured-work/featured-pic3.webp";
-import featuredPic4 from "../../../../assets/featured-work/featured-pic4.webp";
-import featuredPic5 from "../../../../assets/featured-work/featured-pic5.webp";
+import featuredPic1 from "@/assets/featured-work/featured-pic1.webp";
+import featuredPic2 from "@/assets/featured-work/featured-pic2.webp";
+import featuredPic3 from "@/assets/featured-work/featured-pic3.webp";
+import featuredPic4 from "@/assets/featured-work/featured-pic4.webp";
+import featuredPic5 from "@/assets/featured-work/featured-pic5.webp";
 
 function Banner() {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
