@@ -1,10 +1,10 @@
 import "./index.css";
-import Navbar from "./components/pages/landingPage/components/Navbar";
-import Hero from "./components/pages/landingPage/components/Hero";
+import Navbar from "../src/components/landingPage/Navbar";
+import Hero from "../src/components/landingPage//Hero";
 import CallToAction from "./components/ui/call-to-action";
 import About from "./components/ui/content-1";
 import Footer from "./components/shared/footer";
-import Banner from "./components/pages/landingPage/components/Banner";
+import Banner from "../src/components/landingPage//Banner";
 
 function App() {
   return (

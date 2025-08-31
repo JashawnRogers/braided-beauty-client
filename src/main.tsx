@@ -2,9 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
-import LandingPage from "./components/pages/landingPage/LandingPage.tsx";
-import LoginPage from "./components/pages/LoginPage.tsx";
-import SignUpPage from "./components/pages/SignUpPage.tsx";
+import LandingPage from "../src/pages/LandingPage.tsx";
+import LoginPage from "../src/pages/LoginPage.tsx";
+import SignUpPage from "../src/pages/SignUpPage.tsx";
 
 const router = createBrowserRouter([
   {
