@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router";
-import Logo from "@/assets/bb-logo.svg";
 import { SERVICES } from "@/data/services";
 import * as React from "react";
 import { GooglePaLM } from "@/components/logos";
@@ -10,16 +9,9 @@ import { GooglePaLM } from "@/components/logos";
 export default function ServicesPage() {
   return (
     <section>
-      <div className="py-16">
+      <div className="py-32">
         <div className="mx-auto max-w-5xl px-6">
           <div className="text-center">
-            <Link to="/">
-              <img
-                src={Logo}
-                alt=""
-                className="h-20 w-auto mx-auto mb-2 rounded-md"
-              />
-            </Link>
             <h2 className="text-balance text-3xl font-semibold md:text-4xl">
               Choose your service
             </h2>
@@ -77,7 +69,7 @@ const IntegrationCard = ({
             className="gap-1 pr-2 shadow-none"
           >
             <Link to={link}>
-              Learn More
+              Book
               <ChevronRight className="ml-0 !size-3.5 opacity-50" />
             </Link>
           </Button>

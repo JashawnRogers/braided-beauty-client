@@ -5,6 +5,7 @@ export default function Hero() {
         <div className="relative z-10 mx-auto max-w-xl space-y-6 text-center">
           <h2 className="text-4xl font-medium lg:text-5xl">Braided Beauty</h2>
           <p>Client care through intentional braiding, beauty & luxury</p>
+          <p className="italic">Based in Deer Valley, Phoenix Arizona</p>
         </div>
 
         <div className="grid gap-12 divide-y *:text-center md:grid-cols-3 md:gap-2 md:divide-x md:divide-y-0">

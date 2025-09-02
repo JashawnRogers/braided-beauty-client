@@ -1,4 +1,4 @@
-import Navbar from "@/components/landingPage/Navbar";
+import Navbar from "@/components/shared/Navbar";
 import Hero from "@/components/landingPage/Hero";
 import Banner from "@/components/landingPage/Banner";
 import CallToAction from "@/components/ui/call-to-action";

@@ -7,27 +7,33 @@ import LoginPage from "@/pages/LoginPage.tsx";
 import SignUpPage from "@/pages/SignUpPage.tsx";
 import ServicesPage from "@/pages/ServicesPage.tsx";
 import ServiceDetailsPage from "@/pages/ServiceDetailsPage.tsx";
+import Layout from "./components/shared/Layout";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <LandingPage />,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/signup",
-    element: <SignUpPage />,
-  },
-  {
-    path: "/services",
-    element: <ServicesPage />,
-  },
-  {
-    path: "/services/:slug",
-    element: <ServiceDetailsPage />,
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <LandingPage />,
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignUpPage />,
+      },
+      {
+        path: "/services",
+        element: <ServicesPage />,
+      },
+      {
+        path: "/services/:slug",
+        element: <ServiceDetailsPage />,
+      },
+    ],
   },
 ]);
 

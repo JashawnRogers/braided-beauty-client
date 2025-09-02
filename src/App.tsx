@@ -1,5 +1,5 @@
 import "./index.css";
-import Navbar from "../src/components/landingPage/Navbar";
+import Navbar from "./components/shared/Navbar";
 import Hero from "../src/components/landingPage//Hero";
 import CallToAction from "./components/ui/call-to-action";
 import About from "./components/ui/content-1";

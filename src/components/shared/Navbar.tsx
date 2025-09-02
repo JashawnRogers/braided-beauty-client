@@ -70,7 +70,6 @@ export function Navbar() {
                 onClick={() => setMenuOpen((v) => !v)}
                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
               >
-                {/* Toggle icons via state (no fancy variants needed) */}
                 <Menu
                   className={cn(
                     "m-auto size-6 transition duration-200",
