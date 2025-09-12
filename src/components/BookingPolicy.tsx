@@ -2,8 +2,8 @@ import { Card } from "@/components/ui/card";
 import { MapPin, Clock, DollarSign, Ban, Brush, Phone } from "lucide-react";
 
 type BookingPolicyProps = {
-  className?: string;
-  accent?: "gold" | "zinc";
+  readonly className?: string;
+  readonly accent?: "gold" | "zinc";
 };
 
 export default function BookingPolicy({
@@ -102,7 +102,7 @@ export default function BookingPolicy({
                   <a
                     href="https://instagram.com/braidedbeautyphx"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="hover:underline"
                   >
                     @braidedbeautyphx
@@ -111,7 +111,7 @@ export default function BookingPolicy({
                   <a
                     href="https://instagram.com/braidedb3auty"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="hover:underline"
                   >
                     @braidedb3auty

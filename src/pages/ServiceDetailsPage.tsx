@@ -74,6 +74,7 @@ export default function ServiceDetailsPage() {
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-6">
+        <BookingPolicy />
         <div className="pt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
           <div>
             <h1 className="text-3xl font-semibold">{service.title}</h1>
@@ -125,9 +126,6 @@ export default function ServiceDetailsPage() {
               timeSlots={timeSlots}
             />
           </div>
-        </div>
-        <div className="mt-16">
-          <BookingPolicy />
         </div>
       </div>
     </section>

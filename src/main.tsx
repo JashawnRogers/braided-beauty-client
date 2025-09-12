@@ -8,6 +8,7 @@ import SignUpPage from "@/pages/SignUpPage.tsx";
 import ServicesPage from "@/pages/ServicesPage.tsx";
 import ServiceDetailsPage from "@/pages/ServiceDetailsPage.tsx";
 import Layout from "./components/shared/Layout";
+import AdminDashboard from "./pages/AdminDashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
         element: <ServiceDetailsPage />,
       },
     ],
+  },
+  {
+    path: "/dashboard/admin/*",
+    element: <AdminDashboard />,
   },
 ]);
 
