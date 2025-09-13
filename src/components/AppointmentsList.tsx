@@ -12,7 +12,6 @@ import {
 } from "./admin";
 import { TruncateField, MoneyField } from "./admin/fields";
 
-// ---- Choices (adjust to your enums) ----
 const APPOINTMENT_STATUS_CHOICES = [
   { id: "SCHEDULED", name: "Scheduled" },
   { id: "CONFIRMED", name: "Confirmed" },
@@ -45,7 +44,6 @@ const appointmentFilters = [
     label="Status"
     choices={APPOINTMENT_STATUS_CHOICES}
     emptyText="All"
-    alwaysOn
   />,
   <SelectInput
     key="paymentStatus"
@@ -61,11 +59,9 @@ const appointmentFilters = [
     source="serviceId"
     reference="services"
     label="Service"
-    alwaysOn={false}
   >
     <AutocompleteInput optionText="name" />
   </ReferenceInput>,
-  // Date range (use type="date"); map to ISO in dataProvider
   <TextInput
     key="appointmentTime_gte"
     source="appointmentTime_gte"
@@ -86,6 +82,7 @@ export default function AppointmentList() {
       filters={appointmentFilters}
       perPage={25}
       sort={{ field: "appointmentTime", order: "DESC" }}
+      filterDefaultValues={{ appointmentStatus: true }}
     >
       <DataTable rowClick="edit" bulkActionButtons={false}>
         <DataTable.Col source="id" label="ID" field={TextField} />

@@ -37,7 +37,7 @@ export function AppSidebar() {
 
   const logout = useLogout();
   return (
-    <Sidebar variant="floating" collapsible="icon">
+    <Sidebar variant="floating" collapsible="offcanvas">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -77,7 +77,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              onClick={() => logout()} // 👈 call logout on click
+              onClick={() => logout()}
               className="w-full flex items-center"
             >
               <LogOut className="mr-2 h-4 w-4" />

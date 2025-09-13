@@ -11,7 +11,7 @@ import { TruncateField, MoneyField, MinutesField } from "./admin/fields";
 
 // Filters for the service list
 const serviceFilters = [
-  <TextInput key="q" source="q" label="Search" alwaysOn />,
+  <TextInput key="q" source="q" label="Search" />,
   <TextInput
     key="price_gte"
     source="price_gte"
@@ -52,6 +52,7 @@ export default function ServiceList() {
       filters={serviceFilters}
       perPage={25}
       sort={{ field: "name", order: "ASC" }}
+      filterDefaultValues={{ price_gte: true }}
     >
       <DataTable rowClick="edit" bulkActionButtons={false}>
         <DataTable.Col source="id" label="ID" field={TextField} />

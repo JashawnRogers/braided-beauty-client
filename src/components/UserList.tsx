@@ -23,7 +23,6 @@ const userFilters = [
     label="User Type"
     choices={USER_TYPE_CHOICES}
     emptyText="All"
-    alwaysOn
   />,
   <TextInput
     key="createdAt_gte"
@@ -45,6 +44,7 @@ export default function UserList() {
       filters={userFilters}
       perPage={25}
       sort={{ field: "createdAt", order: "DESC" }}
+      filterDefaultValues={{ userType: true }}
     >
       <DataTable rowClick="edit" bulkActionButtons={false}>
         <DataTable.Col source="name" label="Name" field={TextField} />
@@ -56,7 +56,7 @@ export default function UserList() {
         </DataTable.Col>
         <DataTable.Col
           source="loyaltyPoints"
-          label="Points"
+          label="Rewards Points"
           field={NumberField}
         />
       </DataTable>
