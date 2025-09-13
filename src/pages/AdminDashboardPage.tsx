@@ -21,6 +21,7 @@ import {
   CopyPlus,
 } from "lucide-react";
 import AddOnEdit from "@/components/AddOnEdit";
+import AddOnCreate from "@/components/AddOnCreate";
 
 export default function AdminDashboard() {
   return (
@@ -48,6 +49,7 @@ export default function AdminDashboard() {
         name="add ons"
         list={AddOnsList}
         edit={AddOnEdit}
+        create={AddOnCreate}
         icon={CopyPlus}
       />
       <Resource
