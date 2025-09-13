@@ -1,5 +1,5 @@
 import { Resource } from "ra-core";
-import { Admin, EditGuesser } from "@/components/admin";
+import { Admin } from "@/components/admin";
 import { dataProvider } from "@/data/dataProvider";
 import UserList from "@/components/UserList";
 import AppointmentList from "@/components/AppointmentsList";
@@ -9,6 +9,8 @@ import ListBusinessHours from "@/components/ListBusinessHours";
 import LoyaltyList from "@/components/ListLoyaltyRecords";
 import UserEdit from "@/components/UserEdit";
 import AppointmentEdit from "@/components/AppointmentEdit";
+import ServiceEdit from "@/components/ServiceEdit";
+import ServiceCreate from "@/components/ServiceCreate";
 import {
   UsersRound,
   Scissors,
@@ -35,7 +37,8 @@ export default function AdminDashboard() {
       <Resource
         name="services"
         list={ServiceList}
-        edit={EditGuesser}
+        edit={ServiceEdit}
+        create={ServiceCreate}
         icon={Scissors}
       />
       <Resource
