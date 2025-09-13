@@ -8,6 +8,7 @@ import EditBusinessHours from "@/components/EditBusinessHours";
 import ListBusinessHours from "@/components/ListBusinessHours";
 import LoyaltyList from "@/components/ListLoyaltyRecords";
 import UserEdit from "@/components/UserEdit";
+import AppointmentEdit from "@/components/AppointmentEdit";
 import {
   UsersRound,
   Scissors,
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
       <Resource
         name="appointments"
         list={AppointmentList}
-        edit={EditGuesser}
+        edit={AppointmentEdit}
         icon={ClipboardClock}
       />
       <Resource
