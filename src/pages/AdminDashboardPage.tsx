@@ -11,12 +11,14 @@ import UserEdit from "@/components/UserEdit";
 import AppointmentEdit from "@/components/AppointmentEdit";
 import ServiceEdit from "@/components/ServiceEdit";
 import ServiceCreate from "@/components/ServiceCreate";
+import AddOnsList from "@/components/AddOnsList";
 import {
   UsersRound,
   Scissors,
   Building,
   ArrowBigUp,
   ClipboardClock,
+  CopyPlus,
 } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -41,6 +43,7 @@ export default function AdminDashboard() {
         create={ServiceCreate}
         icon={Scissors}
       />
+      <Resource name="add ons" list={AddOnsList} icon={CopyPlus} />
       <Resource
         name="business_hours"
         list={ListBusinessHours}
