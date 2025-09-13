@@ -20,6 +20,7 @@ import {
   ClipboardClock,
   CopyPlus,
 } from "lucide-react";
+import AddOnEdit from "@/components/AddOnEdit";
 
 export default function AdminDashboard() {
   return (
@@ -43,7 +44,12 @@ export default function AdminDashboard() {
         create={ServiceCreate}
         icon={Scissors}
       />
-      <Resource name="add ons" list={AddOnsList} icon={CopyPlus} />
+      <Resource
+        name="add ons"
+        list={AddOnsList}
+        edit={AddOnEdit}
+        icon={CopyPlus}
+      />
       <Resource
         name="business_hours"
         list={ListBusinessHours}
