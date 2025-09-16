@@ -44,7 +44,6 @@ export default function UserList() {
       filters={userFilters}
       perPage={25}
       sort={{ field: "createdAt", order: "DESC" }}
-      filterDefaultValues={{ userType: true }}
     >
       <DataTable rowClick="edit" bulkActionButtons={false}>
         <DataTable.Col source="name" label="Name" field={TextField} />
