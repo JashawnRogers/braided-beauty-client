@@ -1,21 +1,32 @@
-export default function formatPhone(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 10);
-  const match = digits.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+export const phone = {
+  // Keep only digits (10 max) - safe for every keystroke
+  toRaw(value?: string) {
+    return (value ?? "").replace(/\D/g, "").slice(0, 10);
+  },
 
-  if (!match) return value;
+  // print as (xxx) xxx-xxxx from either raw or messy input
+  format(value?: string) {
+    const digits = phone.toRaw(value);
+    const matched = digits.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+    if (!matched) return value ?? "";
+    const [, firstGroup, secondGroup, thirdGroup] = matched;
+    return [
+      firstGroup && `(${firstGroup}`,
+      secondGroup && `) ${secondGroup}`,
+      thirdGroup && `-${thirdGroup}`,
+    ]
+      .filter(Boolean)
+      .join("");
+  },
 
-  let formatted = "";
-  if (match[1]) formatted = `(${match[1]}`;
-  if (match[2]) formatted += `) ${match[2]}`;
-  if (match[3]) formatted += `-${match[3]}`;
-  return formatted;
-}
+  // Validate 10 US digits (works with raw or formatted input)
+  isValid(value?: string) {
+    return phone.toRaw(value).length === 10;
+  },
 
-// Normalize for backend (E.164, US only)
-export function normalizePhone(value: string) {
-  const digits = value.replace(/\D/g, "");
-  if (digits.length === 10) {
-    return `+1${digits}`;
-  }
-  throw new Error("Invalid US phone number");
-}
+  // Convert to E.164 (+1XXXXXXXXXX). Returns undefined if not valid
+  toE164(value?: string) {
+    const digits = phone.toRaw(value);
+    return digits.length === 10 ? `+1{digits}` : undefined;
+  },
+};
