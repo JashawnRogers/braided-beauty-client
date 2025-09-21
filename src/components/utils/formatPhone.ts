@@ -24,9 +24,9 @@ export const phone = {
     return phone.toRaw(value).length === 10;
   },
 
-  // Convert to E.164 (+1XXXXXXXXXX). Returns undefined if not valid
-  toE164(value?: string) {
+  // Convert to E.164 (+1XXXXXXXXXX). Returns empty string if not valid
+  toE164(value?: string): string | null {
     const digits = phone.toRaw(value);
-    return digits.length === 10 ? `+1{digits}` : undefined;
+    return digits.length === 10 ? `+1${digits}` : null;
   },
 };

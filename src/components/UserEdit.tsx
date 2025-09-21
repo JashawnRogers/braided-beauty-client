@@ -1,6 +1,5 @@
 import {
   Edit,
-  Form,
   TextInput,
   SelectInput,
   NumberInput,
@@ -8,9 +7,10 @@ import {
   SaveButton,
   TextField,
   DeleteButton,
+  SimpleForm,
+  FormToolbar,
 } from "./admin";
-import { useForm } from "react-hook-form";
-
+import { phone } from "./utils/formatPhone";
 const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },
   { id: "MEMBER", name: "Member" },
@@ -27,15 +27,43 @@ const email = (v: string) =>
 const nonNegative = (v: any) =>
   v != null && Number(v) < 0 ? "Must be ≥ 0" : undefined;
 
-export default function UserEdit() {
-  const form = useForm();
+function UserEditToolbar() {
   return (
-    <Edit>
+    <FormToolbar className="mt-6 flex space-x-5 justify-items-end border-t pt-4">
+      <DeleteButton />
+      <SaveButton />
+    </FormToolbar>
+  );
+}
+
+export default function UserEdit() {
+  return (
+    <Edit
+      transform={(data) => ({
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        userType: data.userType,
+        loyaltyRecord: {
+          points: data.loyaltyRecord?.points ?? 0,
+          redeemedPoints: data.loyaltyRecord?.redeemedPoints ?? 0,
+        },
+        phoneNumber: phone.toE164(data.phoneNumber),
+      })}
+    >
       {/* One Form that wraps *all* inputs & action buttons */}
-      <Form {...form}>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <SimpleForm
+        toolbar={<UserEditToolbar />}
+        className="w-full"
+        sanitizeEmptyValues
+        defaultValues={{
+          phoneNumber: "",
+          loyaltyRecord: { points: 0, redeemedPoints: 0 },
+        }}
+      >
+        <div className="grid w-full grid-cols-1 md:gap-6 md:grid-cols-2">
           {/* Left column: editable fields */}
-          <section className="rounded-md space-y-6 border p-4">
+          <section className="w-full rounded-md space-y-6 border p-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               Profile
             </h3>
@@ -46,7 +74,17 @@ export default function UserEdit() {
               label="Email"
               validate={[required(), email]}
             />
-            <TextInput source="phone" label="Phone" />
+            <TextInput
+              source="phoneNumber"
+              label="Phone"
+              format={(value) => phone.format(value) ?? ""}
+              parse={(value) => phone.toRaw(value) ?? ""}
+              inputMode="numeric"
+              placeholder="(123) 456-7890"
+              validate={(value) =>
+                phone.isValid(value) ? undefined : "Enter 10 digits"
+              }
+            />
 
             <SelectInput
               source="userType"
@@ -56,7 +94,7 @@ export default function UserEdit() {
             />
 
             <NumberInput
-              source="loyaltyPoints"
+              source="loyaltyRecord.points"
               label="Loyalty Points"
               validate={nonNegative}
               min={0}
@@ -64,11 +102,11 @@ export default function UserEdit() {
           </section>
 
           {/* Right column: read-only meta (Fields, not Inputs) */}
-          <section className="rounded-md border p-4">
+          <section className="w-full rounded-md border p-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               Meta
             </h3>
-            <div className="grid grid-cols-[8rem,1fr] items-start gap-y-2 text-sm">
+            <div className="grid grid-cols-[6rem,1fr] items-start gap-y-2 text-sm">
               <span className="text-muted-foreground">ID</span>
               <TextField source="id" />
 
@@ -80,13 +118,7 @@ export default function UserEdit() {
             </div>
           </section>
         </div>
-
-        {/* Form footer with actions (inside the Form so Save/Delete have context) */}
-        <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <DeleteButton />
-          <SaveButton />
-        </div>
-      </Form>
+      </SimpleForm>
     </Edit>
   );
 }

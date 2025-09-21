@@ -148,7 +148,40 @@ function totalFrom(json: unknown, headers: Headers): number {
   return 0;
 }
 
-const normalizeRecord = (r: any) => ({ id: r.id, ...r });
+type Loyalty = { points?: number | null; redeemedPoints?: number | null };
+
+const normalizeRecord = <
+  T extends RaRecord & {
+    phoneNumber?: string | null;
+    loyaltyRecord?: Loyalty | null;
+    loyaltyPoints?: number | null; // may appear in list responses; we'll remove it
+    redeemedPoints?: number | null; // just in case some summary returns it flat
+  }
+>(
+  r: T
+) => {
+  // Prefer nested if present; fall back to flat for list responses
+  const points = r.loyaltyRecord?.points ?? r.loyaltyPoints ?? 0;
+
+  const redeemed =
+    r.loyaltyRecord?.redeemedPoints ?? (r as any).redeemedPoints ?? 0;
+
+  // strip any flat loyaltyPoints so the UI only ever sees the nested shape
+  const { loyaltyPoints, ...rest } = r as any;
+
+  return {
+    ...rest,
+    id: r.id,
+    phoneNumber: r.phoneNumber ?? "",
+    loyaltyRecord: {
+      points,
+      redeemedPoints: redeemed,
+    },
+  } as T & {
+    phoneNumber: string;
+    loyaltyRecord: Required<Loyalty>;
+  };
+};
 
 export default function springDataProvider(
   apiUrl: string,
@@ -172,6 +205,7 @@ export default function springDataProvider(
       const base = pathFor(resource, "getOne");
       const url = withBase(apiUrl, `${base}/${params.id}`);
       const { json } = await httpClient(url);
+      console.log("[RAW getOne]", url, JSON.parse(JSON.stringify(json)));
       return { data: normalizeRecord(json) };
     },
 
@@ -216,7 +250,9 @@ export default function springDataProvider(
       const base = pathFor(resource, "update");
       const url = withBase(apiUrl, `${base}/${params.id}`);
       const body = JSON.stringify(params.data);
+      console.log("[dataProvider.update] PUT", url, "body:", params.data);
       const { json } = await httpClient(url, { method: "PUT", body });
+
       return { data: normalizeRecord(json) };
     },
 

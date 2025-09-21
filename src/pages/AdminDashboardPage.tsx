@@ -1,6 +1,7 @@
 import { Resource } from "ra-core";
 import { Admin } from "@/components/admin";
 import springDataProvider from "@/data/dataProvider";
+import withLogger from "@/components/utils/loggerDataProvider";
 import UserList from "@/components/UserList";
 import AppointmentList from "@/components/AppointmentsList";
 import ServiceList from "@/components/ServiceList";
@@ -23,7 +24,9 @@ import {
 import AddOnEdit from "@/components/AddOnEdit";
 import AddOnCreate from "@/components/AddOnCreate";
 
-const dataPovider = springDataProvider(import.meta.env.VITE_SERVER_API_URL);
+const dataPovider = withLogger(
+  springDataProvider(import.meta.env.VITE_SERVER_API_URL)
+);
 
 export default function AdminDashboard() {
   return (

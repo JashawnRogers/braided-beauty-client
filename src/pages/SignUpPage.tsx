@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router";
-import formatPhone, { normalizePhone } from "@/components/utils/formatPhone";
+import { phone as phoneUtil } from "@/components/utils/formatPhone";
 import {
   passwordIssues,
   sanitizePasswordInput,
@@ -28,16 +28,18 @@ export default function SignUpPage() {
     [password, name, email, phone, confirm]
   );
 
-  const valid = issues.length === 0;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valid) return;
+    const e164 = phoneUtil.toE164(phone);
+    if (!e164) {
+      console.log("No e164");
+      return;
+    }
 
     const payload = {
       name,
       email,
-      phoneNumber: normalizePhone(phone),
+      phoneNumber: e164,
       password: sanitizePasswordInput(password),
     };
 
@@ -113,7 +115,7 @@ export default function SignUpPage() {
                   name="phoneNumber"
                   id="phoneNumber"
                   value={phone}
-                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  onChange={(e) => setPhone(phoneUtil.format(e.target.value))}
                   placeholder="(123) 456-7890"
                   required
                 />

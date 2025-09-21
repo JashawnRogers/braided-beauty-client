@@ -4,7 +4,6 @@ import {
   TextField,
   EmailField,
   NumberField,
-  DateField,
   TextInput,
   SelectInput,
 } from "./admin";
@@ -24,18 +23,6 @@ const userFilters = [
     choices={USER_TYPE_CHOICES}
     emptyText="All"
   />,
-  <TextInput
-    key="createdAt_gte"
-    type="date"
-    source="createdAt_gte"
-    label="Created after"
-  />,
-  <TextInput
-    key="createdAt_lte"
-    type="date"
-    source="createdAt_lte"
-    label="Created before"
-  />,
 ];
 
 export default function UserList() {
@@ -49,13 +36,15 @@ export default function UserList() {
         <DataTable.Col source="name" label="Name" field={TextField} />
         <DataTable.Col source="userType" label="Type" field={TextField} />
         <DataTable.Col source="email" label="Email" field={EmailField} />
-        <DataTable.Col source="phone" label="Phone" field={TextField} />
-        <DataTable.Col label="Created">
-          <DateField source="createdAt" showTime />
-        </DataTable.Col>
+        <DataTable.Col source="phoneNumber" label="Phone" field={TextField} />
         <DataTable.Col
-          source="loyaltyPoints"
+          source="loyaltyRecord.points"
           label="Rewards Points"
+          field={NumberField}
+        />
+        <DataTable.Col
+          source="loyaltyRecord.redeemedPoints"
+          label="Redeemed Points"
           field={NumberField}
         />
       </DataTable>
