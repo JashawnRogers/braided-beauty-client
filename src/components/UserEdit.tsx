@@ -77,7 +77,7 @@ export default function UserEdit() {
             <TextInput
               source="phoneNumber"
               label="Phone"
-              format={(value) => phone.format(value) ?? ""}
+              format={(value) => phone.formatFromE164(value) ?? ""}
               parse={(value) => phone.toRaw(value) ?? ""}
               inputMode="numeric"
               placeholder="(123) 456-7890"

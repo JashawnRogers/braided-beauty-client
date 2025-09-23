@@ -5,9 +5,21 @@ export const phone = {
   },
 
   // print as (xxx) xxx-xxxx from either raw or messy input
-  format(value?: string) {
-    const digits = phone.toRaw(value);
-    const matched = digits.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+  formatFromE164(value?: string): string {
+    if (!value) return "";
+
+    const digits = value.replace(/\D/g, "");
+    let tenDigits: string;
+
+    if (digits.length === 11 && digits.startsWith("1")) {
+      tenDigits = digits.slice(1);
+    } else if (digits.length == 10) {
+      tenDigits = digits;
+    } else {
+      return digits;
+    }
+
+    const matched = tenDigits.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
     if (!matched) return value ?? "";
     const [, firstGroup, secondGroup, thirdGroup] = matched;
     return [
