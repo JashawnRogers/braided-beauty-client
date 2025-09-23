@@ -7,6 +7,7 @@ import {
   TextInput,
   SelectInput,
 } from "./admin";
+import { PhoneNumberField } from "./shared/phoneNumberField";
 
 const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },
@@ -32,11 +33,15 @@ export default function UserList() {
       perPage={25}
       sort={{ field: "createdAt", order: "DESC" }}
     >
-      <DataTable rowClick="edit" bulkActionButtons={false}>
+      <DataTable rowClick="edit" bulkActionButtons={true}>
         <DataTable.Col source="name" label="Name" field={TextField} />
         <DataTable.Col source="userType" label="Type" field={TextField} />
         <DataTable.Col source="email" label="Email" field={EmailField} />
-        <DataTable.Col source="phoneNumber" label="Phone" field={TextField} />
+        <DataTable.Col
+          source="phoneNumber"
+          label="Phone"
+          field={PhoneNumberField}
+        />
         <DataTable.Col
           source="loyaltyRecord.points"
           label="Rewards Points"

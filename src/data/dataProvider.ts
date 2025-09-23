@@ -167,7 +167,7 @@ const normalizeRecord = <
     r.loyaltyRecord?.redeemedPoints ?? (r as any).redeemedPoints ?? 0;
 
   // strip any flat loyaltyPoints so the UI only ever sees the nested shape
-  const { loyaltyPoints, ...rest } = r as any;
+  const { ...rest } = r as any;
 
   return {
     ...rest,
