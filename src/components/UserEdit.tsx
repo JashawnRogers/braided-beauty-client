@@ -111,7 +111,7 @@ export default function UserEdit() {
               <TextField source="id" />
 
               <span className="text-muted-foreground">Created</span>
-              <DateField source="createdAt" showTime />
+              <DateField source="createdAt" showTime empty={"null"} />
 
               <span className="text-muted-foreground">Updated</span>
               <DateField source="updatedAt" showTime />
