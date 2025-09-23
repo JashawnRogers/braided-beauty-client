@@ -1,5 +1,5 @@
 export const phone = {
-  // Keep only digits (10 max) - safe for every keystroke
+  // Keep only digits (10 max) - safe for input
   toRaw(value?: string) {
     return (value ?? "").replace(/\D/g, "").slice(0, 10);
   },
@@ -8,7 +8,7 @@ export const phone = {
   formatFromE164(value?: string): string {
     if (!value) return "";
 
-    const digits = value.replace(/\D/g, "");
+    const digits = value.replace(/\D/g, "").slice(-10);
     let tenDigits: string;
 
     if (digits.length === 11 && digits.startsWith("1")) {
@@ -31,14 +31,18 @@ export const phone = {
       .join("");
   },
 
-  // Validate 10 US digits (works with raw or formatted input)
+  // For formatted input
   isValid(value?: string) {
     return phone.toRaw(value).length === 10;
   },
 
   // Convert to E.164 (+1XXXXXXXXXX). Returns empty string if not valid
   toE164(value?: string): string | null {
-    const digits = phone.toRaw(value);
-    return digits.length === 10 ? `+1${digits}` : null;
+    if (!value) return null;
+
+    const digits = value?.replace(/\D/g, "");
+    if (digits.length == 10) return `+1${digits}`;
+    if (digits.length == 11 && digits.startsWith("1")) return `+${digits}`;
+    return null;
   },
 };

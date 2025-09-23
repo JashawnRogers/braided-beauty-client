@@ -266,7 +266,7 @@ export default function springDataProvider(
           const url = withBase(apiUrl, `${base}/${id}`);
           const body = JSON.stringify(params.data);
           const { json } = await httpClient(url, { method: "PUT", body });
-          return (json as any)?.id ?? id;
+          return json?.id ?? id;
         })
       );
       return { data: ids as any };
