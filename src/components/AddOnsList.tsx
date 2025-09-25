@@ -29,7 +29,7 @@ export default function AddOnsList() {
       perPage={25}
       sort={{ field: "name", order: "ASC" }}
     >
-      <DataTable rowClick="edit" bulkActionButtons={false}>
+      <DataTable rowClick="edit" bulkActionButtons={true}>
         <DataTable.Col source="name" label="Name" field={TextField} />
 
         <DataTable.Col label="Price">

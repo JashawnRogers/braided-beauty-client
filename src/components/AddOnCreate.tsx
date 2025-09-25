@@ -1,5 +1,11 @@
-import { Create, Form, TextInput, NumberInput, SaveButton } from "./admin";
-import { useForm } from "react-hook-form";
+import {
+  Create,
+  SimpleForm,
+  TextInput,
+  NumberInput,
+  SaveButton,
+  FormToolbar,
+} from "./admin";
 
 // validators
 const required =
@@ -10,20 +16,26 @@ const required =
 const nonNegative = (v: any) =>
   v != null && Number(v) < 0 ? "Must be ≥ 0" : undefined;
 
-export default function AddOnCreate() {
-  const form = useForm({
-    defaultValues: {
-      name: "",
-      price: 0,
-    },
-  });
-
+function AddOnCreateToolbar() {
   return (
-    <Create>
-      <Form {...form}>
+    <FormToolbar className="mt-6 flex justify-end gap-2 border-t pt-4">
+      <SaveButton />
+    </FormToolbar>
+  );
+}
+
+export default function AddOnCreate() {
+  return (
+    <Create
+      transform={(data) => ({
+        name: data.name,
+        price: data.price,
+      })}
+    >
+      <SimpleForm toolbar={<AddOnCreateToolbar />}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Left: fields */}
-          <section className="rounded-md border p-4">
+          <section className="rounded-md border p-4 space-y-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               New Add-On
             </h3>
@@ -33,7 +45,7 @@ export default function AddOnCreate() {
             <NumberInput
               source="price"
               label="Price (USD)"
-              step={0.01}
+              step={5}
               min={0}
               validate={nonNegative}
             />
@@ -50,11 +62,7 @@ export default function AddOnCreate() {
             </p>
           </section>
         </div>
-
-        <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <SaveButton />
-        </div>
-      </Form>
+      </SimpleForm>
     </Create>
   );
 }

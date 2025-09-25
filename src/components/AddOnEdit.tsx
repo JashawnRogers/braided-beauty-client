@@ -1,13 +1,13 @@
 import {
   Edit,
-  Form,
+  SimpleForm,
+  FormToolbar,
   TextInput,
   NumberInput,
   SaveButton,
   DeleteButton,
   TextField,
 } from "./admin";
-import { useForm } from "react-hook-form";
 
 // validators
 const required =
@@ -18,25 +18,40 @@ const required =
 const nonNegative = (v: any) =>
   v != null && Number(v) < 0 ? "Must be ≥ 0" : undefined;
 
-export default function AddOnEdit() {
-  const form = useForm();
-
+function AddOnToolBar() {
   return (
-    <Edit>
-      <Form {...form}>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <FormToolbar className="mt-6 flex space-x-5 justify-items-end border-t pt-4">
+      <DeleteButton />
+      <SaveButton />
+    </FormToolbar>
+  );
+}
+
+export default function AddOnEdit() {
+  return (
+    <Edit
+      transform={(data) => ({
+        id: data.id,
+        name: data.name,
+        price: data.price,
+      })}
+    >
+      <SimpleForm
+        className="w-full"
+        toolbar={<AddOnToolBar />}
+        sanitizeEmptyValues
+      >
+        <div className="grid grid-cols-1 md:gap-6 md:grid-cols-2">
           {/* Left: editable fields */}
-          <section className="rounded-md border p-4">
+          <section className="w-full rounded-md border p-4 space-y-8">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               Add-On
             </h3>
-
             <TextInput source="name" label="Name" validate={required()} />
 
             <NumberInput
               source="price"
               label="Price (USD)"
-              step={0.01}
               min={0}
               validate={nonNegative}
             />
@@ -53,12 +68,7 @@ export default function AddOnEdit() {
             </div>
           </section>
         </div>
-
-        <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <DeleteButton />
-          <SaveButton />
-        </div>
-      </Form>
+      </SimpleForm>
     </Edit>
   );
 }
