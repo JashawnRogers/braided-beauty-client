@@ -6,7 +6,6 @@ import {
   NumberInput,
   SaveButton,
   DeleteButton,
-  TextField,
 } from "./admin";
 
 // validators
@@ -34,6 +33,7 @@ export default function AddOnEdit() {
         id: data.id,
         name: data.name,
         price: data.price,
+        description: data.description,
       })}
     >
       <SimpleForm
@@ -57,15 +57,9 @@ export default function AddOnEdit() {
             />
           </section>
 
-          {/* Right: meta (read-only) */}
+          {/* Right side */}
           <section className="rounded-md border p-4">
-            <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
-              Meta
-            </h3>
-            <div className="grid grid-cols-[8rem,1fr] items-start gap-y-2 text-sm">
-              <span className="text-muted-foreground">ID</span>
-              <TextField source="id" />
-            </div>
+            <TextInput source="description" maxLength={255} multiline />
           </section>
         </div>
       </SimpleForm>

@@ -36,7 +36,13 @@ export default function AddOnsList() {
           <MoneyField source="price" />
         </DataTable.Col>
 
-        {/* <DataTable.Col source="id" label="ID" field={TextField} /> */}
+        <DataTable.Col label="Description">
+          <TextField
+            source="description"
+            empty="No description entered."
+            className="block max-w-[200px] truncate"
+          />
+        </DataTable.Col>
 
         <DataTable.Col>
           <EditButton />

@@ -30,6 +30,7 @@ export default function AddOnCreate() {
       transform={(data) => ({
         name: data.name,
         price: data.price,
+        description: data.description,
       })}
     >
       <SimpleForm toolbar={<AddOnCreateToolbar />}>
@@ -51,15 +52,9 @@ export default function AddOnCreate() {
             />
           </section>
 
-          {/* Right: (empty / hints) */}
+          {/* Right side */}
           <section className="rounded-md border p-4">
-            <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
-              Tips
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Add-ons are optional extras customers can attach to a service.
-              Keep names short and clear (e.g., “Extra Length”, “Beads”).
-            </p>
+            <TextInput multiline source="description" maxLength={255} />
           </section>
         </div>
       </SimpleForm>
