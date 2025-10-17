@@ -1,6 +1,6 @@
 import {
   Edit,
-  Form,
+  SimpleForm,
   TextInput,
   NumberInput,
   SaveButton,
@@ -8,7 +8,8 @@ import {
   DateField,
   TextField,
 } from "./admin";
-import { useForm, useWatch } from "react-hook-form";
+import { useWatch } from "react-hook-form";
+import { transformServiceEdit } from "./utils/mediaTransform";
 
 // Simple validators
 const required =
@@ -29,12 +30,19 @@ const maxLen =
   (v: string) =>
     v && v.length > n ? msg : undefined;
 
-export default function ServiceEdit() {
-  const form = useForm();
-
+function ServiceEditToolbar() {
   return (
-    <Edit>
-      <Form {...form}>
+    <div className="mt-6 flex justify-end gap-2 border-t pt-4">
+      <DeleteButton />
+      <SaveButton />
+    </div>
+  );
+}
+
+export default function ServiceEdit() {
+  return (
+    <Edit mutationMode="pessimistic" transform={transformServiceEdit}>
+      <SimpleForm toolbar={<ServiceEditToolbar />}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Left column: main editable fields */}
           <section className="rounded-md border p-4">
@@ -130,12 +138,7 @@ export default function ServiceEdit() {
             </div>
           </section>
         </div>
-
-        <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <DeleteButton />
-          <SaveButton />
-        </div>
-      </Form>
+      </SimpleForm>
     </Edit>
   );
 }

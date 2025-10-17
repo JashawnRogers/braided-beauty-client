@@ -1,74 +1,49 @@
 // src/admin/services/ServiceCreate.tsx
-import { Create, Form, TextInput, NumberInput, SaveButton } from "./admin";
-import { useForm, useWatch } from "react-hook-form";
+import {
+  Create,
+  SimpleForm,
+  TextInput,
+  NumberInput,
+  SaveButton,
+  FileInput,
+} from "./admin";
+import { useWatch } from "react-hook-form";
+import { transformServiceCreate } from "./utils/mediaTransform";
 
-// validators
-const required =
-  (msg = "Required") =>
-  (v: any) =>
-    v == null || v === "" ? msg : undefined;
-
-const nonNegative = (v: any) =>
-  v != null && Number(v) < 0 ? "Must be ≥ 0" : undefined;
-
-const isUrl =
-  (msg = "Invalid URL") =>
-  (v: string) =>
-    v && !/^https?:\/\/\S+$/i.test(v) ? msg : undefined;
-
-const maxLen =
-  (n: number, msg = `Max ${n} characters`) =>
-  (v: string) =>
-    v && v.length > n ? msg : undefined;
+function ServiceCreateToolbar() {
+  return (
+    <div className="mt-6 flex justify-end gap-2 border-t pt-4">
+      <SaveButton />
+    </div>
+  );
+}
 
 export default function ServiceCreate() {
-  const form = useForm({
-    defaultValues: {
-      name: "",
-      description: "",
-      price: 0,
-      depositAmount: 0,
-      durationMinutes: 60,
-      photoUrl: "",
-      videoUrl: "",
-      pointsEarned: 0,
-    },
-  });
-
   return (
-    <Create>
-      <Form {...form}>
+    <Create mutationMode="pessimistic" transform={transformServiceCreate}>
+      <SimpleForm toolbar={<ServiceCreateToolbar />}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Left: main fields */}
-          <section className="rounded-md border p-4">
+          <section className="rounded-md border p-4 space-y-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               New Service
             </h3>
 
-            <TextInput source="name" label="Name" validate={required()} />
-
-            <TextInput
-              source="description"
-              label="Description"
-              multiline
-              rows={4}
-              validate={maxLen(1000)}
-            />
+            <TextInput source="name" label="Name" required />
 
             <NumberInput
               source="price"
               label="Price (USD)"
               step={0.01}
               min={0}
-              validate={nonNegative}
             />
 
             <NumberInput
+              disabled
               source="depositAmount"
               label="Deposit (USD)"
               step={0.01}
               min={0}
-              validate={nonNegative}
             />
 
             <NumberInput
@@ -76,48 +51,39 @@ export default function ServiceCreate() {
               label="Duration (minutes)"
               min={0}
               step={5}
-              validate={nonNegative}
             />
 
-            <NumberInput
-              source="pointsEarned"
-              label="Points Earned"
-              min={0}
-              validate={nonNegative}
+            <NumberInput source="pointsEarned" label="Points Earned" min={0} />
+
+            <TextInput
+              source="description"
+              label="Description"
+              multiline
+              maxLength={255}
+              rows={4}
             />
           </section>
 
           {/* Right: media & live preview */}
-          <section className="rounded-md border p-4">
+          <section className="rounded-md border p-4 space-y-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               Media
             </h3>
 
-            <TextInput
-              source="photoUrl"
-              label="Photo URL"
-              validate={isUrl()}
-              placeholder="https://example.com/photo.jpg"
-            />
+            <FileInput source="photoFiles" multiple label="Photos">
+              <FileInput source="src" />
+            </FileInput>
 
-            <TextInput
-              source="videoUrl"
-              label="Video URL"
-              validate={isUrl()}
-              placeholder="https://example.com/video.mp4"
-            />
+            <FileInput source="videoUrl" label="Video" multiple={false}>
+              <FileInput source="src" />
+            </FileInput>
 
             <div className="mt-4 space-y-3">
               <MediaPreview />
             </div>
           </section>
         </div>
-
-        {/* Actions */}
-        <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <SaveButton />
-        </div>
-      </Form>
+      </SimpleForm>
     </Create>
   );
 }

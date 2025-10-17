@@ -54,7 +54,7 @@ export default function ServiceList() {
       sort={{ field: "name", order: "ASC" }}
       filterDefaultValues={{ price_gte: true }}
     >
-      <DataTable rowClick="edit" bulkActionButtons={false}>
+      <DataTable rowClick="edit" bulkActionButtons={true}>
         <DataTable.Col source="id" label="ID" field={TextField} />
         <DataTable.Col source="name" label="Name" field={TextField} />
 
@@ -89,7 +89,7 @@ export default function ServiceList() {
         />
 
         {/* Media links (if not empty) */}
-        <DataTable.Col source="photoUrl" label="Photo" field={UrlField} />
+        <DataTable.Col source="photoKeys" label="Photo" field={UrlField} />
         <DataTable.Col source="videoUrl" label="Video" field={UrlField} />
 
         <DataTable.Col>
