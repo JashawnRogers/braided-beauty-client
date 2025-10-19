@@ -44,17 +44,14 @@ export default function ServiceDetailsPage() {
   const canBook = Boolean(date && time);
 
   const handleBook = () => {
-    if (!canBook) return;
+    if (!canBook || !service) return;
     const q = new URLSearchParams({
       service: service.slug,
       date: toISO(date),
       time: time!, // non-null because canBook
     }).toString();
 
-    // Option A: navigate to a booking flow page with prefilled values
     navigate(`/book?${q}`);
-
-    // Option B: open a modal or call POST /api/appointments directly here.
   };
 
   if (!service) {

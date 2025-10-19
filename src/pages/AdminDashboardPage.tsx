@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import AddOnEdit from "@/components/AddOnEdit";
 import AddOnCreate from "@/components/AddOnCreate";
+import CreateBusinessHours from "@/components/CreateBusinessHours";
 
 const dataPovider = withLogger(
   springDataProvider(import.meta.env.VITE_SERVER_API_URL)
@@ -62,6 +63,7 @@ export default function AdminDashboard() {
         name="business_hours"
         list={ListBusinessHours}
         edit={EditBusinessHours}
+        create={CreateBusinessHours}
         icon={Building}
       />
       <Resource name="loyalty_points" list={LoyaltyList} icon={ArrowBigUp} />
