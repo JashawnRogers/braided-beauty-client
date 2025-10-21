@@ -87,7 +87,7 @@ export default function CreateBusinessHours() {
     <Create
       transform={(data) => ({
         dayOfWeek: data.dayOfWeek,
-        isClosed: !!data.isClosed,
+        isClosed: Boolean(data.isClosed),
         openTime: data.isClosed ? null : data.openTime,
         closeTime: data.isClosed ? null : data.closeTime,
       })}

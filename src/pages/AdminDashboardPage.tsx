@@ -60,13 +60,13 @@ export default function AdminDashboard() {
         icon={CopyPlus}
       />
       <Resource
-        name="business_hours"
+        name="business hours"
         list={ListBusinessHours}
         edit={EditBusinessHours}
         create={CreateBusinessHours}
         icon={Building}
       />
-      <Resource name="loyalty_points" list={LoyaltyList} icon={ArrowBigUp} />
+      <Resource name="loyalty points" list={LoyaltyList} icon={ArrowBigUp} />
     </Admin>
   );
 }

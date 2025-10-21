@@ -1,4 +1,4 @@
-import { List, DataTable, TextField, BooleanInput, EditButton } from "./admin";
+import { List, DataTable, TextField, EditButton } from "./admin";
 
 export default function ListBusinessHours() {
   return (
@@ -7,9 +7,7 @@ export default function ListBusinessHours() {
         <DataTable.Col source="dayOfWeek" label="Day" field={TextField} />
         <DataTable.Col source="openTime" label="Opens" field={TextField} />
         <DataTable.Col source="closeTime" label="Closes" field={TextField} />
-        <DataTable.Col label="Closed">
-          <BooleanInput disabled source="isClosed" />
-        </DataTable.Col>
+        <DataTable.Col label="Closed" source="isClosed" />
         <DataTable.Col>
           <EditButton />
         </DataTable.Col>

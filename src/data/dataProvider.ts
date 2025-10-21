@@ -22,6 +22,7 @@ type HttpClient = typeof fetchUtils.fetchJson;
 const resourceAliases: Record<string, string> = {
   "all-users": "users",
   "add ons": "addons",
+  "business hours": "hours",
 };
 
 /** Per-resource endpoint overrides (by verb). */
@@ -45,7 +46,7 @@ const resourceMap: Record<string, ResourceConfig> = {
   },
   appointments: { base: "appointments" },
   services: { base: "services" },
-  business_hours: { base: "business-settings" },
+  hours: { base: "hours" },
   addons: { base: "addons" },
 };
 
@@ -242,6 +243,7 @@ export default function springDataProvider(
       const base = pathFor(resource, "create");
       const url = withBase(apiUrl, base);
       const body = JSON.stringify(params.data);
+      console.log("[dataProvider.create] PUT", url, "body:", params.data);
       const { json } = await httpClient(url, { method: "POST", body });
       return { data: normalizeRecord(json) };
     },
