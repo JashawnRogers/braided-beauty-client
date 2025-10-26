@@ -15,8 +15,11 @@ import {
   UpdateManyResult,
   DeleteResult,
 } from "react-admin";
-
-type HttpClient = typeof fetchUtils.fetchJson;
+import {
+  normalizeTime,
+  normalizeDays,
+  normalizeIsClosed,
+} from "./businessHours";
 
 /** Map alternate UI names to canonical resource keys */
 const resourceAliases: Record<string, string> = {
@@ -151,24 +154,22 @@ function totalFrom(json: unknown, headers: Headers): number {
 
 type Loyalty = { points?: number | null; redeemedPoints?: number | null };
 
-const normalizeRecord = <
+// Resource-aware normalizers
+const normalizeUser = <
   T extends RaRecord & {
     phoneNumber?: string | null;
     loyaltyRecord?: Loyalty | null;
-    loyaltyPoints?: number | null; // may appear in list responses; we'll remove it
-    redeemedPoints?: number | null; // just in case some summary returns it flat
+    loyaltyPoints?: number | null;
+    redeemedPoints?: number | null;
   }
 >(
   r: T
 ) => {
-  // Prefer nested if present; fall back to flat for list responses
   const points = r.loyaltyRecord?.points ?? r.loyaltyPoints ?? 0;
-
   const redeemed =
     r.loyaltyRecord?.redeemedPoints ?? (r as any).redeemedPoints ?? 0;
 
-  // strip any flat loyaltyPoints so the UI only ever sees the nested shape
-  const { ...rest } = r as any;
+  const { loyaltyPoints, redeemedPoints, ...rest } = r as any;
 
   return {
     ...rest,
@@ -184,9 +185,31 @@ const normalizeRecord = <
   };
 };
 
+const normalizeHours = <
+  T extends RaRecord & { openTime?: string | null; closeTime?: string | null }
+>(
+  r: T
+) => ({
+  ...r,
+  closed: normalizeIsClosed(r.closed),
+  dayOfWeek: normalizeDays(r.dayOfWeek),
+  openTime: normalizeTime(r.openTime),
+  closeTime: normalizeTime(r.closeTime),
+});
+
+const normalizeRecordFor = (
+  resource: string,
+  mode: "list" | "raw"
+): ((data: any) => any) => {
+  const key = normalizeResource(resource);
+  if (key === "users") return normalizeUser;
+  if (key === "hours" && mode === "list") return normalizeHours;
+  return (x: any) => x;
+};
+
 export default function springDataProvider(
   apiUrl: string,
-  httpClient: HttpClient = fetchUtils.fetchJson
+  httpClient: typeof fetchUtils.fetchJson = fetchUtils.fetchJson
 ): DataProvider {
   return {
     async getList(resource, params) {
@@ -197,7 +220,8 @@ export default function springDataProvider(
         `${listPath}?${qs.stringify(query, { arrayFormat: "repeat" })}`
       );
       const { json, headers } = await httpClient(url);
-      const rows = itemsFrom(json).map(normalizeRecord);
+      const normalize = normalizeRecordFor(resource, "list");
+      const rows = itemsFrom(json).map(normalize);
       const total = totalFrom(json, headers);
       return { data: rows, total };
     },
@@ -207,7 +231,8 @@ export default function springDataProvider(
       const url = withBase(apiUrl, `${base}/${params.id}`);
       const { json } = await httpClient(url);
       console.log("[RAW getOne]", url, JSON.parse(JSON.stringify(json)));
-      return { data: normalizeRecord(json) };
+      const normalize = normalizeRecordFor(resource, "raw");
+      return { data: normalize(json) };
     },
 
     async getMany(resource, params: GetManyParams) {
@@ -218,7 +243,8 @@ export default function springDataProvider(
       );
       const url = withBase(apiUrl, `${base}?${query}`);
       const { json } = await httpClient(url);
-      const rows = itemsFrom(json).map(normalizeRecord);
+      const normalize = normalizeRecordFor(resource, "list");
+      const rows = itemsFrom(json).map(normalize);
       return { data: rows };
     },
 
@@ -234,7 +260,8 @@ export default function springDataProvider(
         `${base}?${qs.stringify(query, { arrayFormat: "repeat" })}`
       );
       const { json, headers } = await httpClient(url);
-      const rows = itemsFrom(json).map(normalizeRecord);
+      const normalize = normalizeRecordFor(resource, "list");
+      const rows = itemsFrom(json).map(normalize);
       const total = totalFrom(json, headers);
       return { data: rows, total };
     },
@@ -245,7 +272,8 @@ export default function springDataProvider(
       const body = JSON.stringify(params.data);
       console.log("[dataProvider.create] PUT", url, "body:", params.data);
       const { json } = await httpClient(url, { method: "POST", body });
-      return { data: normalizeRecord(json) };
+      const normalize = normalizeRecordFor(resource, "raw");
+      return { data: normalize(json) };
     },
 
     async update(resource, params: UpdateParams) {
@@ -254,8 +282,8 @@ export default function springDataProvider(
       const body = JSON.stringify(params.data);
       console.log("[dataProvider.update] PUT", url, "body:", params.data);
       const { json } = await httpClient(url, { method: "PUT", body });
-
-      return { data: normalizeRecord(json) };
+      const normalize = normalizeRecordFor(resource, "raw");
+      return { data: normalize(json) };
     },
 
     async updateMany<RecordType extends RaRecord = any>(

@@ -24,9 +24,10 @@ import {
 import AddOnEdit from "@/components/AddOnEdit";
 import AddOnCreate from "@/components/AddOnCreate";
 import CreateBusinessHours from "@/components/CreateBusinessHours";
+import { httpClient } from "@/components/utils/httpClient";
 
 const dataPovider = withLogger(
-  springDataProvider(import.meta.env.VITE_SERVER_API_URL)
+  springDataProvider(import.meta.env.VITE_SERVER_API_URL, httpClient)
 );
 
 export default function AdminDashboard() {

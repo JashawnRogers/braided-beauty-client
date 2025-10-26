@@ -7,7 +7,7 @@ export default function ListBusinessHours() {
         <DataTable.Col source="dayOfWeek" label="Day" field={TextField} />
         <DataTable.Col source="openTime" label="Opens" field={TextField} />
         <DataTable.Col source="closeTime" label="Closes" field={TextField} />
-        <DataTable.Col label="Closed" source="isClosed" />
+        <DataTable.Col label="Closed" source="closed" field={TextField} />
         <DataTable.Col>
           <EditButton />
         </DataTable.Col>
