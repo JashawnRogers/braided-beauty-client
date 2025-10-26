@@ -2,17 +2,17 @@ import { Resource } from "ra-core";
 import { Admin } from "@/components/admin";
 import springDataProvider from "@/data/dataProvider";
 import withLogger from "@/components/utils/loggerDataProvider";
-import UserList from "@/components/UserList";
-import AppointmentList from "@/components/AppointmentsList";
-import ServiceList from "@/components/ServiceList";
-import EditBusinessHours from "@/components/EditBusinessHours";
-import ListBusinessHours from "@/components/ListBusinessHours";
-import LoyaltyList from "@/components/ListLoyaltyRecords";
-import UserEdit from "@/components/UserEdit";
-import AppointmentEdit from "@/components/AppointmentEdit";
-import ServiceEdit from "@/components/ServiceEdit";
-import ServiceCreate from "@/components/ServiceCreate";
-import AddOnsList from "@/components/AddOnsList";
+import UserList from "@/components/dashboard/adminCustom/UserList";
+import AppointmentList from "@/components/dashboard/adminCustom/AppointmentsList";
+import ServiceList from "@/components/dashboard/adminCustom/ServiceList";
+import EditBusinessHours from "@/components/dashboard/adminCustom/EditBusinessHours";
+import ListBusinessHours from "@/components/dashboard/adminCustom/ListBusinessHours";
+import LoyaltyList from "@/components/dashboard/adminCustom/ListLoyaltyRecords";
+import UserEdit from "@/components/dashboard/adminCustom/UserEdit";
+import AppointmentEdit from "@/components/dashboard/adminCustom/AppointmentEdit";
+import ServiceEdit from "@/components/dashboard/adminCustom/ServiceEdit";
+import ServiceCreate from "@/components/dashboard/adminCustom/ServiceCreate";
+import AddOnsList from "@/components/dashboard/adminCustom/AddOnsList";
 import {
   UsersRound,
   Scissors,
@@ -21,9 +21,9 @@ import {
   ClipboardClock,
   CopyPlus,
 } from "lucide-react";
-import AddOnEdit from "@/components/AddOnEdit";
-import AddOnCreate from "@/components/AddOnCreate";
-import CreateBusinessHours from "@/components/CreateBusinessHours";
+import AddOnEdit from "@/components/dashboard/adminCustom/AddOnEdit";
+import AddOnCreate from "@/components/dashboard/adminCustom/AddOnCreate";
+import CreateBusinessHours from "@/components/dashboard/adminCustom/CreateBusinessHours";
 import { httpClient } from "@/components/utils/httpClient";
 
 const dataPovider = withLogger(

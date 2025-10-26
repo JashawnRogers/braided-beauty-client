@@ -1,4 +1,10 @@
-import { Create, SimpleForm, SaveButton, SelectInput } from "./admin";
+import {
+  Edit,
+  SimpleForm,
+  SelectInput,
+  SaveButton,
+  DeleteButton,
+} from "../../admin";
 import {
   buildTimeChoices,
   CLOSED_CHOICES,
@@ -8,9 +14,10 @@ import {
 } from "@/data/businessHours";
 import RASelect from "./RASelect";
 
-function CreateBusinessHoursToolbar() {
+function EditBusinessHoursToolbar() {
   return (
     <div className="mt-6 flex justify-end gap-2 border-t pt-4">
+      <DeleteButton />
       <SaveButton />
     </div>
   );
@@ -18,30 +25,26 @@ function CreateBusinessHoursToolbar() {
 
 const TIME_CHOICES = buildTimeChoices();
 
-export default function CreateBusinessHours() {
+export default function EditBusinessHours() {
   return (
-    <Create
+    <Edit
       transform={(data) => ({
         dayOfWeek: data.dayOfWeek,
         isClosed: Boolean(data.isClosed),
         openTime: data.isClosed ? null : data.openTime,
         closeTime: data.isClosed ? null : data.closeTime,
       })}
-      title="Create Business Hours"
+      title="Edit Business Hours"
     >
       <SimpleForm
-        toolbar={<CreateBusinessHoursToolbar />}
+        toolbar={<EditBusinessHoursToolbar />}
         validate={validateTimes}
       >
         <div className="grid grid-rows-1 grid-cols-1 gap-6">
           <section className="rounded-md border p-4 space-y-4">
-            <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
-              New Day
-            </h3>
-
             <SelectInput
               label="Open for business?"
-              source="isClosed"
+              source="closed"
               choices={CLOSED_CHOICES}
               className="py-3 w-1/2"
             />
@@ -69,6 +72,6 @@ export default function CreateBusinessHours() {
           </section>
         </div>
       </SimpleForm>
-    </Create>
+    </Edit>
   );
 }

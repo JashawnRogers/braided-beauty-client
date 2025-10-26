@@ -1,4 +1,4 @@
-import { List, DataTable, TextField, EditButton } from "./admin";
+import { List, DataTable, TextField, EditButton } from "../../admin";
 
 export default function ListBusinessHours() {
   return (

@@ -1,5 +1,5 @@
 // src/admin/addons/AddOnsList.tsx
-import { List, DataTable, TextField, TextInput, EditButton } from "./admin"; // if something isn't re-exported, import from "react-admin"
+import { List, DataTable, TextField, TextInput, EditButton } from "../../admin"; // if something isn't re-exported, import from "react-admin"
 import { MoneyField } from "@/components/admin/fields";
 
 // Filters to map in dataProvider.getList:

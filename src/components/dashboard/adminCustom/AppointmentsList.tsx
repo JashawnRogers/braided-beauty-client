@@ -9,8 +9,8 @@ import {
   ReferenceInput,
   AutocompleteInput,
   EditButton,
-} from "./admin";
-import { TruncateField, MoneyField } from "./admin/fields";
+} from "../../admin";
+import { TruncateField, MoneyField } from "../../admin/fields";
 
 const APPOINTMENT_STATUS_CHOICES = [
   { id: "SCHEDULED", name: "Scheduled" },

@@ -5,7 +5,7 @@ import {
   NumberInput,
   SaveButton,
   FormToolbar,
-} from "./admin";
+} from "../../admin";
 
 // validators
 const required =

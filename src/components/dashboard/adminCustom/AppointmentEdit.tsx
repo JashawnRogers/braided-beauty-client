@@ -10,7 +10,7 @@ import {
   SaveButton,
   DeleteButton,
   TextField,
-} from "./admin";
+} from "../../admin";
 import { useForm } from "react-hook-form";
 
 const APPOINTMENT_STATUS_CHOICES = [

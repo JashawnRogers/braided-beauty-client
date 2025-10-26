@@ -7,9 +7,9 @@ import {
   DeleteButton,
   DateField,
   TextField,
-} from "./admin";
+} from "../../admin";
 import { useWatch } from "react-hook-form";
-import { transformServiceEdit } from "./utils/mediaTransform";
+import { transformServiceEdit } from "../../utils/mediaTransform";
 
 // Simple validators
 const required =

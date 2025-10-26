@@ -2,9 +2,11 @@ import { useMemo, useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { SERVICES } from "@/data/services";
 import { Button } from "@/components/ui/button";
-import BookingCalendar, { type TimeSlot } from "@/components/BookingCalendar";
+import BookingCalendar, {
+  type TimeSlot,
+} from "@/components/dashboard/adminCustom/BookingCalendar";
 import { toISO } from "@/components/utils/toIso";
-import BookingPolicy from "@/components/BookingPolicy";
+import BookingPolicy from "@/components/dashboard/adminCustom/BookingPolicy";
 export default function ServiceDetailsPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();

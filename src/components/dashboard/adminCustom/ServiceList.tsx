@@ -6,8 +6,8 @@ import {
   UrlField,
   EditButton,
   TextInput,
-} from "./admin";
-import { TruncateField, MoneyField, MinutesField } from "./admin/fields";
+} from "../../admin";
+import { TruncateField, MoneyField, MinutesField } from "../../admin/fields";
 
 // Filters for the service list
 const serviceFilters = [

@@ -9,8 +9,8 @@ import {
   DeleteButton,
   SimpleForm,
   FormToolbar,
-} from "./admin";
-import { phone } from "./utils/formatPhone";
+} from "../../admin";
+import { phone } from "../../utils/formatPhone";
 const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },
   { id: "MEMBER", name: "Member" },

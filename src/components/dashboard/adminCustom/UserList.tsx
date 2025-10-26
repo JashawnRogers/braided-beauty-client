@@ -6,8 +6,8 @@ import {
   NumberField,
   TextInput,
   SelectInput,
-} from "./admin";
-import { PhoneNumberField } from "./shared/phoneNumberField";
+} from "../../admin";
+import { PhoneNumberField } from "../../shared/phoneNumberField";
 
 const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },

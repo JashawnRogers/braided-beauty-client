@@ -6,7 +6,7 @@ import {
   NumberInput,
   SaveButton,
   DeleteButton,
-} from "./admin";
+} from "../../admin";
 
 // validators
 const required =

@@ -6,9 +6,9 @@ import {
   NumberInput,
   SaveButton,
   FileInput,
-} from "./admin";
+} from "../../admin";
 import { useWatch } from "react-hook-form";
-import { transformServiceCreate } from "./utils/mediaTransform";
+import { transformServiceCreate } from "../../utils/mediaTransform";
 
 function ServiceCreateToolbar() {
   return (

@@ -6,7 +6,7 @@ import {
   DateField,
   ReferenceField,
   EditButton,
-} from "./admin";
+} from "../../admin";
 
 export default function LoyaltyList() {
   return (
