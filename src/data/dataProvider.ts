@@ -51,6 +51,12 @@ const resourceMap: Record<string, ResourceConfig> = {
   services: { base: "services" },
   hours: { base: "hours" },
   addons: { base: "addons" },
+  loyaltySettings: { base: "loyalty/settings" },
+  "loyalty-settings": {
+    base: "loyalty/settings",
+    getOne: "loyalty/settings",
+    update: "loyalty/settings",
+  },
 };
 
 const normalizeResource = (resource: string) =>
@@ -152,6 +158,9 @@ function totalFrom(json: unknown, headers: Headers): number {
   return 0;
 }
 
+const isSingleton = (resource: string) =>
+  normalizeResource(resource) === "loyalty-settings";
+
 type Loyalty = { points?: number | null; redeemedPoints?: number | null };
 
 // Resource-aware normalizers
@@ -169,7 +178,7 @@ const normalizeUser = <
   const redeemed =
     r.loyaltyRecord?.redeemedPoints ?? (r as any).redeemedPoints ?? 0;
 
-  const { loyaltyPoints, redeemedPoints, ...rest } = r as any;
+  const { ...rest } = r as any;
 
   return {
     ...rest,
@@ -184,6 +193,13 @@ const normalizeUser = <
     loyaltyRecord: Required<Loyalty>;
   };
 };
+
+const normalizeLoyaltySettings = (r: any) => ({
+  id: "singleton",
+  programEnabled: !!r.programEnabled,
+  earnPerAppointment: r.earnPerAppointment,
+  signupBonusPoints: r.signupBonusPoints,
+});
 
 const normalizeHours = <
   T extends RaRecord & { openTime?: string | null; closeTime?: string | null }
@@ -204,6 +220,7 @@ const normalizeRecordFor = (
   const key = normalizeResource(resource);
   if (key === "users") return normalizeUser;
   if (key === "hours" && mode === "list") return normalizeHours;
+  if (key === "loyalty-settings") return normalizeLoyaltySettings;
   return (x: any) => x;
 };
 
@@ -228,11 +245,17 @@ export default function springDataProvider(
 
     async getOne(resource, params: GetOneParams) {
       const base = pathFor(resource, "getOne");
-      const url = withBase(apiUrl, `${base}/${params.id}`);
+      const url = isSingleton(resource)
+        ? withBase(apiUrl, base)
+        : withBase(apiUrl, `${base}/${params.id}`);
+
+      const normalize = normalizeRecordFor(resource, "raw");
       const { json } = await httpClient(url);
       console.log("[RAW getOne]", url, JSON.parse(JSON.stringify(json)));
-      const normalize = normalizeRecordFor(resource, "raw");
-      return { data: normalize(json) };
+
+      return isSingleton(resource)
+        ? { data: normalize({ ...json, id: "singleton" }) }
+        : { data: normalize(json) };
     },
 
     async getMany(resource, params: GetManyParams) {
@@ -278,12 +301,26 @@ export default function springDataProvider(
 
     async update(resource, params: UpdateParams) {
       const base = pathFor(resource, "update");
-      const url = withBase(apiUrl, `${base}/${params.id}`);
-      const body = JSON.stringify(params.data);
-      console.log("[dataProvider.update] PUT", url, "body:", params.data);
-      const { json } = await httpClient(url, { method: "PUT", body });
+      const url = isSingleton(resource)
+        ? withBase(apiUrl, base)
+        : withBase(apiUrl, `${base}/${params.id}`);
+
       const normalize = normalizeRecordFor(resource, "raw");
-      return { data: normalize(json) };
+
+      const body = isSingleton(resource)
+        ? JSON.stringify((({ ...rest }) => rest)(params.data as any))
+        : JSON.stringify(params.data);
+
+      console.log("[dataProvider.update] PUT", url, "body:", params.data);
+      const { json } = await httpClient(url, {
+        method: "PUT",
+        body,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      return isSingleton(resource)
+        ? { data: normalize({ ...json, id: "singleton" }) }
+        : { data: normalize(json) };
     },
 
     async updateMany<RecordType extends RaRecord = any>(

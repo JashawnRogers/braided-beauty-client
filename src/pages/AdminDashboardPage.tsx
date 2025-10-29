@@ -7,7 +7,7 @@ import AppointmentList from "@/components/dashboard/adminCustom/AppointmentsList
 import ServiceList from "@/components/dashboard/adminCustom/ServiceList";
 import EditBusinessHours from "@/components/dashboard/adminCustom/EditBusinessHours";
 import ListBusinessHours from "@/components/dashboard/adminCustom/ListBusinessHours";
-import LoyaltyList from "@/components/dashboard/adminCustom/ListLoyaltyRecords";
+import EditLoyaltySettings from "@/components/dashboard/adminCustom/EditLoyaltySettings";
 import UserEdit from "@/components/dashboard/adminCustom/UserEdit";
 import AppointmentEdit from "@/components/dashboard/adminCustom/AppointmentEdit";
 import ServiceEdit from "@/components/dashboard/adminCustom/ServiceEdit";
@@ -25,6 +25,7 @@ import AddOnEdit from "@/components/dashboard/adminCustom/AddOnEdit";
 import AddOnCreate from "@/components/dashboard/adminCustom/AddOnCreate";
 import CreateBusinessHours from "@/components/dashboard/adminCustom/CreateBusinessHours";
 import { httpClient } from "@/components/utils/httpClient";
+import ListLoyaltyRedirect from "@/components/dashboard/adminCustom/ListLoyaltyRedirect";
 
 const dataPovider = withLogger(
   springDataProvider(import.meta.env.VITE_SERVER_API_URL, httpClient)
@@ -67,7 +68,13 @@ export default function AdminDashboard() {
         create={CreateBusinessHours}
         icon={Building}
       />
-      <Resource name="loyalty points" list={LoyaltyList} icon={ArrowBigUp} />
+      <Resource
+        name="loyalty-settings"
+        list={ListLoyaltyRedirect}
+        edit={EditLoyaltySettings}
+        icon={ArrowBigUp}
+        options={{ label: "Loyalty points" }}
+      />
     </Admin>
   );
 }
