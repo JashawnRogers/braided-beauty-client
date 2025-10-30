@@ -9,7 +9,9 @@ import {
   DeleteButton,
   SimpleForm,
   FormToolbar,
+  DataTable,
 } from "../../admin";
+import { useRecordContext } from "ra-core";
 import { phone } from "../../utils/formatPhone";
 const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },
@@ -26,6 +28,51 @@ const email = (v: string) =>
   v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Invalid email" : undefined;
 const nonNegative = (v: any) =>
   v != null && Number(v) < 0 ? "Must be ≥ 0" : undefined;
+
+function RecentAppointmentsPanel() {
+  const record = useRecordContext<any>();
+
+  const rows = record?.appointments ?? [];
+
+  if (!rows.length) {
+    return (
+      <section className="w-full rounded-md border p-4 mb-6">
+        <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
+          Recent Appointments
+        </h3>
+        <div className="text-sm text-muted-foreground">
+          No recent appointments to show.
+        </div>
+      </section>
+    );
+  }
+
+  const data = rows.map((r: any) => ({ ...r, id: r.id }));
+
+  return (
+    <section className="w-full rounded-md border p-4 mb-6">
+      <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
+        Recent Appointments
+      </h3>
+
+      <DataTable
+        data={data}
+        rowClick={(record: any) => `/appointments/${record.id}`}
+      >
+        <DataTable.Col
+          label="Date"
+          source="appointmentTime"
+          render={(row: any) =>
+            row.start ? new Date(row.start).toLocaleString() : "-"
+          }
+        />
+        <DataTable.Col label="Service" source="service.name" />
+        <DataTable.Col label="Status" source="appointmentStatus" />
+        <DataTable.Col label="Payment" source="paymentStatus" />
+      </DataTable>
+    </section>
+  );
+}
 
 function UserEditToolbar() {
   return (
@@ -117,6 +164,9 @@ export default function UserEdit() {
               <DateField source="updatedAt" showTime />
             </div>
           </section>
+        </div>
+        <div className="w-full">
+          <RecentAppointmentsPanel />
         </div>
       </SimpleForm>
     </Edit>
