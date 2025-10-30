@@ -30,6 +30,7 @@ export default function ServiceCreate() {
             </h3>
 
             <TextInput source="name" label="Name" required />
+            <TextInput source="category" label="Category" />
 
             <NumberInput
               source="price"

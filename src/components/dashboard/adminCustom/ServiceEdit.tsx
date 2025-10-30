@@ -51,6 +51,7 @@ export default function ServiceEdit() {
             </h3>
 
             <TextInput source="name" label="Name" validate={required()} />
+            <TextInput source="category" label="Category" />
 
             <TextInput
               source="description"
