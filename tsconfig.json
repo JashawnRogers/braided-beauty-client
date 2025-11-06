@@ -5,9 +5,14 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "target": "es6",
+    "module": "commonjs",
+    "jsx": "react",
+    "lib": ["es6", "dom"]
   }
 }
