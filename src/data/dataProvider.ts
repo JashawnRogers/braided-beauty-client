@@ -48,7 +48,7 @@ const resourceMap: Record<string, ResourceConfig> = {
     base: "user", // GET/PUT/DELETE /api/v1/user/{id}
   },
   appointments: { base: "appointments" },
-  services: { base: "services" },
+  services: { base: "service" },
   hours: { base: "hours" },
   addons: { base: "addons" },
   loyaltySettings: { base: "loyalty/settings" },
@@ -57,6 +57,7 @@ const resourceMap: Record<string, ResourceConfig> = {
     getOne: "loyalty/settings",
     update: "loyalty/settings",
   },
+  categories: { base: "category" },
 };
 
 const normalizeResource = (resource: string) =>

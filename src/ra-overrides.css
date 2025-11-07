@@ -1,0 +1,111 @@
+/* ===== Category (AutocompleteInput) – container spacing to match other fields ===== */
+.ra-autocomplete-field {
+  display: block;
+  margin: 0 0 1rem 0; /* same bottom gap as TextInput/NumberInput */
+}
+
+/* Keep label style consistent with your form labels */
+.ra-autocomplete-field .MuiInputLabel-root {
+  position: static !important;
+  transform: none !important;
+  margin: 0 0 0.25rem 0 !important; /* mb-1 */
+  font-size: 0.875rem !important; /* text-sm */
+  line-height: 1.25rem !important;
+  color: hsl(var(--foreground)) !important; /* or --foreground for darker */
+  font-weight: 500;
+}
+
+/* Prevent MUI from trying to float the label */
+.ra-autocomplete-field .MuiInputLabel-shrink {
+  transform: none !important;
+}
+
+/* Remove the MUI notched outline */
+.ra-autocomplete-field .MuiOutlinedInput-notchedOutline {
+  display: none !important;
+}
+
+/* Fix root control padding MUI adds for the floating label */
+.ra-autocomplete-field .MuiOutlinedInput-root {
+  padding-top: 0 !important;
+}
+
+/* Ensure a consistent input height & width like ShadCN (h-10 = 40px) */
+.ra-autocomplete-field .MuiInputBase-root {
+  min-height: 36px !important;
+  min-width: 100%;
+}
+
+/* ===== Trigger (combobox) styled exactly like ShadCN Input/Select ===== */
+.ra-autocomplete-trigger button[role="combobox"],
+.ra-autocomplete-trigger input[role="combobox"] {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px; /* h-10 */
+  border-radius: 0.375rem; /* rounded-md */
+  border: 1px solid hsl(var(--input));
+  background: hsl(var(--background));
+  padding: 0.5rem 0.75rem; /* px-3 py-2 */
+  text-align: left;
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+  color: hsl(var(--foreground));
+}
+
+.ra-autocomplete-trigger button[role="combobox"]:is(:focus, :focus-visible),
+.ra-autocomplete-trigger input[role="combobox"]:is(:focus, :focus-visible) {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--ring)), 0 0 0 4px hsl(var(--background));
+}
+
+/* If an inner input is present inside the trigger, keep it seamless */
+.ra-autocomplete-trigger button[role="combobox"] input[type="text"] {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: inherit;
+}
+
+/* ===== Dropdown panel & items – match ShadCN Select menu ===== */
+.ra-autocomplete-field [role="listbox"] {
+  min-width: 100%;
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem; /* rounded-md */
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* same feel as ShadCN popover */
+  overflow: hidden;
+}
+
+.ra-autocomplete-field [role="option"] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem; /* px-3 py-2 */
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+  cursor: pointer;
+}
+
+.ra-autocomplete-field [role="option"]:hover,
+.ra-autocomplete-field [data-highlighted] {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.ra-autocomplete-field [role="option"][aria-selected="true"],
+.ra-autocomplete-field [data-state="checked"] {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+  font-weight: 500;
+}
+
+/* Optional: separator lines in the menu if present */
+.ra-autocomplete-field [role="separator"] {
+  height: 1px;
+  background: hsl(var(--border));
+  margin: 0.25rem 0;
+}

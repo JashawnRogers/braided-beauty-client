@@ -9,6 +9,7 @@ import {
 } from "../../admin";
 import { useWatch } from "react-hook-form";
 import { transformServiceCreate } from "../../utils/mediaTransform";
+import CategoryField from "@/components/shared/CategoryField";
 
 function ServiceCreateToolbar() {
   return (
@@ -30,7 +31,9 @@ export default function ServiceCreate() {
             </h3>
 
             <TextInput source="name" label="Name" required />
-            <TextInput source="category" label="Category" />
+
+            {/* Needs to be switched to dynamic select input */}
+            <CategoryField />
 
             <NumberInput
               source="price"

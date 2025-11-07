@@ -26,6 +26,7 @@ import AddOnCreate from "@/components/dashboard/adminCustom/AddOnCreate";
 import CreateBusinessHours from "@/components/dashboard/adminCustom/CreateBusinessHours";
 import { httpClient } from "@/components/utils/httpClient";
 import ListLoyaltyRedirect from "@/components/dashboard/adminCustom/ListLoyaltyRedirect";
+import "../index.css";
 
 const dataPovider = withLogger(
   springDataProvider(import.meta.env.VITE_SERVER_API_URL, httpClient)
