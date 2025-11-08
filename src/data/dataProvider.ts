@@ -238,6 +238,7 @@ export default function springDataProvider(
         `${listPath}?${qs.stringify(query, { arrayFormat: "repeat" })}`
       );
       const { json, headers } = await httpClient(url);
+      console.log("[RAW getList]", url, JSON.parse(JSON.stringify(json)));
       const normalize = normalizeRecordFor(resource, "list");
       const rows = itemsFrom(json).map(normalize);
       const total = totalFrom(json, headers);
@@ -294,8 +295,8 @@ export default function springDataProvider(
       const base = pathFor(resource, "create");
       const url = withBase(apiUrl, base);
       const body = JSON.stringify(params.data);
-      console.log("[dataProvider.create] PUT", url, "body:", params.data);
       const { json } = await httpClient(url, { method: "POST", body });
+      console.log("[dataProvider.create] POST", url, "body:", params.data);
       const normalize = normalizeRecordFor(resource, "raw");
       return { data: normalize(json) };
     },

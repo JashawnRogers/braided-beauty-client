@@ -80,7 +80,6 @@ export async function transformServiceCreate(data: any) {
     name: data.name,
     description: data.description,
     price: data.price,
-    depositAmount: data.depositAmount,
     durationMinutes: data.durationMinutes,
     photoKeys,
     videoKey,

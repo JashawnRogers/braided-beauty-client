@@ -10,6 +10,7 @@ import {
 } from "../../admin";
 import { useWatch } from "react-hook-form";
 import { transformServiceEdit } from "../../utils/mediaTransform";
+import CategoryField from "@/components/shared/CategoryField";
 
 // Simple validators
 const required =
@@ -51,7 +52,8 @@ export default function ServiceEdit() {
             </h3>
 
             <TextInput source="name" label="Name" validate={required()} />
-            <TextInput source="category" label="Category" />
+
+            <CategoryField />
 
             <TextInput
               source="description"

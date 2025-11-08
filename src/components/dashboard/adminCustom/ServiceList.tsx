@@ -1,16 +1,25 @@
+import { SelectInput, TextInput } from "react-admin";
 import {
   List,
   DataTable,
   TextField,
   NumberField,
-  UrlField,
   EditButton,
 } from "../../admin";
 import { TruncateField, MoneyField, MinutesField } from "../../admin/fields";
 
 export default function ServiceList() {
+  const serviceFilters = [
+    <TextInput key="q" source="q" label="Search" alwaysOn />,
+    <SelectInput key="name" source="name" label="Name" emptyText="All" />,
+  ];
+
   return (
-    <List perPage={10} sort={{ field: "name", order: "ASC" }}>
+    <List
+      filters={serviceFilters}
+      perPage={10}
+      sort={{ field: "name", order: "ASC" }}
+    >
       <DataTable rowClick="edit" bulkActionButtons={true}>
         <DataTable.Col source="name" label="Name" field={TextField} />
         <DataTable.Col source="category" label="Category" field={TextField} />
@@ -37,11 +46,6 @@ export default function ServiceList() {
           label="Times Booked"
           field={NumberField}
         />
-
-        {/* Media links (if not empty) */}
-        <DataTable.Col source="photoKeys" label="Photo" field={UrlField} />
-        <DataTable.Col source="videoUrl" label="Video" field={UrlField} />
-
         <DataTable.Col>
           <EditButton />
         </DataTable.Col>
