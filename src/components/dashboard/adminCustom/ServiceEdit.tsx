@@ -46,7 +46,7 @@ export default function ServiceEdit() {
       <SimpleForm toolbar={<ServiceEditToolbar />}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Left column: main editable fields */}
-          <section className="rounded-md border p-4">
+          <section className="rounded-md border p-4 space-y-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               Service
             </h3>
@@ -88,18 +88,10 @@ export default function ServiceEdit() {
               step={5}
               validate={nonNegative}
             />
-
-            {/* Loyalty points awarded for this service */}
-            <NumberInput
-              source="pointsEarned"
-              label="Points Earned"
-              min={0}
-              validate={nonNegative}
-            />
           </section>
 
           {/* Right column: media + meta */}
-          <section className="rounded-md border p-4">
+          <section className="rounded-md border p-4 space-y-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               Media
             </h3>
@@ -126,18 +118,25 @@ export default function ServiceEdit() {
             <h3 className="mt-6 mb-3 text-sm font-semibold text-muted-foreground">
               Meta
             </h3>
-            <div className="grid grid-cols-[8rem,1fr] items-start gap-y-2 text-sm">
-              <span className="text-muted-foreground">ID</span>
-              <TextField source="id" />
+            <div className="grid grid-cols-1 items-start gap-y-2 text-sm">
+              <div className="space-x-5">
+                <span className="text-muted-foreground">ID</span>
+                <TextField source="id" />
+              </div>
+              <div className="space-x-5">
+                <span className="text-muted-foreground">Times Booked</span>
+                <TextField source="timesBooked" />
+              </div>
 
-              <span className="text-muted-foreground">Times Booked</span>
-              <TextField source="timesBooked" />
+              <div className="space-x-5">
+                <span className="text-muted-foreground">Created</span>
+                <DateField source="createdAt" showTime />
+              </div>
 
-              <span className="text-muted-foreground">Created</span>
-              <DateField source="createdAt" showTime />
-
-              <span className="text-muted-foreground">Updated</span>
-              <DateField source="updatedAt" showTime />
+              <div className="space-x-5">
+                <span className="text-muted-foreground">Updated</span>
+                <DateField source="updatedAt" showTime />
+              </div>
             </div>
           </section>
         </div>

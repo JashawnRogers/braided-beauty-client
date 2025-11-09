@@ -78,6 +78,7 @@ export async function transformServiceCreate(data: any) {
   // return DTO shape - ignoring binary fields
   return {
     name: data.name,
+    categoryId: data.categoryId,
     description: data.description,
     price: data.price,
     durationMinutes: data.durationMinutes,

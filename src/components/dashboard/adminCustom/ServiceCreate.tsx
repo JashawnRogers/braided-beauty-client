@@ -56,16 +56,6 @@ export default function ServiceCreate() {
               min={0}
               step={5}
             />
-
-            <NumberInput source="pointsEarned" label="Points Earned" min={0} />
-
-            <TextInput
-              source="description"
-              label="Description"
-              multiline
-              maxLength={255}
-              rows={4}
-            />
           </section>
 
           {/* Right: media & live preview */}

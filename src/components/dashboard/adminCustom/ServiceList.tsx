@@ -1,4 +1,4 @@
-import { SelectInput, TextInput } from "react-admin";
+import { TextInput } from "react-admin";
 import {
   List,
   DataTable,
@@ -6,12 +6,11 @@ import {
   NumberField,
   EditButton,
 } from "../../admin";
-import { TruncateField, MoneyField, MinutesField } from "../../admin/fields";
+import { MoneyField, MinutesField } from "../../admin/fields";
 
 export default function ServiceList() {
   const serviceFilters = [
     <TextInput key="q" source="q" label="Search" alwaysOn />,
-    <SelectInput key="name" source="name" label="Name" emptyText="All" />,
   ];
 
   return (
@@ -22,11 +21,11 @@ export default function ServiceList() {
     >
       <DataTable rowClick="edit" bulkActionButtons={true}>
         <DataTable.Col source="name" label="Name" field={TextField} />
-        <DataTable.Col source="category" label="Category" field={TextField} />
-
-        <DataTable.Col label="Description">
-          <TruncateField source="description" />
-        </DataTable.Col>
+        <DataTable.Col
+          source="categoryName"
+          label="Category"
+          field={TextField}
+        />
 
         {/* Price & Deposit formatted as currency */}
         <DataTable.Col label="Price">
