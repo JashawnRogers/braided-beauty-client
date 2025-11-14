@@ -7,10 +7,13 @@ import {
   DeleteButton,
   DateField,
   TextField,
+  ReferenceInput,
+  SelectInput,
+  ReferenceArrayInput,
+  AutocompleteArrayInput,
 } from "../../admin";
 import { useWatch } from "react-hook-form";
 import { transformServiceEdit } from "../../utils/mediaTransform";
-import CategoryField from "@/components/shared/CategoryField";
 
 // Simple validators
 const required =
@@ -53,7 +56,13 @@ export default function ServiceEdit() {
 
             <TextInput source="name" label="Name" validate={required()} />
 
-            <CategoryField />
+            <ReferenceInput source="categoryId" reference="categories">
+              <SelectInput label="Category" optionText="name" />
+            </ReferenceInput>
+
+            <ReferenceArrayInput source="addoOnIds" reference="addons">
+              <AutocompleteArrayInput label="Add-Ons" optionText="name" />
+            </ReferenceArrayInput>
 
             <TextInput
               source="description"

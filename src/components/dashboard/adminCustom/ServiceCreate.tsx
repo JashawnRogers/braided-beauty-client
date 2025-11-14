@@ -6,10 +6,13 @@ import {
   NumberInput,
   SaveButton,
   FileInput,
+  ReferenceArrayInput,
+  AutocompleteArrayInput,
+  ReferenceInput,
+  SelectInput,
 } from "../../admin";
 import { useWatch } from "react-hook-form";
 import { transformServiceCreate } from "../../utils/mediaTransform";
-import CategoryField from "@/components/shared/CategoryField";
 
 function ServiceCreateToolbar() {
   return (
@@ -32,8 +35,13 @@ export default function ServiceCreate() {
 
             <TextInput source="name" label="Name" required />
 
-            {/* Needs to be switched to dynamic select input */}
-            <CategoryField />
+            <ReferenceInput source="categoryId" reference="categories">
+              <SelectInput label="Category" optionText="name" />
+            </ReferenceInput>
+
+            <ReferenceArrayInput source="addOnIds" reference="addons">
+              <AutocompleteArrayInput label="Add-Ons" optionText="name" />
+            </ReferenceArrayInput>
 
             <NumberInput
               source="price"
