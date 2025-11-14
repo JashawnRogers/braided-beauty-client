@@ -13,6 +13,7 @@ import AppointmentEdit from "@/components/dashboard/adminCustom/AppointmentEdit"
 import ServiceEdit from "@/components/dashboard/adminCustom/ServiceEdit";
 import ServiceCreate from "@/components/dashboard/adminCustom/ServiceCreate";
 import AddOnsList from "@/components/dashboard/adminCustom/AddOnsList";
+import ListCategories from "@/components/dashboard/adminCustom/ListCategories";
 import {
   UsersRound,
   Scissors,
@@ -20,6 +21,7 @@ import {
   ArrowBigUp,
   ClipboardClock,
   CopyPlus,
+  TextSelect,
 } from "lucide-react";
 import AddOnEdit from "@/components/dashboard/adminCustom/AddOnEdit";
 import AddOnCreate from "@/components/dashboard/adminCustom/AddOnCreate";
@@ -55,6 +57,7 @@ export default function AdminDashboard() {
         create={ServiceCreate}
         icon={Scissors}
       />
+      <Resource name="categories" list={ListCategories} icon={TextSelect} />
       <Resource
         name="add ons"
         list={AddOnsList}
