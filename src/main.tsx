@@ -10,6 +10,7 @@ import ServicesPage from "@/pages/ServicesPage.tsx";
 import ServiceDetailsPage from "@/pages/ServiceDetailsPage.tsx";
 import Layout from "./components/shared/Layout";
 import AdminDashboard from "./pages/AdminDashboardPage";
+import UserLayout from "./components/shared/UserLayout";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard/admin/*",
     element: <AdminDashboard />,
+  },
+  {
+    path: "/me",
+    element: <UserLayout />,
   },
 ]);
 
