@@ -14,6 +14,7 @@ import ServiceEdit from "@/components/dashboard/adminCustom/ServiceEdit";
 import ServiceCreate from "@/components/dashboard/adminCustom/ServiceCreate";
 import AddOnsList from "@/components/dashboard/adminCustom/AddOnsList";
 import ListCategories from "@/components/dashboard/adminCustom/ListCategories";
+import EditCategories from "@/components/dashboard/adminCustom/EditCategories";
 import {
   UsersRound,
   Scissors,
@@ -57,7 +58,12 @@ export default function AdminDashboard() {
         create={ServiceCreate}
         icon={Scissors}
       />
-      <Resource name="categories" list={ListCategories} icon={TextSelect} />
+      <Resource
+        name="categories"
+        list={ListCategories}
+        edit={EditCategories}
+        icon={TextSelect}
+      />
       <Resource
         name="add ons"
         list={AddOnsList}
