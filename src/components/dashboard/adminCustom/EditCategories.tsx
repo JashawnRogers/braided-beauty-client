@@ -21,7 +21,14 @@ function CategoryToolbar() {
 
 export default function EditCategories() {
   return (
-    <Edit resource="categories">
+    <Edit
+      resource="categories"
+      transform={(data) => ({
+        id: data.id,
+        name: data.name,
+      })}
+      title="Edit Category"
+    >
       <SimpleForm toolbar={<CategoryToolbar />}>
         <TextInput source="id" label="ID" readOnly className="w-1/3" />
 
