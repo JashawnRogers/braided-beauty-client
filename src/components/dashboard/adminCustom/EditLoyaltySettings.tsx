@@ -22,7 +22,11 @@ function LoyaltyToolbar() {
 
 export default function EditLoyaltySettings() {
   return (
-    <Edit resource="loyalty-settings" id="singleton">
+    <Edit
+      resource="loyalty-settings"
+      id="singleton"
+      title="Edit Loyalty Rewards Per Appointment"
+    >
       <SimpleForm toolbar={<LoyaltyToolbar />}>
         <SelectInput
           source="programEnabled"
@@ -32,17 +36,20 @@ export default function EditLoyaltySettings() {
             { id: false, name: "Disabled" },
           ]}
           validate={required()}
+          className="w-1/4"
         />
         <NumberInput
           source="signupBonusPoints"
           label="Signup Bonus Points"
           min={0}
+          className="w-1/4"
         />
         <NumberInput
           source="earnPerAppointment"
           label="Points earned per appointment"
           min={0}
           step={5.0}
+          className="w-1/4"
         />
       </SimpleForm>
     </Edit>
