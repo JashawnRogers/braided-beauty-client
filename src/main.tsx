@@ -11,6 +11,7 @@ import ServiceDetailsPage from "@/pages/ServiceDetailsPage.tsx";
 import Layout from "./components/shared/Layout";
 import AdminDashboard from "./pages/AdminDashboardPage";
 import UserLayout from "./components/shared/UserLayout";
+import { UserDashboardPage } from "./pages/UserDashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,12 @@ const router = createBrowserRouter([
   {
     path: "/me",
     element: <UserLayout />,
+    children: [
+      {
+        index: true,
+        element: <UserDashboardPage />,
+      },
+    ],
   },
 ]);
 

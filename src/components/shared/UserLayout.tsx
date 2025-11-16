@@ -78,7 +78,7 @@ export default function UserLayout() {
         </div>
       </header>
 
-      <div className="flex h-screen max-w-6xl">
+      <div className="flex h-screen max-w-none">
         {/* Sidebar (desktop) */}
         <aside className="hidden w-64 border-r bg-background md:flex md:flex-col">
           <div className="flex items-center justify-between border-b px-4 py-4">
@@ -111,7 +111,7 @@ export default function UserLayout() {
           </div>
         </aside>
 
-        <main className="flex-1 px-4 py-6 md:px-8">
+        <main className="flex-1 px-4 py-6 md:px-12 lg:px-20">
           <Outlet />
         </main>
       </div>

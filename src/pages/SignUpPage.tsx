@@ -115,7 +115,9 @@ export default function SignUpPage() {
                   name="phoneNumber"
                   id="phoneNumber"
                   value={phone}
-                  onChange={(e) => setPhone(phoneUtil.format(e.target.value))}
+                  onChange={(e) =>
+                    setPhone(phoneUtil.formatFromE164(e.target.value))
+                  }
                   placeholder="(123) 456-7890"
                   required
                 />
