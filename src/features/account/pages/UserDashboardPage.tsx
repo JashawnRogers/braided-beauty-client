@@ -1,11 +1,11 @@
 import { useLoaderData } from "react-router-dom";
-import { UserDashboardDTO } from "../types";
+import { UserDashboardDTO, LoyaltyTier } from "../types";
 import { formatJavaDate } from "@/lib/date";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export function UserDashboardPage() {
-  const profile = useLoaderData() as UserDashboardDTO | undefined;
+  const profile = useLoaderData<UserDashboardDTO>();
   console.log("📄 useLoaderData in page:", profile);
 
   if (!profile) {
@@ -13,17 +13,19 @@ export function UserDashboardPage() {
   }
 
   const firstName = (profile.name.split(" ")[0] ?? profile.name) || "Guest";
+  const appointmentCount = profile.appointmentCount;
 
-  // TODO: replace with real data from your API hook
-  // const userName = "Jane"; // from auth/me
-  // const hasUpcomingAppointment = true;
-  // const nextAppointment = {
-  //   dateTimeDisplay: "April 15, 2024 • 10:00 AM",
-  //   serviceName: "Small Box Braids",
-  //   stylistName: "Courtney Reld",
-  // };
-  const loyaltyTier = "Gold";
-  const appointmentHistoryCount = 6;
+  function displayLoyaltyTier(loyaltyTier: LoyaltyTier) {
+    if (loyaltyTier === "GOLD") {
+      return <p className="text-lg font-semibold text-amber-500">Gold</p>;
+    }
+
+    if (loyaltyTier === "SILVER") {
+      return <p className="text-lg font-semibold text-gray-600">Silver</p>;
+    }
+
+    return <p className="text-lg font-semibold text-amber-800">Bronze</p>;
+  }
 
   return (
     <div className="space-y-6">
@@ -80,11 +82,7 @@ export function UserDashboardPage() {
                 Loyalty tier
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-lg font-semibold text-amber-700">
-                {loyaltyTier}
-              </p>
-            </CardContent>
+            <CardContent>{displayLoyaltyTier(profile.loyaltyTier)}</CardContent>
           </Card>
 
           <Card>
@@ -94,7 +92,7 @@ export function UserDashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg font-semibold">{appointmentHistoryCount}</p>
+              <p className="text-lg font-semibold">{appointmentCount}</p>
               <p className="text-xs text-muted-foreground">
                 Completed appointments
               </p>

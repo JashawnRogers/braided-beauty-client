@@ -8,6 +8,8 @@ export type AppointmentStatus =
 
 export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
 
+export type LoyaltyTier = "GOLD" | "SILVER" | "BRONZE";
+
 export interface LoyaltyRecord {
   id: string;
   points: number;
@@ -28,6 +30,7 @@ export interface UserDashboardDTO {
   loyaltyRecord: LoyaltyRecord | null;
   appointmentCount: number | null;
   nextApt: AppointmentSummaryDTO | null;
+  loyaltyTier: LoyaltyTier;
 }
 
 export interface AddOnResponseDTO {
