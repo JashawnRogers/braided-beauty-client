@@ -1,5 +1,5 @@
 import { useRecordContext } from "ra-core";
-import { phone } from "@/components/utils/formatPhone";
+import { phone } from "@/lib/formatPhone";
 
 export function PhoneNumberField({ source }: { source: string }) {
   const record = useRecordContext();

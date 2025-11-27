@@ -1,17 +1,20 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router";
-import "./index.css";
-import "./ra-overrides.css";
-import LandingPage from "@/pages/LandingPage.tsx";
-import LoginPage from "@/pages/LoginPage.tsx";
-import SignUpPage from "@/pages/SignUpPage.tsx";
-import ServicesPage from "@/pages/ServicesPage.tsx";
-import ServiceDetailsPage from "@/pages/ServiceDetailsPage.tsx";
-import Layout from "./components/shared/Layout";
-import AdminDashboard from "./pages/AdminDashboardPage";
-import UserLayout from "./components/shared/UserLayout";
-import { UserDashboardPage } from "./pages/UserDashboardPage";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "@/styles/index.css";
+import "@/styles/ra-overrides.css";
+import LandingPage from "@/features/marketing/pages/LandingPage";
+import LoginPage from "@/features/auth/LoginPage";
+import SignUpPage from "@/features/auth/SignUpPage";
+import ServicesPage from "@/features/marketing/pages/ServicesPage";
+import ServiceDetailsPage from "@/features/marketing/pages/ServiceDetailsPage";
+import Layout from "@/components/shared/Layout";
+import AdminDashboard from "@/features/admin/pages/AdminDashboardPage";
+import UserLayout from "@/features/account/layouts/UserLayout";
+import { UserDashboardPage } from "@/features/account/pages/UserDashboardPage";
+import { UserAppointmentsPage } from "@/features/account/pages/UserAppointmentsPage";
+import { UserProfilePage } from "@/features/account/pages/UserProfilePage";
+import { userDashboardLoader } from "@/features/account/loaders/userDashboardLoader";
 
 const router = createBrowserRouter([
   {
@@ -44,12 +47,21 @@ const router = createBrowserRouter([
     element: <AdminDashboard />,
   },
   {
-    path: "/me",
+    path: "/dashboard/me",
     element: <UserLayout />,
     children: [
       {
         index: true,
         element: <UserDashboardPage />,
+        loader: userDashboardLoader,
+      },
+      {
+        path: "appointments",
+        element: <UserAppointmentsPage />,
+      },
+      {
+        path: "profile",
+        element: <UserProfilePage />,
       },
     ],
   },

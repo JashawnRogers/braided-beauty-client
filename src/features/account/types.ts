@@ -1,0 +1,81 @@
+export type UserType = "ADMIN" | "MEMBER" | "GUEST" | string;
+
+export type AppointmentStatus =
+  | "BOOKED"
+  | "CONFIRMED"
+  | "COMPLETED"
+  | "CANCELLED";
+
+export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
+
+export interface LoyaltyRecord {
+  id: string;
+  points: number;
+  redeemedPoints: number;
+  // tierName: string;
+}
+
+export interface AppointmentSummaryDTO {
+  id: string | null | undefined;
+  serviceName: string | null | undefined;
+  appointmentTime: string | null | undefined; // ISO LocalDateTime from backend
+  appointmentStatus: string | null | undefined;
+}
+
+export interface UserDashboardDTO {
+  id: string;
+  name: string;
+  loyaltyRecord: LoyaltyRecord | null;
+  appointmentCount: number | null;
+  nextApt: AppointmentSummaryDTO | null;
+}
+
+export interface AddOnResponseDTO {
+  id: string;
+  name: string;
+  price: number;
+  description: string | null;
+}
+
+export interface ServiceResponseDTO {
+  id: number;
+  categoryName: string;
+  categoryId: number;
+  name: string;
+  description: string | null;
+  price: number;
+  addOnIds: number[] | null;
+  addOnNames: string[] | null;
+}
+
+export interface AppointmentResponseDTO {
+  id: string;
+  appointmentTime: string;
+  appointmentStatus: AppointmentStatus;
+  service: ServiceResponseDTO;
+  depositAmount: number;
+  paymentStatus: PaymentStatus;
+  pointsEarned: number | null;
+  note: string | null;
+}
+
+export interface UserMemberProfile {
+  id: string;
+  name: string;
+  email: string;
+  updatedAt: string;
+  createdAt: string;
+  phoneNumber?: string | null;
+  userType?: UserType | null;
+  appointments: AppointmentSummaryDTO[];
+  loyaltyRecord?: LoyaltyRecord | null;
+}
+
+export interface LoginRequestDTO {
+  email: string;
+  password: string;
+}
+
+export interface UserJwtDTO {
+  token: string;
+}
