@@ -10,6 +10,14 @@ export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
 
 export type LoyaltyTier = "GOLD" | "SILVER" | "BRONZE";
 
+export type Page<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+};
+
 export interface LoyaltyRecord {
   id: string;
   points: number;
@@ -18,7 +26,7 @@ export interface LoyaltyRecord {
 }
 
 export interface AppointmentSummaryDTO {
-  id: string | null | undefined;
+  id: string;
   serviceName: string | null | undefined;
   appointmentTime: string | null | undefined; // ISO LocalDateTime from backend
   appointmentStatus: string | null | undefined;
