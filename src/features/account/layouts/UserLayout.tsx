@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -9,16 +9,18 @@ function Logo() {
   return (
     <div className="flex items-center gap-2">
       {/* Replace with your real logo component/image */}
-      <img
-        src={LOGO}
-        alt="Braided Beauty Logo"
-        loading="eager"
-        fetchPriority="high"
-        className="h-7 w-auto rounded-md"
-      />
-      <span className="text-sm font-semibold tracking-tight">
-        Braided Beauty
-      </span>
+      <Link to="/">
+        <img
+          src={LOGO}
+          alt="Braided Beauty Logo"
+          loading="eager"
+          fetchPriority="high"
+          className="h-7 w-auto rounded-md"
+        />
+        <span className="text-sm font-semibold tracking-tight">
+          Braided Beauty
+        </span>
+      </Link>
     </div>
   );
 }

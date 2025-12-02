@@ -2,20 +2,23 @@ import Logo from "@/assets/bb-logo.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useUser } from "@/context/UserContext";
+import type { CurrentUser } from "@/features/account/types";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError([]);
+    setError(null);
     setIsSubmitting(true);
 
     try {
@@ -32,7 +35,7 @@ export default function LoginPage() {
       );
 
       if (!res.ok) {
-        setError(["Invalid email or password"]);
+        setError("Invalid email or password");
         setIsSubmitting(false);
         return;
       }
@@ -43,10 +46,37 @@ export default function LoginPage() {
       // TODO: move to context or store
       localStorage.setItem("accessToken", accessToken);
 
-      navigate("/dashboard/me");
+      const meRes = await fetch(
+        `${import.meta.env.VITE_SERVER_API_URL}/user/me`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!meRes.ok) {
+        console.error("Failed to load current user after login");
+        setError("Login succeeded but failed to fetch user info.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const currentUser = (await meRes.json()) as CurrentUser;
+
+      setUser(currentUser);
+
+      if (currentUser.memberStatus === "ADMIN") {
+        navigate("/dashboard/admin", { replace: true });
+      } else {
+        navigate("/dashboard/me", { replace: true });
+      }
     } catch (err) {
       console.error(err);
-      setError(["something went wrong while logging in."]);
+      setError("something went wrong while logging in.");
     } finally {
       setIsSubmitting(false);
     }

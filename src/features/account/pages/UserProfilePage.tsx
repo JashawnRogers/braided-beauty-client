@@ -1,7 +1,10 @@
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { phone } from "@/lib/formatPhone";
+import { UserMemberProfile } from "../types";
+import { apiGet } from "@/lib/apiClient";
 
 // Simple date formatter for createdAt/updatedAt
 function formatDate(dateString: string) {
@@ -14,26 +17,40 @@ function formatDate(dateString: string) {
   });
 }
 
-// TEMP: mock data until you wire the real API
-const MOCK_PROFILE = {
-  id: "c9b5f8f4-1234-5678-9101-abcdefabcdef",
-  name: "Jane Doe",
-  email: "jane@example.com",
-  phoneNumber: "+1 (555) 123-4567",
-  userType: "MEMBER",
-  createdAt: "2024-01-10T15:30:00Z",
-  updatedAt: "2025-02-15T09:45:00Z",
-  appointments: [],
-  loyaltyRecord: {
-    id: "loyalty-1",
-    tierName: "Gold",
-  },
-};
-
 export function UserProfilePage() {
   // TODO: later replace MOCK_PROFILE with a real data hook, e.g.:
   // const { data: profile, isLoading, error } = useMemberProfile();
-  const profile = MOCK_PROFILE;
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [profile, setProfile] = useState<UserMemberProfile | null>(null);
+
+  const didFetch = useRef(false);
+
+  async function fetchUserProfile() {
+    try {
+      setIsLoading(true);
+      const data = await apiGet<UserMemberProfile>(
+        `${import.meta.env.VITE_SERVER_API_URL}/user/me/profile`
+      );
+      setProfile(data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load profile");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
+
+    void fetchUserProfile();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!profile) return null;
 
   return (
     <div className="space-y-6">
@@ -91,11 +108,19 @@ export function UserProfilePage() {
                   </Badge>
                 </p>
               </div>
+              <div className="space-y-1 col-end-[-1]">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Password
+                </p>
+                <Button variant="outline" size="sm">
+                  Reset Password
+                </Button>
+              </div>
             </div>
 
             {/* You can later turn this into an editable form */}
             <div className="pt-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="lg">
                 Edit profile
               </Button>
             </div>
@@ -138,24 +163,39 @@ export function UserProfilePage() {
             </CardContent>
           </Card>
 
-          {profile.loyaltyRecord && (
-            <Card>
-              <CardHeader className="pb-1">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Loyalty
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Tier
-                </p>
-                <p className="text-lg font-semibold text-amber-700">
-                  {profile.loyaltyRecord.tierName}
-                </p>
-                {/* Later you can add points/progress here if you want */}
-              </CardContent>
-            </Card>
-          )}
+          <Card>
+            <CardHeader className="pb-1">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Loyalty
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Tier
+                  </p>
+                  <p className="text-lg font-semibold">{profile.loyaltyTier}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Loyalty Points
+                  </p>
+                  <p className="text-lg font-semibold text-center">
+                    {profile.loyaltyRecord?.points}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Redeemed Points
+                  </p>
+                  <p className="text-lg font-semibold text-center">
+                    {profile.loyaltyRecord?.redeemedPoints}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 

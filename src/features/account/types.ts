@@ -18,6 +18,17 @@ export type Page<T> = {
   size: number;
 };
 
+export type CurrentUser = {
+  id: string;
+  name: string;
+  email: string;
+  phoneNumber: string | null;
+  memberStatus: UserType;
+  loyaltyPoints: number;
+  redeemedPoints: number;
+  tier: LoyaltyTier;
+};
+
 export interface LoyaltyRecord {
   id: string;
   points: number;
@@ -76,10 +87,16 @@ export interface UserMemberProfile {
   email: string;
   updatedAt: string;
   createdAt: string;
-  phoneNumber?: string | null;
+  phoneNumber?: string;
   userType?: UserType | null;
   appointments: AppointmentSummaryDTO[];
   loyaltyRecord?: LoyaltyRecord | null;
+  loyaltyTier: LoyaltyTier;
+}
+
+export interface UpdateUserProfilePayload {
+  name: string;
+  phoneNumber: string | null;
 }
 
 export interface LoginRequestDTO {

@@ -33,7 +33,7 @@ import ListLoyaltyRedirect from "@/features/admin/resources/loyalty/ListLoyaltyR
 import "@/styles/index.css";
 
 const dataPovider = withLogger(
-  springDataProvider(import.meta.env.VITE_SERVER_API_URL, httpClient)
+  springDataProvider(`${import.meta.env.VITE_SERVER_API_URL}/admin`, httpClient)
 );
 
 export default function AdminDashboard() {

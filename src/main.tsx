@@ -15,6 +15,7 @@ import { UserDashboardPage } from "@/features/account/pages/UserDashboardPage";
 import { UserAppointmentsPage } from "@/features/account/pages/UserAppointmentsPage";
 import { UserProfilePage } from "@/features/account/pages/UserProfilePage";
 import { userDashboardLoader } from "@/features/account/loaders/userDashboardLoader";
+import { UserProvider } from "@/context/UserContext";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </StrictMode>
 );

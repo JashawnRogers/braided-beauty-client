@@ -21,13 +21,6 @@ import {
   normalizeIsClosed,
 } from "@/features/admin/ra/businessHours";
 
-/** Map alternate UI names to canonical resource keys */
-const resourceAliases: Record<string, string> = {
-  "all-users": "users",
-  "add ons": "addons",
-  "business hours": "hours",
-};
-
 /** Per-resource endpoint overrides (by verb). */
 type ResourceConfig = Partial<{
   base: string; // default base for verbs not overridden
@@ -43,11 +36,11 @@ type ResourceConfig = Partial<{
 /** Map RA resource name -> backend paths */
 const resourceMap: Record<string, ResourceConfig> = {
   users: {
-    list: "user/all-users",
-    getOne: "user/profile", // GET /api/v1/user/all-users
-    base: "user", // GET/PUT/DELETE /api/v1/user/{id}
+    base: "users",
+    list: "users/all-users",
+    getOne: "users",
   },
-  appointments: { base: "appointments" },
+  appointments: { base: "appointment" },
   services: { base: "service" },
   hours: { base: "hours" },
   addons: { base: "addons" },
@@ -58,6 +51,13 @@ const resourceMap: Record<string, ResourceConfig> = {
     update: "loyalty/settings",
   },
   categories: { base: "category" },
+};
+
+/** Map alternate UI names to canonical resource keys */
+const resourceAliases: Record<string, string> = {
+  "all-users": "users",
+  "add ons": "addons",
+  "business hours": "hours",
 };
 
 const normalizeResource = (resource: string) =>

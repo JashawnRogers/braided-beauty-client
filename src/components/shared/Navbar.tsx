@@ -1,9 +1,10 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Logo from "@/assets/bb-logo.svg";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "@/context/UserContext";
 
 const menuItems = [
   { name: "Gallery", href: "#gallery" },
@@ -12,17 +13,48 @@ const menuItems = [
 ];
 
 export function Navbar() {
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const [isScrolled, setIsScrolled] = React.useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { user, isAuthenticated, isLoading } = useUser();
 
-  React.useEffect(() => {
+  const navigate = useNavigate();
+
+  function handleDashboardClick() {
+    if (!user) return;
+
+    if (user.memberStatus === "ADMIN") {
+      navigate("/dashboard/admin", { replace: false });
+    } else {
+      navigate("/dashboard/me", { replace: false });
+    }
+  }
+
+  function DashboardLink({ className }: { className: string }) {
+    if (isLoading) return null;
+    if (!isAuthenticated || !user) return null;
+
+    return (
+      <Button
+        type="button"
+        onClick={() => {
+          handleDashboardClick();
+          setMenuOpen(false);
+        }}
+        className={cn("duration-150 hover:text-accent-foreground", className)}
+      >
+        Dashboard
+      </Button>
+    );
+  }
+
+  useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // optional: close the menu when resizing to desktop
-  React.useEffect(() => {
+  useEffect(() => {
     const onResize = () => {
       if (window.innerWidth >= 1024) setMenuOpen(false);
     };
@@ -124,24 +156,34 @@ export function Navbar() {
                       </a>
                     </li>
                   ))}
+
+                  {/* <li>
+                    <DashboardLink className="text-muted-foreground" />
+                  </li> */}
                 </ul>
               </div>
 
               {/* Auth/CTA */}
-              <div className="flex w-full flex-col space-y-3 pb-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                {/* On mobile, show Login/Sign Up; on scroll */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className={cn(isScrolled)}
-                >
-                  <Link to="/login">Login</Link>
-                </Button>
-                <Button asChild size="sm" className={cn(isScrolled)}>
-                  <Link to="/signup">Sign Up</Link>
-                </Button>
-              </div>
+              {!isAuthenticated ? (
+                <div className="flex w-full flex-col space-y-3 pb-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                  {/* On mobile, show Login/Sign Up; on scroll */}
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className={cn(isScrolled)}
+                  >
+                    <Link to="/login">Login</Link>
+                  </Button>
+                  <Button asChild size="sm" className={cn(isScrolled)}>
+                    <Link to="/signup">Sign Up</Link>
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex w-full flex-col space-y-3 pb-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                  <DashboardLink className="text-muted-foreground text-white mt-3" />
+                </div>
+              )}
             </div>
           </div>
         </div>

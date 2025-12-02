@@ -1,45 +1,83 @@
-import { redirect } from "react-router";
-import { httpClient } from "./httpClient";
+import { hardLogout, refreshAccessToken } from "./authClient";
 
-export async function apiGet<T>(path: string): Promise<T> {
+const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
+
+async function request<T>(
+  path: string,
+  init: RequestInit = {},
+  retry = true
+): Promise<T> {
+  const url = `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+
+  const headers = new Headers(init.headers || {});
+  headers.set("Accept", "application/json");
+  headers.set("Content-Type", "application/json");
+
   const token = localStorage.getItem("accessToken");
-
-  if (!token) {
-    redirect("/login");
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const res = await httpClient(path);
+  const opts: RequestInit = {
+    credentials: "include",
+    ...init,
+    headers,
+  };
+
+  const res = await fetch(url, opts);
 
   if (res.status === 401 || res.status === 403) {
-    localStorage.removeItem("accessToken");
-    throw redirect("/login");
+    if (
+      retry &&
+      !url.endsWith("/api/v1/auth/login") &&
+      !url.endsWith("/api/v1/auth/refresh")
+    ) {
+      const newToken = await refreshAccessToken();
+      if (!newToken) {
+        hardLogout();
+        throw new Error("Session expired");
+      }
+
+      // Retry once with new token
+      return request<T>(path, init, false);
+    }
+
+    hardLogout();
+    throw new Error("Unauthorized");
   }
 
-  return res.json as T;
+  if (!res.ok) {
+    const text = await res.text();
+    let data: any = text;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      /* ignore */
+    }
+
+    throw new Error(data?.message || data?.error || "Request failed");
+  }
+
+  if (res.status === 204) return undefined as T;
+
+  return (await res.json()) as T;
 }
 
-export async function apiPost<TBody, TResponse>(
-  path: string,
-  body: TBody
-): Promise<TResponse> {
-  const res = await httpClient(path, {
+export const apiGet = <T>(path: string) => request<T>(path);
+export const apiPost = <T>(path: string, body?: unknown) =>
+  request<T>(path, {
     method: "POST",
-    body: JSON.stringify(body),
-    headers: new Headers({ "Content-Type": "application/json" }),
+    body: body ? JSON.stringify(body) : undefined,
   });
-
-  return res.json as TResponse;
-}
-
-export async function apiPut<TBody, TResponse>(
-  path: string,
-  body: TBody
-): Promise<TResponse> {
-  const res = await httpClient(path, {
+export const apiPut = <T>(path: string, body?: unknown) =>
+  request<T>(path, {
     method: "PUT",
-    body: JSON.stringify(body),
-    headers: new Headers({ "Content-Type": "application/json" }),
+    body: body ? JSON.stringify(body) : undefined,
   });
-
-  return res.json as TResponse;
-}
+export const apiPatch = <T>(path: string, body?: unknown) =>
+  request<T>(path, {
+    method: "PATCH",
+    body: body ? JSON.stringify(body) : undefined,
+  });
+export const apiDelete = <T>(path: string) =>
+  request<T>(path, { method: "DELETE" });

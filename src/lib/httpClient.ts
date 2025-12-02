@@ -1,8 +1,12 @@
 import { fetchUtils, HttpError } from "react-admin";
+import { hardLogout, refreshAccessToken } from "./authClient";
 
-export const httpClient: typeof fetchUtils.fetchJson = async (
+type FetchJson = typeof fetchUtils.fetchJson;
+
+const doFecthJson: typeof fetchUtils.fetchJson = async (
   url,
-  options = {}
+  options = {},
+  retry = true as any
 ) => {
   const opts: RequestInit = {
     credentials: "include",
@@ -16,13 +20,40 @@ export const httpClient: typeof fetchUtils.fetchJson = async (
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
-
   opts.headers = headers;
 
   try {
     return await fetchUtils.fetchJson(url, opts);
   } catch (e: any) {
-    // e is an HttpError from React Admin
+    const status = e?.status;
+
+    const isAuthEndpoint =
+      typeof url === "string" &&
+      (url.includes("/api/v1/auth/login") ||
+        url.includes("/api/v1/auth/refresh"));
+
+    // Only try refresh once, and never for login/refresh calls themselves
+    if (retry && (status === 401 || status === 403) && !isAuthEndpoint) {
+      try {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          hardLogout();
+          throw e;
+        }
+
+        // Retry original request with updated token
+        const retryHeaders = new Headers(opts.headers || {});
+        retryHeaders.set("Authorization", `Bearer ${newToken}`);
+        opts.headers = retryHeaders;
+
+        return await fetchUtils.fetchJson(url, opts);
+      } catch (refreshErr) {
+        console.error("Failed to generate refresh token", refreshErr);
+        hardLogout();
+        throw e;
+      }
+    }
+
     const rawBody = e?.body;
     let data: any = rawBody;
 
@@ -46,3 +77,6 @@ export const httpClient: typeof fetchUtils.fetchJson = async (
     throw new HttpError(msg, e.status, data ?? rawBody);
   }
 };
+
+export const httpClient: FetchJson = (url, options = {}) =>
+  doFecthJson(url, options) as any;
