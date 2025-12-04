@@ -3,12 +3,12 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { hardLogout } from "@/lib/authClient";
 import LOGO from "@/assets/bb-logo.svg";
 
 function Logo() {
   return (
     <div className="flex items-center gap-2">
-      {/* Replace with your real logo component/image */}
       <Link to="/">
         <img
           src={LOGO}
@@ -107,7 +107,12 @@ export default function UserLayout() {
           </nav>
           <div className="border-t px-4 py-4">
             {/* Wire up to log out handler */}
-            <Button variant="outline" className="w-full" size="sm">
+            <Button
+              variant="outline"
+              className="w-full"
+              size="sm"
+              onClick={hardLogout}
+            >
               Log out
             </Button>
           </div>

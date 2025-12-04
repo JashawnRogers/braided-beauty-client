@@ -6,7 +6,6 @@ import {
   useHasDashboard,
   useResourceDefinitions,
   useTranslate,
-  useLogout,
 } from "ra-core";
 import { Link, useMatch } from "react-router";
 import {
@@ -24,6 +23,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { House, List, LogOut } from "lucide-react";
 import Logo from "@/assets/bb-logo.svg";
+import { hardLogout } from "@/lib/authClient";
 
 export function AppSidebar() {
   const hasDashboard = useHasDashboard();
@@ -35,7 +35,6 @@ export function AppSidebar() {
     }
   };
 
-  const logout = useLogout();
   return (
     <Sidebar variant="floating" collapsible="offcanvas">
       <SidebarHeader>
@@ -77,7 +76,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              onClick={() => logout()}
+              onClick={hardLogout}
               className="w-full flex items-center"
             >
               <LogOut className="mr-2 h-4 w-4" />
