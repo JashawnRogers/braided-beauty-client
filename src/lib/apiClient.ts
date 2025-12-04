@@ -27,11 +27,13 @@ async function request<T>(
   const res = await fetch(url, opts);
 
   if (res.status === 401 || res.status === 403) {
-    if (
-      retry &&
-      !url.endsWith("/api/v1/auth/login") &&
-      !url.endsWith("/api/v1/auth/refresh")
-    ) {
+    const isAuthEndpoint =
+      url.endsWith("/api/v1/auth/login") ||
+      url.endsWith("/api/v1/auth/refresh") ||
+      url.endsWith("/auth/login") ||
+      url.endsWith("/auth/refresh");
+
+    if (retry && token && !isAuthEndpoint) {
       const newToken = await refreshAccessToken();
       if (!newToken) {
         hardLogout();

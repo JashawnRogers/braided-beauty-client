@@ -32,12 +32,19 @@ export function UserProvider({ children }: UserProviderProps) {
 
   const loadUser = useCallback(async () => {
     try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        setUser(null);
+        setIsLoading(false);
+        setError(null);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
 
-      const currentUser = await apiGet<CurrentUser>(
-        `${import.meta.env.VITE_SERVER_API_URL}/user/dashboard/me`
-      );
+      const currentUser = await apiGet<CurrentUser>("/user/me/profile");
 
       setUser(currentUser);
     } catch (err) {
@@ -69,6 +76,6 @@ export function UserProvider({ children }: UserProviderProps) {
 
 export function useUser() {
   const context = useContext(UserContext);
-  if (!context) throw new Error("useUeser must be used within UserProvider");
+  if (!context) throw new Error("useUser must be used within UserProvider");
   return context;
 }

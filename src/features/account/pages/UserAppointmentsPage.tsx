@@ -42,7 +42,7 @@ export function UserAppointmentsPage() {
       try {
         if (tab === "upcoming") {
           const data = await apiGet<AppointmentSummaryDTO[]>(
-            `${import.meta.env.VITE_SERVER_API_URL}/appointments/me/next`
+            "/appointments/me/next"
           );
 
           if (!isCancelled) {
@@ -50,9 +50,7 @@ export function UserAppointmentsPage() {
           }
         } else {
           const data = await apiGet<Page<AppointmentSummaryDTO>>(
-            `${
-              import.meta.env.VITE_SERVER_API_URL
-            }/appointments/me/previous?page=${pastPageIndex}$size=${PAST_PAGE_SIZE}`
+            `/appointments/me/previous?page=${pastPageIndex}$size=${PAST_PAGE_SIZE}`
           );
 
           if (!isCancelled) {

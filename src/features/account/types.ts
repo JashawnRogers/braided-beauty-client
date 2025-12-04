@@ -26,7 +26,9 @@ export type CurrentUser = {
   memberStatus: UserType;
   loyaltyPoints: number;
   redeemedPoints: number;
-  tier: LoyaltyTier;
+  loyaltyTier: LoyaltyTier;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export interface LoyaltyRecord {
