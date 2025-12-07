@@ -101,6 +101,12 @@ export interface UpdateUserProfilePayload {
   phoneNumber: string | null;
 }
 
+export interface UpdatePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
 export interface LoginRequestDTO {
   email: string;
   password: string;

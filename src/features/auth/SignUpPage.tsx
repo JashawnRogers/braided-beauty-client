@@ -176,11 +176,6 @@ export default function SignUpPage() {
                 </ChecklistItem>
               </li>
               <li>
-                <ChecklistItem ok={!issues.includes("variety")}>
-                  Use 3 of: lowercase, UPPERCASE, digits, symbols
-                </ChecklistItem>
-              </li>
-              <li>
                 <ChecklistItem ok={!issues.includes("personal")}>
                   Doesn’t include your name, email, or phone
                 </ChecklistItem>

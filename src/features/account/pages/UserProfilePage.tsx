@@ -3,7 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { phone } from "@/lib/formatPhone";
-import { CurrentUser, UpdateUserProfilePayload } from "../types";
+import {
+  CurrentUser,
+  UpdatePasswordPayload,
+  UpdateUserProfilePayload,
+} from "../types";
 import { apiPatch } from "@/lib/apiClient";
 import { useUser } from "@/context/UserContext";
 
@@ -22,7 +26,16 @@ export function UserProfilePage() {
   const { user, setUser, isLoading, error } = useUser();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [passwordValues, setPasswordValues] = useState<UpdatePasswordPayload>({
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [formValues, setFormValues] = useState<UpdateUserProfilePayload>({
     name: "",
@@ -43,12 +56,63 @@ export function UserProfilePage() {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   }
 
+  function handlePasswordChange(e: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setPasswordValues((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSavePassword(e: FormEvent) {
+    e.preventDefault();
+    if (!user) return;
+
+    setPasswordError(null);
+    setIsSavingPassword(true);
+
+    const { currentPassword, newPassword, confirmNewPassword } = passwordValues;
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      setPasswordError("Please fill in all password fields");
+      setIsSavingPassword(false);
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError("New password and confirmation do not match");
+      setIsSavingPassword(false);
+      return;
+    }
+
+    try {
+      await apiPatch<void>("/auth/change-password", {
+        currentPassword,
+        newPassword,
+        confirmNewPassword,
+      });
+
+      setPasswordValues({
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
+
+      setIsChangingPassword(false);
+      setPasswordSuccess("Your password has been updated");
+    } catch (err: any) {
+      console.error(err);
+      setPasswordError(
+        err?.message || "Something went wrong while updating your password"
+      );
+    } finally {
+      setIsSavingPassword(false);
+    }
+  }
+
   async function handleSave(e: FormEvent) {
     e.preventDefault();
     if (!user) return;
 
     setSubmitError(null);
-    setSaving(true);
+    setIsSaving(true);
 
     const formattedPhone = formValues.phoneNumber
       ? phone.formatFromE164(formValues.phoneNumber)
@@ -70,7 +134,7 @@ export function UserProfilePage() {
         err?.message ?? "Something went wrong while updating your profile."
       );
     } finally {
-      setSaving(false);
+      setIsSaving(false);
     }
   }
 
@@ -139,16 +203,7 @@ export function UserProfilePage() {
                       </Badge>
                     </p>
                   </div>
-                  <div className="space-y-1 col-end-[-1]">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                      Password
-                    </p>
-                    <Button variant="outline" size="sm">
-                      Reset Password
-                    </Button>
-                  </div>
                 </div>
-                {/* You can later turn this into an editable form */}
                 <div className="pt-2">
                   <Button
                     variant="outline"
@@ -218,8 +273,8 @@ export function UserProfilePage() {
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={saving}>
-                    {saving ? "Saving…" : "Save changes"}
+                  <Button type="submit" disabled={isSaving}>
+                    {isSaving ? "Saving…" : "Save changes"}
                   </Button>
                 </div>
               </form>
@@ -302,11 +357,127 @@ export function UserProfilePage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Security / Change password */}
+          <Card className="mt-4">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Security
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!isChangingPassword ? (
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    Update your password for this account.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsChangingPassword(true)}
+                  >
+                    Change password
+                  </Button>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSavePassword}
+                  className="space-y-4 max-w-md"
+                  autoComplete="off"
+                >
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="currentPassword"
+                      className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                    >
+                      Current password
+                    </label>
+                    <input
+                      id="currentPassword"
+                      name="currentPassword"
+                      type="password"
+                      className="input sz-md w-full"
+                      value={passwordValues.currentPassword}
+                      onChange={handlePasswordChange}
+                      autoComplete="current-password"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="newPassword"
+                      className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                    >
+                      New password
+                    </label>
+                    <input
+                      id="newPassword"
+                      name="newPassword"
+                      type="password"
+                      className="input sz-md w-full"
+                      value={passwordValues.newPassword}
+                      onChange={handlePasswordChange}
+                      autoComplete="new-password"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="confirmNewPassword"
+                      className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                    >
+                      Confirm new password
+                    </label>
+                    <input
+                      id="confirmNewPassword"
+                      name="confirmNewPassword"
+                      type="password"
+                      className="input sz-md w-full"
+                      value={passwordValues.confirmNewPassword}
+                      onChange={handlePasswordChange}
+                      autoComplete="new-password"
+                      required
+                    />
+                  </div>
+
+                  {passwordError && (
+                    <p className="text-sm text-red-600">{passwordError}</p>
+                  )}
+                  {passwordSuccess && (
+                    <p className="text-sm text-emerald-600">
+                      {passwordSuccess}
+                    </p>
+                  )}
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsChangingPassword(false);
+                        setPasswordError(null);
+                        setPasswordSuccess(null);
+                        setPasswordValues({
+                          currentPassword: "",
+                          newPassword: "",
+                          confirmNewPassword: "",
+                        });
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={isSavingPassword}>
+                      {isSavingPassword ? "Saving…" : "Save password"}
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
-
-      {/* Optional: you could add a security/password section here later
-          for "change password" / "set password" */}
     </div>
   );
 }
