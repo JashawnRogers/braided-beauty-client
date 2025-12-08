@@ -359,123 +359,137 @@ export function UserProfilePage() {
           </Card>
 
           {/* Security / Change password */}
-          <Card className="mt-4">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Security
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {!isChangingPassword ? (
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Update your password for this account.
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsChangingPassword(true)}
-                  >
-                    Change password
-                  </Button>
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSavePassword}
-                  className="space-y-4 max-w-md"
-                  autoComplete="off"
-                >
-                  <div className="space-y-1">
-                    <label
-                      htmlFor="currentPassword"
-                      className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                    >
-                      Current password
-                    </label>
-                    <input
-                      id="currentPassword"
-                      name="currentPassword"
-                      type="password"
-                      className="input sz-md w-full"
-                      value={passwordValues.currentPassword}
-                      onChange={handlePasswordChange}
-                      autoComplete="current-password"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label
-                      htmlFor="newPassword"
-                      className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                    >
-                      New password
-                    </label>
-                    <input
-                      id="newPassword"
-                      name="newPassword"
-                      type="password"
-                      className="input sz-md w-full"
-                      value={passwordValues.newPassword}
-                      onChange={handlePasswordChange}
-                      autoComplete="new-password"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label
-                      htmlFor="confirmNewPassword"
-                      className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                    >
-                      Confirm new password
-                    </label>
-                    <input
-                      id="confirmNewPassword"
-                      name="confirmNewPassword"
-                      type="password"
-                      className="input sz-md w-full"
-                      value={passwordValues.confirmNewPassword}
-                      onChange={handlePasswordChange}
-                      autoComplete="new-password"
-                      required
-                    />
-                  </div>
-
-                  {passwordError && (
-                    <p className="text-sm text-red-600">{passwordError}</p>
-                  )}
-                  {passwordSuccess && (
-                    <p className="text-sm text-emerald-600">
-                      {passwordSuccess}
+          {!user.isOAuthAccount && (
+            <Card className="mt-4">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Security
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {!isChangingPassword ? (
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      Update your password for this account.
                     </p>
-                  )}
-
-                  <div className="flex justify-end gap-2 pt-2">
                     <Button
-                      type="button"
                       variant="outline"
-                      onClick={() => {
-                        setIsChangingPassword(false);
-                        setPasswordError(null);
-                        setPasswordSuccess(null);
-                        setPasswordValues({
-                          currentPassword: "",
-                          newPassword: "",
-                          confirmNewPassword: "",
-                        });
-                      }}
+                      size="sm"
+                      onClick={() => setIsChangingPassword(true)}
                     >
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={isSavingPassword}>
-                      {isSavingPassword ? "Saving…" : "Save password"}
+                      Change password
                     </Button>
                   </div>
-                </form>
-              )}
-            </CardContent>
-          </Card>
+                ) : (
+                  <form
+                    onSubmit={handleSavePassword}
+                    className="space-y-4 max-w-md"
+                    autoComplete="off"
+                  >
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="currentPassword"
+                        className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                      >
+                        Current password
+                      </label>
+                      <input
+                        id="currentPassword"
+                        name="currentPassword"
+                        type="password"
+                        className="input sz-md w-full"
+                        value={passwordValues.currentPassword}
+                        onChange={handlePasswordChange}
+                        autoComplete="current-password"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="newPassword"
+                        className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                      >
+                        New password
+                      </label>
+                      <input
+                        id="newPassword"
+                        name="newPassword"
+                        type="password"
+                        className="input sz-md w-full"
+                        value={passwordValues.newPassword}
+                        onChange={handlePasswordChange}
+                        autoComplete="new-password"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="confirmNewPassword"
+                        className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                      >
+                        Confirm new password
+                      </label>
+                      <input
+                        id="confirmNewPassword"
+                        name="confirmNewPassword"
+                        type="password"
+                        className="input sz-md w-full"
+                        value={passwordValues.confirmNewPassword}
+                        onChange={handlePasswordChange}
+                        autoComplete="new-password"
+                        required
+                      />
+                    </div>
+
+                    {passwordError && (
+                      <p className="text-sm text-red-600">{passwordError}</p>
+                    )}
+                    {passwordSuccess && (
+                      <p className="text-sm text-emerald-600">
+                        {passwordSuccess}
+                      </p>
+                    )}
+
+                    <div className="flex justify-end gap-2 pt-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setIsChangingPassword(false);
+                          setPasswordError(null);
+                          setPasswordSuccess(null);
+                          setPasswordValues({
+                            currentPassword: "",
+                            newPassword: "",
+                            confirmNewPassword: "",
+                          });
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit" disabled={isSavingPassword}>
+                        {isSavingPassword ? "Saving…" : "Save password"}
+                      </Button>
+                    </div>
+                  </form>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {user.isOAuthAccount && (
+            <Card className="mt-4">
+              <CardHeader className="pb-2">Security</CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground">
+                  Please refer to your external account for any password
+                  changes.
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

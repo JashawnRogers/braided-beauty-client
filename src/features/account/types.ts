@@ -27,6 +27,9 @@ export type CurrentUser = {
   loyaltyPoints: number;
   redeemedPoints: number;
   loyaltyTier: LoyaltyTier;
+  oAuthProvider: string;
+  oAuthSubject: string;
+  isOAuthAccount: boolean;
   createdAt: string;
   updatedAt: string;
 };

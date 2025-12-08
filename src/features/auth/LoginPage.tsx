@@ -16,6 +16,12 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleOAuth = async () => {
+    const apiBase = import.meta.env.VITE_SERVER_API_URL as string;
+    const serverOrigin = apiBase.replace(/\/api\/v1\/?$/, "");
+    window.location.href = `${serverOrigin}/oauth2/authorization/google`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -157,7 +163,7 @@ export default function LoginPage() {
           </div>
 
           <div className="flex justify-center">
-            <Button type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={handleOAuth}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="0.98em"
