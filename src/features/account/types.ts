@@ -112,6 +112,13 @@ export interface LoginRequestDTO {
   password: string;
 }
 
+export interface RegisterRequestPayload {
+  email: string;
+  password: string;
+  name: string;
+  phoneNumber: string;
+}
+
 export interface UserJwtDTO {
   token: string;
 }

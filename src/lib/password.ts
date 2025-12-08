@@ -1,9 +1,6 @@
-export type PasswordIssue = "length" | "variety" | "personal" | "confirm";
+export type PasswordIssue = "length" | "symbol" | "personal" | "confirm";
 
-const LOWER = /[a-z]/;
-const UPPER = /[A-Z]/;
-const DIGIT = /\d/;
-const SYMBOL = /[^A-Za-z0-9/s]/;
+const SYMBOL = /[^\w\s]/;
 
 export function sanitizePasswordInput(raw: string): string {
   // strip only leading/trailing whitespace; allow spaces inside passphrases
@@ -43,12 +40,9 @@ export function passwordIssues(
 
   if (sanitizedPassword.length < 8) issues.push("length");
 
-  let groups = 0;
-  if (LOWER.test(sanitizedPassword)) groups++;
-  if (UPPER.test(sanitizedPassword)) groups++;
-  if (DIGIT.test(sanitizedPassword)) groups++;
-  if (SYMBOL.test(sanitizedPassword)) groups++;
-  if (groups < 3) issues.push("variety");
+  if (SYMBOL.test(sanitizedPassword)) {
+    issues.push("symbol");
+  }
 
   if (containsPersonalInfo(sanitizedPassword, options)) issues.push("personal");
 

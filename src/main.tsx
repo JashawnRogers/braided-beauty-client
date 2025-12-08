@@ -16,6 +16,7 @@ import { UserAppointmentsPage } from "@/features/account/pages/UserAppointmentsP
 import { UserProfilePage } from "@/features/account/pages/UserProfilePage";
 import { userDashboardLoader } from "@/features/account/loaders/userDashboardLoader";
 import { UserProvider } from "@/context/UserContext";
+import { OAuthCallbackPage } from "./features/auth/OAuthCallbackPage";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/services/:slug",
         element: <ServiceDetailsPage />,
+      },
+      {
+        path: "/auth/callback",
+        element: <OAuthCallbackPage />,
       },
     ],
   },

@@ -1,13 +1,22 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, FormEvent } from "react";
 import Logo from "@/assets/bb-logo.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router";
+import ChecklistItem from "@/components/shared/CheckListItem";
+import { Link, useNavigate } from "react-router-dom";
 import { phone as phoneUtil } from "@/lib/formatPhone";
 import { passwordIssues, sanitizePasswordInput } from "@/lib/password";
-import ChecklistItem from "@/components/shared/CheckListItem";
+import { useUser } from "@/context/UserContext";
+import { RegisterRequestPayload, CurrentUser } from "../account/types";
+import { apiGet, apiPost } from "@/lib/apiClient";
+
 export default function SignUpPage() {
+  const { setUser } = useUser();
+  const navigate = useNavigate();
+
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,50 +34,76 @@ export default function SignUpPage() {
     [password, name, email, phone, confirm]
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleOAuth = async () => {
+    const apiBase = import.meta.env.VITE_SERVER_API_URL as string;
+    const serverOrigin = apiBase.replace(/\/api\/v1\/?$/, "");
+    window.location.href = `${serverOrigin}/oauth2/authorization/google`;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (issues.length > 0) {
+      setError("Please fix the password requirements before continuing");
+      return;
+    }
+
+    if (password !== confirm) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setIsSubmitting(true);
+
     const e164 = phoneUtil.toE164(phone);
     if (!e164) {
       console.log("No e164");
       return;
     }
 
-    const payload = {
-      name,
-      email,
+    const payload: RegisterRequestPayload = {
+      name: name.trim(),
+      email: email.trim(),
       phoneNumber: e164,
       password: sanitizePasswordInput(password),
     };
 
     try {
-      const response = await fetch(
-        `${import.meta.env.BASE_SERVER_API_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: { Content: "application/json" },
-          body: JSON.stringify(payload),
-        }
+      const data = await apiPost<{ accessToken: string }>(
+        "/auth/register",
+        payload
       );
+      const accessToken = data.accessToken as string;
 
-      if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status}`);
+      if (!accessToken) {
+        throw new Error("Registration succeeded but access token is missing");
       }
 
-      await response.json();
-      setName("");
-      setEmail("");
-      setPhone("");
-      setPassword("");
-      setConfirm("");
-    } catch (error) {
-      console.log(error);
+      localStorage.setItem("accessToken", accessToken);
+
+      const currentUser = await apiGet<CurrentUser>("/user/me");
+      setUser(currentUser);
+
+      if (currentUser.memberStatus === "ADMIN") {
+        navigate("/dashboard/admin", { replace: true });
+      } else {
+        navigate("/dashboard/me", { replace: true });
+      }
+    } catch (err: any) {
+      console.log(err);
+      setError(
+        err?.message ??
+          "Something went wrong while creating your account. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
       <form
-        action="POST"
         onSubmit={handleSubmit}
         className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
       >
@@ -185,9 +220,22 @@ export default function SignUpPage() {
                   Passwords match
                 </ChecklistItem>
               </li>
+              <li>
+                <ChecklistItem ok={!issues.includes("symbol")}>
+                  Must include at least one symbol: Ex. !, &, %, etc..
+                </ChecklistItem>
+              </li>
             </ol>
 
-            <Button className="w-full">Sign Up</Button>
+            {error && <p className="text-sm text-red-600">{error}</p>}
+
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={isSubmitting || issues.length > 0}
+            >
+              Sign Up
+            </Button>
           </div>
 
           <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
@@ -199,7 +247,7 @@ export default function SignUpPage() {
           </div>
 
           <div className="flex justify-center">
-            <Button type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={handleOAuth}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="0.98em"
