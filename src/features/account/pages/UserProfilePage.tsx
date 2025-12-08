@@ -115,7 +115,7 @@ export function UserProfilePage() {
     setIsSaving(true);
 
     const formattedPhone = formValues.phoneNumber
-      ? phone.formatFromE164(formValues.phoneNumber)
+      ? phone.toE164(formValues.phoneNumber)
       : null;
 
     const payload: UpdateUserProfilePayload = {
