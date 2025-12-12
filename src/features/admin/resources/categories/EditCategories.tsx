@@ -26,6 +26,7 @@ export default function EditCategories() {
       transform={(data) => ({
         id: data.id,
         name: data.name,
+        description: data.description,
       })}
       title="Edit Category"
     >
@@ -37,6 +38,12 @@ export default function EditCategories() {
           label="Name"
           validate={required()}
           className="w-1/3"
+        />
+        <TextInput
+          source="description"
+          label="Description"
+          className="w-1/2"
+          multiline={true}
         />
       </SimpleForm>
     </Edit>

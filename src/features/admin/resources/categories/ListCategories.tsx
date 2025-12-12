@@ -20,6 +20,12 @@ export default function ListCategories() {
     >
       <DataTable rowClick="edit" bulkActionButtons={true}>
         <DataTable.Col source="name" label="Name" field={TextField} />
+        <DataTable.Col
+          source="description"
+          label="Description"
+          field={TextField}
+          className="block max-w-[200px] truncate"
+        />
 
         <DataTable.Col>
           <EditButton />

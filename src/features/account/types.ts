@@ -75,6 +75,12 @@ export interface ServiceResponseDTO {
   addOnNames: string[] | null;
 }
 
+export interface ServiceCategoryResponseDTO {
+  id: string;
+  name: string;
+  description: string;
+}
+
 export interface AppointmentResponseDTO {
   id: string;
   appointmentTime: string;

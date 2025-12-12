@@ -315,7 +315,7 @@ export default function springDataProvider(
 
       console.log("[dataProvider.update] PUT", url, "body:", params.data);
       const { json } = await httpClient(url, {
-        method: "PUT",
+        method: "PATCH",
         body,
         headers: { "Content-Type": "application/json" },
       });

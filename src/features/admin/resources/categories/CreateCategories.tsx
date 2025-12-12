@@ -18,6 +18,7 @@ export default function CreateCategories() {
     <Create
       transform={(data) => ({
         name: data.name,
+        description: data.description,
       })}
       redirect="list"
     >
@@ -28,6 +29,7 @@ export default function CreateCategories() {
           validate={required()}
           className="w-1/3"
         />
+        <TextInput source="description" label="Description" className="w-1/3" />
       </SimpleForm>
     </Create>
   );

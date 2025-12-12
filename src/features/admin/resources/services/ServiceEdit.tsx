@@ -10,6 +10,7 @@ import {
   SelectInput,
   ReferenceArrayInput,
   AutocompleteArrayInput,
+  FileInput,
 } from "@/features/admin";
 import { ReferenceInput } from "@/features/admin/components/inputs/reference-input";
 import { useWatch } from "react-hook-form";
@@ -105,14 +106,15 @@ export default function ServiceEdit() {
               Media
             </h3>
 
-            <TextInput
+            <FileInput
               source="photoUrl"
               label="Photo URL"
+              multiple={true}
               validate={isUrl()}
               placeholder="https://example.com/photo.jpg"
             />
 
-            <TextInput
+            <FileInput
               source="videoUrl"
               label="Video URL"
               validate={isUrl()}

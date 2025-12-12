@@ -7,9 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
 
 const menuItems = [
-  { name: "Gallery", href: "#gallery" },
-  { name: "Book an appointment", href: "#book" },
-  { name: "Meet your braider", href: "#about" },
+  { name: "Gallery", href: "/" },
+  { name: "Book an appointment", href: "/categories" },
+  { name: "Meet your braider", href: "/" },
 ];
 
 export function Navbar() {
@@ -122,13 +122,12 @@ export function Navbar() {
               <ul className="flex gap-8 text-sm">
                 {menuItems.map((item) => (
                   <li key={item.name}>
-                    {/* <Link to={item.href} ...> if using router */}
-                    <a
-                      href={item.href}
+                    <Link
+                      to={item.href}
                       className="block text-muted-foreground duration-150 hover:text-accent-foreground"
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

@@ -6,7 +6,7 @@ import "@/styles/ra-overrides.css";
 import LandingPage from "@/features/marketing/pages/LandingPage";
 import LoginPage from "@/features/auth/LoginPage";
 import SignUpPage from "@/features/auth/SignUpPage";
-import ServicesPage from "@/features/marketing/pages/ServicesPage";
+import CategoriesPage from "@/features/marketing/pages/CategoriesPage";
 import ServiceDetailsPage from "@/features/marketing/pages/ServiceDetailsPage";
 import Layout from "@/components/shared/Layout";
 import AdminDashboard from "@/features/admin/pages/AdminDashboardPage";
@@ -17,6 +17,7 @@ import { UserProfilePage } from "@/features/account/pages/UserProfilePage";
 import { userDashboardLoader } from "@/features/account/loaders/userDashboardLoader";
 import { UserProvider } from "@/context/UserContext";
 import { OAuthCallbackPage } from "./features/auth/OAuthCallbackPage";
+import { ListServicesPage } from "./features/marketing/pages/ListServicesPage";
 
 const router = createBrowserRouter([
   {
@@ -35,8 +36,12 @@ const router = createBrowserRouter([
         element: <SignUpPage />,
       },
       {
-        path: "/services",
-        element: <ServicesPage />,
+        path: "/categories",
+        element: <CategoriesPage />,
+      },
+      {
+        path: "/services/:categoryId",
+        element: <ListServicesPage />,
       },
       {
         path: "/services/:slug",

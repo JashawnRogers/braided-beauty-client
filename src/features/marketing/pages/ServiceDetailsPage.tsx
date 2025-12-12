@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { SERVICES } from "@/features/marketing/data/services";
 import { Button } from "@/components/ui/button";
 import BookingCalendar, {
@@ -64,7 +64,7 @@ export default function ServiceDetailsPage() {
           The service you’re looking for doesn’t exist or was moved.
         </p>
         <Button asChild className="mt-6">
-          <Link to="/services">Back to services</Link>
+          <Link to="/categories">Back to categories</Link>
         </Button>
       </div>
     );
@@ -96,7 +96,7 @@ export default function ServiceDetailsPage() {
                   <strong>Starting at:</strong> ${service.priceFrom}
                 </p>
               )}
-              {service.durationMinutes && (
+              {service.durationMinutes ?? (
                 <p>
                   <strong>Duration:</strong> {service.durationMinutes} minutes
                 </p>
