@@ -21,15 +21,20 @@ const TIME_CHOICES = buildTimeChoices();
 export default function CreateBusinessHours() {
   return (
     <Create
-      transform={(data) => ({
-        dayOfWeek: data.dayOfWeek,
-        isClosed: Boolean(data.isClosed),
-        openTime: data.isClosed ? null : data.openTime,
-        closeTime: data.isClosed ? null : data.closeTime,
-      })}
+      redirect="list"
+      transform={(data) => {
+        const isClosed = ["true", true, 1, "1"].includes(data.isClosed);
+        return {
+          dayOfWeek: data.dayOfWeek,
+          isClosed,
+          openTime: isClosed ? null : data.openTime,
+          closeTime: isClosed ? null : data.closeTime,
+        };
+      }}
       title="Create Business Hours"
     >
       <SimpleForm
+        defaultValues={{ isClosed: false }}
         toolbar={<CreateBusinessHoursToolbar />}
         validate={validateTimes}
       >

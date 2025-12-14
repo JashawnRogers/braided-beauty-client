@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { useParams } from "react-router-dom";
 import IntegrationCard from "./components/IntegrationCard";
 import { apiGet } from "@/lib/apiClient";
 import { ServiceCategoryResponseDTO } from "@/features/account/types";
@@ -39,14 +38,6 @@ export function ListServicesPage() {
   return (
     <section>
       <div className="py-32">
-        <div>
-          <Link to="/categories">
-            <div className="flex gap-x-3">
-              <ChevronLeft /> Back to all categories
-            </div>
-          </Link>
-        </div>
-
         <div className="mx-auto max-w-5xl px-6">
           <header className="text-center">
             <h2 className="text-balance text-3xl font-semibold md:text-4xl">
