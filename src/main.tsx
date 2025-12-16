@@ -44,7 +44,7 @@ const router = createBrowserRouter([
         element: <ListServicesPage />,
       },
       {
-        path: "/services/:slug",
+        path: "/book/:serviceId",
         element: <ServiceDetailsPage />,
       },
       {

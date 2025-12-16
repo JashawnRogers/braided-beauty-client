@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,6 +12,22 @@ type BookingCalendarProps = {
   timeSlots: TimeSlot[];
   minDate?: Date;
 };
+
+function normalizeCalendarDate(d: Date) {
+  const copy = new Date(d);
+  copy.setHours(12, 0, 0, 0); // noon local time avoids DST/offset rollbacks
+  return copy;
+}
+
+function formatTime12h(time24: string): string {
+  const [hourStr, minute] = time24.split(":");
+  let hour = Number(hourStr);
+
+  const period = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12 || 12;
+
+  return `${hour}:${minute} ${period}`;
+}
 
 export default function BookingCalendar({
   date,
@@ -31,24 +46,19 @@ export default function BookingCalendar({
             selected={date}
             onSelect={(newDate) => {
               if (newDate) {
-                onDateChange(newDate);
+                onDateChange(normalizeCalendarDate(newDate));
                 onTimeChange(null);
               }
             }}
             className="p-2 sm:pe-5"
             disabled={[
-              { before: minDate }, // Dates before today
+              { before: normalizeCalendarDate(minDate) }, // Dates before today
             ]}
           />
           <div className="relative w-full max-sm:h-48 sm:w-40">
             <div className="absolute inset-0 py-4 max-sm:border-t">
               <ScrollArea className="h-full sm:border-s">
                 <div className="space-y-3">
-                  <div className="flex h-5 shrink-0 items-center px-5">
-                    <p className="text-sm font-medium">
-                      {format(date, "EEEE, d")}
-                    </p>
-                  </div>
                   <div className="grid gap-1.5 px-5 max-sm:grid-cols-2">
                     {timeSlots.map(({ time: timeSlot, available }) => (
                       <Button
@@ -59,7 +69,7 @@ export default function BookingCalendar({
                         onClick={() => onTimeChange(timeSlot)}
                         disabled={!available}
                       >
-                        {timeSlot}
+                        {formatTime12h(timeSlot)}
                       </Button>
                     ))}
                   </div>

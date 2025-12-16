@@ -18,6 +18,13 @@ export type Page<T> = {
   size: number;
 };
 
+export type AvailableTimeSlotsDTO = {
+  time: string;
+  available: boolean;
+  startTime: string;
+  endTime: string;
+};
+
 export type CurrentUser = {
   id: string;
   name: string;
@@ -73,6 +80,7 @@ export interface ServiceResponseDTO {
   price: number;
   addOnIds: number[] | null;
   addOnNames: string[] | null;
+  durationMinutes: number;
 }
 
 export interface ServiceCategoryResponseDTO {

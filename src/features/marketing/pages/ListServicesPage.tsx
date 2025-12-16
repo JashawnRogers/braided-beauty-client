@@ -33,7 +33,7 @@ export function ListServicesPage() {
     };
 
     getServices();
-  }, []);
+  }, [categoryId]);
 
   return (
     <section>
@@ -69,6 +69,7 @@ export function ListServicesPage() {
                   description={service.description}
                   img={image}
                   linkTitle="Book"
+                  link={`/book/${service.id}`}
                 ></IntegrationCard>
               ))}
             </div>

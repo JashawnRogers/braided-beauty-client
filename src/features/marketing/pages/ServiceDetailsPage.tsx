@@ -1,60 +1,94 @@
-import { useMemo, useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { SERVICES } from "@/features/marketing/data/services";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import BookingCalendar, {
-  type TimeSlot,
+  TimeSlot,
 } from "@/features/account/components/BookingCalendar";
 import { toISO } from "@/lib/toIso";
 import BookingPolicy from "@/features/account/components/BookingPolicy";
+import { apiGet } from "@/lib/apiClient";
+import {
+  AvailableTimeSlotsDTO,
+  ServiceResponseDTO,
+} from "@/features/account/types";
+import { toTimeSlots } from "@/components/utils/timeSlotsMapper";
+import { formatJavaDate } from "@/lib/date";
 export default function ServiceDetailsPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
-  const service = useMemo(() => SERVICES.find((s) => s.slug === slug), [slug]);
-
+  const { serviceId } = useParams<{ serviceId: string }>();
+  const [service, setService] = useState<ServiceResponseDTO | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<string | null>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState<boolean>(false);
+  const [isLoadingService, setIsLoadingService] = useState<boolean>(false);
+  const [availabilityError, setAvailabilityError] = useState<string | null>(
+    null
+  );
+  const [serviceError, setServiceError] = useState<string | null>(null);
 
   useEffect(() => {
-    // TODO: replace with real API call:
-    // GET /api/availability?service={slug}&date=YYYY-MM-DD
-    const mock: TimeSlot[] = [
-      { time: "09:00", available: false },
-      { time: "09:30", available: false },
-      { time: "10:00", available: true },
-      { time: "10:30", available: true },
-      { time: "11:00", available: true },
-      { time: "11:30", available: true },
-      { time: "12:00", available: false },
-      { time: "12:30", available: true },
-      { time: "13:00", available: true },
-      { time: "13:30", available: true },
-      { time: "14:00", available: true },
-      { time: "14:30", available: false },
-      { time: "15:00", available: false },
-      { time: "15:30", available: true },
-      { time: "16:00", available: true },
-      { time: "16:30", available: true },
-      { time: "17:00", available: true },
-      { time: "17:30", available: true },
-    ];
-    setTimeSlots(mock);
-    setTime(null); // reset time when date changes or availability reloads
-  }, [slug, date]);
+    if (!serviceId || !date) return;
 
-  const canBook = Boolean(date && time);
+    const getAvailability = async () => {
+      try {
+        setIsLoadingSlots(true);
+        setAvailabilityError(null);
+
+        const dateStr = toISO(date);
+        const data = await apiGet<AvailableTimeSlotsDTO[]>(
+          `/availability?serviceId=${serviceId}&date=${dateStr}`
+        );
+
+        setTimeSlots(toTimeSlots(data));
+      } catch (err) {
+        console.error(err);
+        setAvailabilityError("Failed to load time slots");
+        setTimeSlots([]);
+      } finally {
+        setIsLoadingSlots(false);
+      }
+    };
+
+    getAvailability();
+  }, [serviceId, date]);
+
+  useEffect(() => {
+    if (!serviceId) return;
+
+    const getService = async () => {
+      try {
+        setIsLoadingService(true);
+        setServiceError(null);
+
+        const data = await apiGet<ServiceResponseDTO>(`/service/${serviceId}`);
+
+        setService(data);
+      } catch (err) {
+        console.error(err);
+        setServiceError("Failed to load service");
+        setService(null);
+      } finally {
+        setIsLoadingService(false);
+      }
+    };
+
+    getService();
+  }, [serviceId]);
+
+  const canBook = Boolean(time) && !isLoadingSlots && !availabilityError;
 
   const handleBook = () => {
     if (!canBook || !service) return;
-    const q = new URLSearchParams({
-      service: service.slug,
-      date: toISO(date),
-      time: time!, // non-null because canBook
-    }).toString();
-
-    navigate(`/book?${q}`);
+    console.log("Booked!");
   };
+
+  if (isLoadingService) {
+    return <div className="mx-auto max-w-3xl px-6 py-24">Loading service…</div>;
+  }
+
+  if (serviceError) {
+    return <div className="mx-auto max-w-3xl px-6 py-24">{serviceError}</div>;
+  }
 
   if (!service) {
     return (
@@ -76,27 +110,24 @@ export default function ServiceDetailsPage() {
         <BookingPolicy />
         <div className="pt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
           <div>
-            <h1 className="text-3xl font-semibold">{service.title}</h1>
-            <p className="mt-3 text-muted-foreground">
-              {service.shortDescription}
-            </p>
+            <h1 className="text-3xl font-semibold">{service.name}</h1>
 
-            {service.heroImage && (
+            {/* {service.heroImage && (
               <img
                 src={service.heroImage}
-                alt={service.title}
+                alt={service.name}
                 className="mt-6 w-full rounded-xl border"
               />
-            )}
+            )} */}
 
             <article className="prose prose-zinc dark:prose-invert mt-6">
-              <p>{service.longDescription}</p>
-              {service.priceFrom !== undefined && (
+              <p>{service.description}</p>
+              {service.price !== undefined && (
                 <p>
-                  <strong>Starting at:</strong> ${service.priceFrom}
+                  <strong>Starting at:</strong> ${service.price}
                 </p>
               )}
-              {service.durationMinutes ?? (
+              {service.durationMinutes != null && (
                 <p>
                   <strong>Duration:</strong> {service.durationMinutes} minutes
                 </p>
@@ -105,8 +136,8 @@ export default function ServiceDetailsPage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Button onClick={handleBook} disabled={!canBook}>
-                {canBook
-                  ? `Book ${toISO(date)} at ${time}`
+                {canBook && time
+                  ? `Book ${formatJavaDate(`${toISO(date)}T${time}:00`)}`
                   : "Select a date & time to book"}
               </Button>
               <Button asChild variant="secondary">
@@ -116,14 +147,21 @@ export default function ServiceDetailsPage() {
           </div>
 
           {/* RIGHT: booking calendar (controlled) */}
+          {availabilityError && (
+            <p className="mb-2 text-sm text-destructive">{availabilityError}</p>
+          )}
           <div className="md:pl-2">
-            <BookingCalendar
-              date={date}
-              onDateChange={setDate}
-              time={time}
-              onTimeChange={setTime}
-              timeSlots={timeSlots}
-            />
+            {isLoadingSlots ? (
+              <p>Loading time slots...</p>
+            ) : (
+              <BookingCalendar
+                date={date}
+                onDateChange={setDate}
+                time={time}
+                onTimeChange={setTime}
+                timeSlots={timeSlots}
+              />
+            )}
           </div>
         </div>
       </div>
