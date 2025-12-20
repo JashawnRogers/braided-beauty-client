@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import BookingCalendar, {
   TimeSlot,
 } from "@/features/account/components/BookingCalendar";
@@ -13,6 +15,7 @@ import {
 } from "@/features/account/types";
 import { toTimeSlots } from "@/components/utils/timeSlotsMapper";
 import { formatJavaDate } from "@/lib/date";
+import { formatDurationMinutes } from "@/lib/formatDuration";
 export default function ServiceDetailsPage() {
   const { serviceId } = useParams<{ serviceId: string }>();
   const [service, setService] = useState<ServiceResponseDTO | null>(null);
@@ -25,6 +28,9 @@ export default function ServiceDetailsPage() {
     null
   );
   const [serviceError, setServiceError] = useState<string | null>(null);
+  const [selectedAddOnIds, setSelectedAddOnIds] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     if (!serviceId || !date) return;
@@ -63,6 +69,7 @@ export default function ServiceDetailsPage() {
         const data = await apiGet<ServiceResponseDTO>(`/service/${serviceId}`);
 
         setService(data);
+        console.log(data);
       } catch (err) {
         console.error(err);
         setServiceError("Failed to load service");
@@ -81,6 +88,49 @@ export default function ServiceDetailsPage() {
     if (!canBook || !service) return;
     console.log("Booked!");
   };
+
+  const toggleAddOn = (id: string) => {
+    setSelectedAddOnIds((prev) => {
+      const next = new Set(prev);
+
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const totalMinutes = useMemo(() => {
+    if (!service) return 0;
+    const base = service.durationMinutes ?? 0;
+
+    const addOnMinutes =
+      service.addOns?.reduce((sum, addOn) => {
+        if (selectedAddOnIds.has(addOn.id)) {
+          return sum + (addOn.durationMinutes ?? 0);
+        }
+        return sum;
+      }, 0) ?? 0;
+
+    return base + addOnMinutes;
+  }, [service, selectedAddOnIds]);
+
+  const totalPrice = useMemo(() => {
+    if (!service) return 0;
+    const base = service.price ?? 0;
+
+    const addOnPrice =
+      service.addOns?.reduce((sum, addOn) => {
+        if (selectedAddOnIds.has(addOn.id)) {
+          return sum + (addOn.price ?? 0);
+        }
+        return sum;
+      }, 0) ?? 0;
+
+    return base + addOnPrice;
+  }, [service, selectedAddOnIds]);
 
   if (isLoadingService) {
     return <div className="mx-auto max-w-3xl px-6 py-24">Loading service…</div>;
@@ -124,13 +174,62 @@ export default function ServiceDetailsPage() {
               <p>{service.description}</p>
               {service.price !== undefined && (
                 <p>
-                  <strong>Starting at:</strong> ${service.price}
+                  <strong>Starting at:</strong> ${totalPrice}
                 </p>
               )}
               {service.durationMinutes != null && (
                 <p>
-                  <strong>Duration:</strong> {service.durationMinutes} minutes
+                  <strong>Duration:</strong>{" "}
+                  {formatDurationMinutes(totalMinutes)}
                 </p>
+              )}
+
+              {/* Add Ons */}
+              {service.addOns.length > 0 && (
+                <>
+                  <h4 className="mt-6 font-bold">Add-ons</h4>
+                  <div className="space-y-3 mt-2">
+                    {service.addOns.map((addOn) => {
+                      const checked = selectedAddOnIds.has(addOn.id);
+                      return (
+                        <div key={addOn.id} className="flex items-start gap-3">
+                          <Checkbox
+                            id={`addon-${addOn.id}`}
+                            checked={checked}
+                            onCheckedChange={() => toggleAddOn(addOn.id)}
+                            className="mt-1"
+                          />
+
+                          <div className="grid gap-1 leading-none">
+                            <Label
+                              htmlFor={`addon-${addOn.id}`}
+                              className="cursor-pointer font-medium"
+                            >
+                              {addOn.name}
+                              {addOn.price > 0 && (
+                                <span className="ml-2 text-sm text-muted-foreground">
+                                  +${addOn.price}
+                                </span>
+                              )}
+                            </Label>
+
+                            {addOn.description && (
+                              <p className="text-sm text-muted-foreground">
+                                {addOn.description}
+                              </p>
+                            )}
+
+                            {addOn.durationMinutes > 0 && (
+                              <p className="text-sm text-muted-foreground">
+                                +{addOn.durationMinutes} minutes
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </article>
 

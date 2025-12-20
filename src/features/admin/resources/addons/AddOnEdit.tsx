@@ -34,6 +34,7 @@ export default function AddOnEdit() {
         name: data.name,
         price: data.price,
         description: data.description,
+        durationMinutes: data.durationMinutes,
       })}
     >
       <SimpleForm
@@ -52,6 +53,14 @@ export default function AddOnEdit() {
             <NumberInput
               source="price"
               label="Price (USD)"
+              step={5}
+              min={0}
+              validate={nonNegative}
+            />
+            <NumberInput
+              source="durationMinutes"
+              label="Duration (in minutes)"
+              step={30}
               min={0}
               validate={nonNegative}
             />

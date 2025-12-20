@@ -69,6 +69,7 @@ export interface AddOnResponseDTO {
   name: string;
   price: number;
   description: string | null;
+  durationMinutes: number;
 }
 
 export interface ServiceResponseDTO {
@@ -78,8 +79,7 @@ export interface ServiceResponseDTO {
   name: string;
   description: string | null;
   price: number;
-  addOnIds: number[] | null;
-  addOnNames: string[] | null;
+  addOns: AddOnResponseDTO[];
   durationMinutes: number;
 }
 

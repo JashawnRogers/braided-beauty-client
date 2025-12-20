@@ -189,6 +189,7 @@ export async function transformServiceEdit(
     durationMinutes: data.durationMinutes,
     addPhotoKeys,
     removePhotoKeys,
+    addOnIds: data.addOnIds,
     // Only include videoKey if user touched it
     ...(videoKey !== undefined ? { videoKey } : {}),
   };

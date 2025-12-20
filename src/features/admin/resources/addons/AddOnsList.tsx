@@ -7,6 +7,7 @@ import {
   EditButton,
 } from "@/features/admin"; // if something isn't re-exported, import from "react-admin"
 import { MoneyField } from "@/features/admin/components/fields/fields";
+import { NumberField } from "react-admin";
 
 // Filters to map in dataProvider.getList:
 //   - q           -> name contains (e.g., ?search= or ?nameLike=)
@@ -40,6 +41,9 @@ export default function AddOnsList() {
 
         <DataTable.Col label="Price">
           <MoneyField source="price" />
+        </DataTable.Col>
+        <DataTable.Col label="Duration (in minutes)">
+          <NumberField source="durationMinutes" />
         </DataTable.Col>
 
         <DataTable.Col label="Description">

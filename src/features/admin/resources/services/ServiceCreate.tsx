@@ -1,4 +1,3 @@
-// src/admin/services/ServiceCreate.tsx
 import {
   Create,
   SimpleForm,

@@ -46,7 +46,16 @@ function ServiceEditToolbar() {
 
 export default function ServiceEdit() {
   return (
-    <Edit mutationMode="pessimistic" transform={transformServiceEdit}>
+    <Edit
+      mutationMode="pessimistic"
+      transform={transformServiceEdit}
+      queryOptions={{
+        select: (data) => ({
+          ...data,
+          addOnIds: data.addOnIds ?? data.addOns?.map((a: any) => a.id ?? []),
+        }),
+      }}
+    >
       <SimpleForm toolbar={<ServiceEditToolbar />}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Left column: main editable fields */}
@@ -61,7 +70,7 @@ export default function ServiceEdit() {
               <SelectInput label="Category" optionText="name" />
             </ReferenceInput>
 
-            <ReferenceArrayInput source="addoOnIds" reference="addons">
+            <ReferenceArrayInput source="addOnIds" reference="addons">
               <AutocompleteArrayInput label="Add-Ons" optionText="name" />
             </ReferenceArrayInput>
 
@@ -70,7 +79,7 @@ export default function ServiceEdit() {
               label="Description"
               multiline
               rows={4}
-              validate={maxLen(1000)}
+              validate={maxLen(250)}
             />
 
             {/* Money fields (BigDecimal on backend) */}
