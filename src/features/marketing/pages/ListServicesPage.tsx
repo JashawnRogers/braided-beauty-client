@@ -20,7 +20,7 @@ export function ListServicesPage() {
         setError(null);
 
         const data = await apiGet<ServiceCategoryResponseDTO[]>(
-          `service/category/${categoryId}`
+          `/service/category/${categoryId}`
         );
 
         setServices(data ?? []);
@@ -62,16 +62,21 @@ export function ListServicesPage() {
           {/* Data state */}
           {!isLoading && !error && (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-12">
-              {services.map((service) => (
-                <IntegrationCard
-                  key={service.id}
-                  title={service.name}
-                  description={service.description}
-                  img={image}
-                  linkTitle="Book"
-                  link={`/book/${service.id}`}
-                ></IntegrationCard>
-              ))}
+              {services.map((service) => {
+                console.log("service:", service);
+                console.log("service.id:", service.id);
+
+                return (
+                  <IntegrationCard
+                    key={service.id ?? service.name}
+                    title={service.name}
+                    description={service.description}
+                    img={image}
+                    linkTitle="Book"
+                    link={`/book/service/${service.id}`}
+                  />
+                );
+              })}
             </div>
           )}
         </div>

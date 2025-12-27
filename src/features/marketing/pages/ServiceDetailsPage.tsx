@@ -1,21 +1,38 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { toTimeSlots } from "@/components/utils/timeSlotsMapper";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
 import BookingCalendar, {
   TimeSlot,
 } from "@/features/account/components/BookingCalendar";
-import { toISO } from "@/lib/toIso";
 import BookingPolicy from "@/features/account/components/BookingPolicy";
-import { apiGet } from "@/lib/apiClient";
-import {
-  AvailableTimeSlotsDTO,
-  ServiceResponseDTO,
-} from "@/features/account/types";
-import { toTimeSlots } from "@/components/utils/timeSlotsMapper";
+
+import { toISO } from "@/lib/toIso";
+import { apiGet, apiPost } from "@/lib/apiClient";
 import { formatJavaDate } from "@/lib/date";
 import { formatDurationMinutes } from "@/lib/formatDuration";
+import {
+  CreateAppointmentDTO,
+  AvailableTimeSlotsDTO,
+  ServiceResponseDTO,
+  CheckoutSessionResponse,
+} from "@/features/account/types";
+
+import { useUser } from "@/context/UserContext";
+
 export default function ServiceDetailsPage() {
   const { serviceId } = useParams<{ serviceId: string }>();
   const [service, setService] = useState<ServiceResponseDTO | null>(null);
@@ -24,6 +41,9 @@ export default function ServiceDetailsPage() {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState<boolean>(false);
   const [isLoadingService, setIsLoadingService] = useState<boolean>(false);
+  const [isLoadingAppointment, setIsLoadingAppointment] =
+    useState<boolean>(false);
+  const [appointmentError, setAppointmentError] = useState<string | null>(null);
   const [availabilityError, setAvailabilityError] = useState<string | null>(
     null
   );
@@ -31,6 +51,15 @@ export default function ServiceDetailsPage() {
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<Set<string>>(
     new Set()
   );
+  const [note, setNote] = useState<string | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
+  const [guestEmail, setGuestEmail] = useState<string>("");
+
+  const { user } = useUser();
+
+  const buildAppointmentTime = (date: Date, time: string) => {
+    return `${toISO(date)}T${time}:00`;
+  };
 
   useEffect(() => {
     if (!serviceId || !date) return;
@@ -84,9 +113,44 @@ export default function ServiceDetailsPage() {
 
   const canBook = Boolean(time) && !isLoadingSlots && !availabilityError;
 
-  const handleBook = () => {
-    if (!canBook || !service) return;
-    console.log("Booked!");
+  const handleBook = async () => {
+    if (!canBook || !service || !serviceId || !time) return;
+
+    if (!user && !guestEmail) {
+      setAppointmentError("Please enter an email for your receipt");
+      return;
+    }
+
+    try {
+      setIsLoadingAppointment(true);
+      setAppointmentError(null);
+
+      const appointmentTime = buildAppointmentTime(date, time);
+
+      const payload: CreateAppointmentDTO = {
+        appointmentTime,
+        serviceId,
+        receiptEmail: user ? null : guestEmail?.trim() || null,
+        note: note?.trim() || null,
+        addOnIds: Array.from(selectedAddOnIds),
+      };
+
+      console.log(payload);
+
+      const res = await apiPost<CheckoutSessionResponse>(
+        `/appointments/book`,
+        payload
+      );
+
+      setIsBookingModalOpen(false);
+
+      window.location.href = res.checkoutUrl;
+    } catch (err) {
+      console.error(err);
+      setAppointmentError("Failed to book appointment");
+    } finally {
+      setIsLoadingAppointment(false);
+    }
   };
 
   const toggleAddOn = (id: string) => {
@@ -234,13 +298,17 @@ export default function ServiceDetailsPage() {
             </article>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button onClick={handleBook} disabled={!canBook}>
+              <Button
+                type="button"
+                onClick={() => setIsBookingModalOpen(true)}
+                disabled={!canBook}
+              >
                 {canBook && time
                   ? `Book ${formatJavaDate(`${toISO(date)}T${time}:00`)}`
                   : "Select a date & time to book"}
               </Button>
               <Button asChild variant="secondary">
-                <Link to="/services">Back</Link>
+                <Link to="/categories">Back</Link>
               </Button>
             </div>
           </div>
@@ -262,6 +330,62 @@ export default function ServiceDetailsPage() {
               />
             )}
           </div>
+
+          <Dialog
+            open={isBookingModalOpen}
+            onOpenChange={setIsBookingModalOpen}
+          >
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <div className="flex items-start justify-between">
+                  <DialogTitle>Confirm your booking</DialogTitle>
+                </div>
+              </DialogHeader>
+
+              {/* Guest Email */}
+              {!user && (
+                <div className="space-y-2">
+                  <Label htmlFor="guestEmail">Email for confirmation</Label>
+                  <Input
+                    id="guestEmail"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={guestEmail}
+                    onChange={(e) => setGuestEmail(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    We'll only use this to send your booking confirmation and
+                    receipt.
+                  </p>
+                </div>
+              )}
+
+              {/* Notes */}
+              <div className="space-y-2">
+                <Label htmlFor="note">Notes (optional)</Label>
+                <Textarea
+                  id="note"
+                  placeholder="Anything the stylist should know?"
+                  value={note ?? ""}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
+
+              {appointmentError && (
+                <p className="text-sm text-destructive">{appointmentError}</p>
+              )}
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  onClick={handleBook}
+                  disabled={isLoadingAppointment}
+                >
+                  {isLoadingAppointment ? "Booking..." : "Book"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </section>

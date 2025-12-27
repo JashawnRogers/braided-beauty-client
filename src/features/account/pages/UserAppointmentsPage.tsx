@@ -101,7 +101,7 @@ export function UserAppointmentsPage() {
           View, manage and book your next appointments.
         </p>
         <Button variant="default" size="lg" className="mt-3">
-          <Link to="/services">Book Next Appointment</Link>
+          <Link to="/categories">Book Next Appointment</Link>
         </Button>
       </header>
 

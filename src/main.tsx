@@ -16,8 +16,10 @@ import { UserAppointmentsPage } from "@/features/account/pages/UserAppointmentsP
 import { UserProfilePage } from "@/features/account/pages/UserProfilePage";
 import { userDashboardLoader } from "@/features/account/loaders/userDashboardLoader";
 import { UserProvider } from "@/context/UserContext";
-import { OAuthCallbackPage } from "./features/auth/OAuthCallbackPage";
-import { ListServicesPage } from "./features/marketing/pages/ListServicesPage";
+import { OAuthCallbackPage } from "@/features/auth/OAuthCallbackPage";
+import { ListServicesPage } from "@/features/marketing/pages/ListServicesPage";
+import BookingSuccessPage from "@/features/marketing/pages/BookingSuccessPage";
+import BookingCancelPage from "@/features/marketing/pages/BookingCancelPage";
 
 const router = createBrowserRouter([
   {
@@ -44,8 +46,16 @@ const router = createBrowserRouter([
         element: <ListServicesPage />,
       },
       {
-        path: "/book/:serviceId",
+        path: "/book/service/:serviceId",
         element: <ServiceDetailsPage />,
+      },
+      {
+        path: "/book/success",
+        element: <BookingSuccessPage />,
+      },
+      {
+        path: "/book/cancel",
+        element: <BookingCancelPage />,
       },
       {
         path: "/auth/callback",

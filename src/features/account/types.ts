@@ -1,11 +1,5 @@
 export type UserType = "ADMIN" | "MEMBER" | "GUEST" | string;
 
-export type AppointmentStatus =
-  | "BOOKED"
-  | "CONFIRMED"
-  | "COMPLETED"
-  | "CANCELLED";
-
 export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
 
 export type LoyaltyTier = "GOLD" | "SILVER" | "BRONZE";
@@ -48,11 +42,25 @@ export interface LoyaltyRecord {
   // tierName: string;
 }
 
+export type AppointmentStatus =
+  | "BOOKED"
+  | "CONFIRMED"
+  | "COMPLETED"
+  | "CANCELLED";
+
 export interface AppointmentSummaryDTO {
   id: string;
   serviceName: string | null | undefined;
   appointmentTime: string | null | undefined; // ISO LocalDateTime from backend
   appointmentStatus: string | null | undefined;
+}
+
+export interface CreateAppointmentDTO {
+  appointmentTime: string;
+  serviceId: string;
+  receiptEmail: string | null;
+  note: string | null;
+  addOnIds: string[] | null;
 }
 
 export interface UserDashboardDTO {
@@ -138,4 +146,10 @@ export interface RegisterRequestPayload {
 
 export interface UserJwtDTO {
   token: string;
+}
+
+// Payment
+export interface CheckoutSessionResponse {
+  checkoutUrl: string;
+  appointmentId: string;
 }
