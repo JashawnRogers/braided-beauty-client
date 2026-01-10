@@ -1,32 +1,38 @@
 import {
   Edit,
-  Form,
   TextInput,
-  NumberInput,
   SelectInput,
-  AutocompleteInput,
   DateField,
   SaveButton,
   DeleteButton,
   TextField,
+  SimpleForm,
+  FormToolbar,
+  EmailField,
+  NumberInput,
+  ReferenceArrayInput,
+  AutocompleteArrayInput,
+  AutocompleteInput,
 } from "@/features/admin";
-import { ReferenceInput } from "@/features/admin/components/inputs/reference-input";
-import { useForm } from "react-hook-form";
+import { PayViaCashButton } from "../../components/buttons/pay-via-cash-button";
+import { ReferenceInput } from "../../components/inputs/reference-input";
 
 const APPOINTMENT_STATUS_CHOICES = [
-  { id: "SCHEDULED", name: "Scheduled" },
   { id: "CONFIRMED", name: "Confirmed" },
-  { id: "COMPLETED", name: "Completed" },
   { id: "CANCELLED", name: "Cancelled" },
+  { id: "COMPLETED", name: "Completed" },
   { id: "NO_SHOW", name: "No Show" },
+  { id: "PENDING_CONFIRMATION", name: "Pending confirmation" },
 ];
 
 const PAYMENT_STATUS_CHOICES = [
-  { id: "PENDING", name: "Pending" },
-  { id: "AUTHORIZED", name: "Authorized" },
-  { id: "PAID", name: "Paid" },
+  { id: "PENDING_PAYMENT", name: "Pending payment" },
+  { id: "PAID_DEPOSIT", name: "Paid deposit" },
+  { id: "PAID_IN_FULL_ACH", name: "Paid in full (ACH)" },
+  { id: "PAID_IN_FULL_CASH", name: "Paid in full (CASH)" },
+  { id: "PAYMENT_FAILED", name: "Payment failed" },
   { id: "REFUNDED", name: "Refunded" },
-  { id: "FAILED", name: "Failed" },
+  { id: "NO_DEPOSIT_REQUIRED", name: "No deposit required" },
 ];
 
 // Validators
@@ -34,8 +40,6 @@ const required =
   (msg = "Required") =>
   (v: any) =>
     v == null || v === "" ? msg : undefined;
-const nonNegative = (v: any) =>
-  v != null && Number(v) < 0 ? "Must be greater than or equal to 0" : undefined;
 
 // Helpers for datetime-local <-> ISO string
 const toLocalInput = (iso?: string | null) => {
@@ -54,30 +58,57 @@ const fromLocalInput = (local?: string | null) => {
   return new Date(ms).toISOString();
 };
 
-export default function AppointmentEdit() {
-  const form = useForm();
-
+function AppointmentEditToolbar() {
   return (
-    <Edit>
-      <Form {...form}>
+    <FormToolbar className="mt-6 flex space-x-5 justify-items-end border-t pt-4">
+      <DeleteButton />
+      <SaveButton />
+    </FormToolbar>
+  );
+}
+
+export default function AppointmentEdit() {
+  return (
+    <Edit
+      title="Appointment"
+      transform={(data) => ({
+        appointmentId: data.id,
+        note: data.note ?? null,
+        cancelReason: data.cancelReason ?? null,
+        serviceId: data.serviceId,
+        addOnIds: data.addOnIds ?? null,
+        tipAmount: data.tipAmount ?? null,
+        paymentStatus: data.paymentStatus,
+        appointmentStatus: data.appointmentStatus,
+        appointmentTime: data.appointmentTime,
+      })}
+    >
+      <SimpleForm
+        toolbar={<AppointmentEditToolbar />}
+        className="w-full"
+        sanitizeEmptyValues
+      >
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {/* Left: editable appointment fields */}
-          <section className="rounded-md border p-4">
+          <section className="rounded-md border p-4 space-y-6">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
               Appointment
             </h3>
 
-            <ReferenceInput
-              source="serviceId"
-              reference="services"
-              label="Service"
-            >
-              <AutocompleteInput optionText="name" />
+            <ReferenceInput source="serviceId" reference="services">
+              <AutocompleteInput
+                source="name"
+                label="Service"
+                className="min-h-14"
+              />
             </ReferenceInput>
+
+            <ReferenceArrayInput source="addOnIds" reference="addons">
+              <AutocompleteArrayInput label="Add-Ons" optionText="name" />
+            </ReferenceArrayInput>
 
             <TextInput
               source="appointmentTime"
-              label="When"
+              label="Appointment Time"
               type="datetime-local"
               format={toLocalInput} // record -> input
               parse={fromLocalInput} // input -> record
@@ -86,34 +117,31 @@ export default function AppointmentEdit() {
 
             <SelectInput
               source="appointmentStatus"
-              label="Status"
+              label="Appointment Status"
               choices={APPOINTMENT_STATUS_CHOICES}
               validate={required()}
             />
             <SelectInput
               source="paymentStatus"
-              label="Payment"
+              label="Payment Status"
               choices={PAYMENT_STATUS_CHOICES}
               validate={required()}
             />
 
             <NumberInput
-              source="depositAmount"
-              label="Deposit"
-              step={0.01}
-              min={0}
-              validate={nonNegative}
+              source="tipAmount"
+              label="Tip (Only update for cash payments)"
             />
+
             <NumberInput
-              source="pointsEarned"
-              label="Points Earned"
-              min={0}
+              source="totalAmount"
+              label="Total Cost (including tip)"
               disabled
             />
 
-            {/* Stripe + Note */}
-            <TextInput source="stripePaymentId" label="Stripe Payment ID" />
-            <TextInput source="note" label="Note" />
+            <NumberInput source="remainingBalance" label="Remaining Balance" />
+
+            {/* Note */}
           </section>
 
           {/* Right: read-only meta & embedded service info (optional) */}
@@ -125,29 +153,34 @@ export default function AppointmentEdit() {
               <span className="text-muted-foreground">ID</span>
               <TextField source="id" />
 
+              <span className="text-muted-foreground">Customer Name</span>
+              <TextField source="customerName" />
+
+              <span className="text-muted-foreground">Customer Email</span>
+              <EmailField source="customerEmail" aria-disabled />
+
               <span className="text-muted-foreground">Created</span>
-              <DateField source="createdAt" showTime />
+              <DateField source="createdAt" showDate showTime />
 
               <span className="text-muted-foreground">Updated</span>
-              <DateField source="updatedAt" showTime />
+              <DateField source="updatedAt" showDate showTime />
             </div>
 
-            <div className="mt-4 grid grid-cols-[10rem,1fr] items-start gap-y-2 text-sm">
-              <span className="text-muted-foreground">Service Name</span>
-              <TextField source="service.name" />
-              <span className="text-muted-foreground">Service Price</span>
-              <TextField source="service.price" />
-              <span className="text-muted-foreground">Service Duration</span>
-              <TextField source="service.durationMinutes" />
+            <TextInput
+              source="note"
+              label="Notes"
+              multiline
+              rows={4}
+              maxLength={250}
+              className="min-w-full mt-4"
+            />
+
+            <div className="flex mt-10 gap-2">
+              <PayViaCashButton />
             </div>
           </section>
         </div>
-
-        <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <DeleteButton />
-          <SaveButton />
-        </div>
-      </Form>
+      </SimpleForm>
     </Edit>
   );
 }

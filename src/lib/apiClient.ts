@@ -1,13 +1,22 @@
 import { hardLogout, refreshAccessToken } from "./authClient";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
+const ADMIN_API_BASE_URL = import.meta.env.VITE_SERVER_ADMIN_API_URL;
 
 async function request<T>(
   path: string,
   init: RequestInit = {},
   retry = true
 ): Promise<T> {
-  const url = `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  let url = "";
+  if (
+    path === "/appointment/closeout-cash" ||
+    path === "/appointment/closeout-stripe"
+  ) {
+    url = `${ADMIN_API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  } else {
+    url = `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  }
 
   const headers = new Headers(init.headers || {});
   headers.set("Accept", "application/json");

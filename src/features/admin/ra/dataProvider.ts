@@ -40,7 +40,10 @@ const resourceMap: Record<string, ResourceConfig> = {
     list: "users/all-users",
     getOne: "users",
   },
-  appointments: { base: "appointment" },
+  appointments: {
+    base: "appointment",
+    list: "appointment/all-appointments",
+  },
   services: { base: "service" },
   hours: { base: "hours" },
   addons: { base: "addons" },
@@ -313,7 +316,7 @@ export default function springDataProvider(
         ? JSON.stringify((({ ...rest }) => rest)(params.data as any))
         : JSON.stringify(params.data);
 
-      console.log("[dataProvider.update] PUT", url, "body:", params.data);
+      console.log("[dataProvider.update] PATCH", url, "body:", params.data);
       const { json } = await httpClient(url, {
         method: "PATCH",
         body,

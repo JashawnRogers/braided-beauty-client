@@ -9,10 +9,12 @@ import {
   DeleteButton,
   SimpleForm,
   FormToolbar,
-  DataTable,
+  ArrayField,
 } from "@/features/admin";
 import { useRecordContext } from "ra-core";
 import { phone } from "../../../../lib/formatPhone";
+import { Datagrid } from "react-admin";
+import { MoneyField } from "../../components/fields/fields";
 const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },
   { id: "MEMBER", name: "Member" },
@@ -31,23 +33,13 @@ const nonNegative = (v: any) =>
 
 function RecentAppointmentsPanel() {
   const record = useRecordContext<any>();
-
-  const rows = record?.appointments ?? [];
-
-  if (!rows.length) {
-    return (
-      <section className="w-full rounded-md border p-4 mb-6">
-        <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
-          Recent Appointments
-        </h3>
-        <div className="text-sm text-muted-foreground">
-          No recent appointments to show.
-        </div>
-      </section>
-    );
-  }
-
-  const data = rows.map((r: any) => ({ ...r, id: r.id }));
+  const recentAppointments = (record?.appointments ?? [])
+    .slice()
+    .sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    )
+    .slice(0, 5);
 
   return (
     <section className="w-full rounded-md border p-4 mb-6">
@@ -55,21 +47,41 @@ function RecentAppointmentsPanel() {
         Recent Appointments
       </h3>
 
-      <DataTable
-        data={data}
-        rowClick={(record: any) => `/appointments/${record.id}`}
-      >
-        <DataTable.Col
-          label="Date"
-          source="appointmentTime"
-          render={(row: any) =>
-            row.start ? new Date(row.start).toLocaleString() : "-"
-          }
-        />
-        <DataTable.Col label="Service" source="service.name" />
-        <DataTable.Col label="Status" source="appointmentStatus" />
-        <DataTable.Col label="Payment" source="paymentStatus" />
-      </DataTable>
+      {!recentAppointments.length ? (
+        <div className="text-sm text-muted-foreground">
+          No recent appointments to show.
+        </div>
+      ) : (
+        <ArrayField
+          record={{
+            id: record?.id ?? "user",
+            appointments: recentAppointments,
+          }}
+          source="appointments"
+        >
+          <Datagrid
+            bulkActionButtons={false}
+            rowClick={(_id, _resource, row) => `/appointments/${row.id}`}
+          >
+            <DateField
+              source="appointmentTime"
+              aria-label="Date"
+              showDate
+              showTime
+            />
+            <TextField source="serviceName" aria-label="Service" />
+            <TextField
+              source="appointmentStatus"
+              aria-label="Appointment Status"
+            />
+            <TextField source="paymentStatus" aria-label="Payment Status" />
+            <MoneyField
+              source="totalAmount"
+              label="Total Amount (including tip)"
+            />
+          </Datagrid>
+        </ArrayField>
+      )}
     </section>
   );
 }

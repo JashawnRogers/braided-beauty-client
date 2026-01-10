@@ -68,8 +68,9 @@ export default function ServiceDetailsPage() {
       try {
         setIsLoadingSlots(true);
         setAvailabilityError(null);
-
+        console.log("Service Id: " + serviceId);
         const dateStr = toISO(date);
+        console.log("dateStr: " + dateStr);
         const data = await apiGet<AvailableTimeSlotsDTO[]>(
           `/availability?serviceId=${serviceId}&date=${dateStr}`
         );
