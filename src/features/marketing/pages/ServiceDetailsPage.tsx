@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -56,6 +56,8 @@ export default function ServiceDetailsPage() {
   const [guestEmail, setGuestEmail] = useState<string>("");
 
   const { user } = useUser();
+
+  const navigate = useNavigate();
 
   const buildAppointmentTime = (date: Date, time: string) => {
     return `${toISO(date)}T${time}:00`;
@@ -145,10 +147,22 @@ export default function ServiceDetailsPage() {
 
       setIsBookingModalOpen(false);
 
-      window.location.href = res.checkoutUrl;
+      if (!res.paymentRequired) {
+        if (!res.confirmationToken) {
+          throw new Error("Missing confirmation token from server");
+        }
+
+        navigate(
+          `/book/success?id=${res.appointmentId}&token=${res.confirmationToken}`
+        );
+        return;
+      }
+
+      window.location.href = res.checkoutUrl!;
     } catch (err) {
       console.error(err);
       setAppointmentError("Failed to book appointment");
+      navigate("/book/cancel");
     } finally {
       setIsLoadingAppointment(false);
     }

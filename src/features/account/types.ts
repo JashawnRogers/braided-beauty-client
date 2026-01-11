@@ -188,6 +188,8 @@ export interface UserMemberProfile {
 
 // -------------- PAYMENT ----------------
 export interface CheckoutSessionResponse {
-  checkoutUrl: string;
+  checkoutUrl: string | null;
   appointmentId: string;
+  paymentRequired: boolean;
+  confirmationToken: string | null;
 }
