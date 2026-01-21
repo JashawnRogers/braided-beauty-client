@@ -20,6 +20,7 @@ import { OAuthCallbackPage } from "@/features/auth/OAuthCallbackPage";
 import { ListServicesPage } from "@/features/marketing/pages/ListServicesPage";
 import BookingSuccessPage from "@/features/marketing/pages/BookingSuccessPage";
 import BookingCancelPage from "@/features/marketing/pages/BookingCancelPage";
+import FinalPaymentSuccessPage from "./features/marketing/pages/FinalPaymentSuccessPage";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/book/success",
         element: <BookingSuccessPage />,
+      },
+      {
+        path: "/book/final/success",
+        element: <FinalPaymentSuccessPage />,
       },
       {
         path: "/book/cancel",

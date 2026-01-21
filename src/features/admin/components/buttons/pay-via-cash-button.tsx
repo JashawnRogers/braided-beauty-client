@@ -99,7 +99,10 @@ export function PayViaCashButton() {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button type="button" disabled={isAlreadyPaid}>
+        <Button
+          type="button"
+          disabled={isAlreadyPaid || summary.remainingBalance == 0}
+        >
           Pay via Cash
         </Button>
       </AlertDialogTrigger>
@@ -129,8 +132,10 @@ export function PayViaCashButton() {
               {formatUsd(summary.tipAmount)}
             </div>
             <div>
-              <span className="text-muted-foreground">Total amount: </span>
-              {formatUsd(summary.totalAmount)}
+              <span className="text-muted-foreground">
+                Total to be paid today:{" "}
+              </span>
+              {formatUsd(summary.remainingBalance + summary.tipAmount)}
             </div>
           </div>
         </AlertDialogHeader>

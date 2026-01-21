@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useUser } from "@/context/UserContext";
 import type { CurrentUser } from "@/features/account/types";
+import { refreshAccessToken } from "@/lib/authClient";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -46,11 +47,12 @@ export default function LoginPage() {
         return;
       }
 
-      const data = await res.json();
-      const accessToken = data.accessToken as string;
-
-      // TODO: move to context or store
-      localStorage.setItem("accessToken", accessToken);
+      const accessToken = await refreshAccessToken();
+      if (!accessToken) {
+        setError("Login succeeded but refresh failed.");
+        setIsSubmitting(false);
+        return;
+      }
 
       const meRes = await fetch(
         `${import.meta.env.VITE_SERVER_API_URL}/user/me`,
@@ -65,7 +67,6 @@ export default function LoginPage() {
       );
 
       if (!meRes.ok) {
-        console.error("Failed to load current user after login");
         setError("Login succeeded but failed to fetch user info.");
         setIsSubmitting(false);
         return;

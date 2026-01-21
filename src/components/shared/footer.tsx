@@ -29,7 +29,7 @@ export default function Footer() {
             alt="Braided Beauty Logo"
             className="h-10 w-auto rounded-md"
           />
-          <p className="font-semibold">Loyalty Rewards</p>
+          <p className="font-semibold">Braided Beauty</p>
         </Link>
 
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">

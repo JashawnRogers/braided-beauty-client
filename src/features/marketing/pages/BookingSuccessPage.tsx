@@ -3,16 +3,26 @@ import { useSearchParams } from "react-router-dom";
 import { apiGet } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
+import { ReceiptCard } from "./components/ReceiptCard";
 
-type BookingConfirmation = {
+type AddOns = Readonly<{
+  id: string;
+  name: string;
+  price: number;
+}>;
+
+type BookingConfirmation = Readonly<{
   appointmentId: string;
   serviceName: string;
+  servicePrice: number;
   appointmentTime: string;
   durationMinutes: number;
   depositAmount: number;
   remainingBalance: number;
   paymentStatus: string;
-};
+  addOns: AddOns[];
+  totalAmount: number;
+}>;
 
 export default function BookingSuccessPage() {
   const [params] = useSearchParams();
@@ -39,7 +49,9 @@ export default function BookingSuccessPage() {
           const poll = async (): Promise<void> => {
             try {
               const data = await apiGet<BookingConfirmation>(
-                `/appointments/confirm/by-session?sessionId=${sessionId}`
+                `/appointments/confirm/by-session?sessionId=${encodeURIComponent(
+                  sessionId
+                )}`
               );
               setConfirmation(data);
             } catch (err: any) {
@@ -65,6 +77,7 @@ export default function BookingSuccessPage() {
           const data = await apiGet<BookingConfirmation>(
             `/appointments/confirm?id=${id}&token=${encodeURIComponent(token)}`
           );
+          console.log("Confirmation", data);
           setConfirmation(data);
           return;
         }
@@ -75,6 +88,17 @@ export default function BookingSuccessPage() {
 
     run();
   }, [sessionId, id, token]);
+
+  const calendarHref =
+    id && token
+      ? `webcal://localhost:8080/api/v1/appointments/confirm/ics?id=${id}&token=${encodeURIComponent(
+          token
+        )}`
+      : sessionId
+      ? `webcal://localhost:8080/api/v1/appointments/confirm/ics/by-session?sessionId=${encodeURIComponent(
+          sessionId
+        )}`
+      : null;
 
   // If neither exists, that means you navigated without params
   if (!sessionId && !(id && token)) {
@@ -115,48 +139,26 @@ export default function BookingSuccessPage() {
   return (
     <div className="min-h-[75vh] flex items-center">
       <div className="max-w-xl w-full mx-auto px-6 text-center">
-        <h1 className="text-3xl font-semibold">You’re booked 🎉</h1>
-        <p className="mt-2 text-muted-foreground">
-          Your appointment has been successfully scheduled.
-        </p>
-
-        <div className="mt-8 rounded-xl border bg-background shadow-sm">
-          <dl className="divide-y">
-            <div className="flex justify-between px-6 py-4 text-sm">
-              <dt className="text-muted-foreground">Service</dt>
-              <dd className="font-medium">{confirmation.serviceName}</dd>
-            </div>
-
-            <div className="flex justify-between px-6 py-4 text-sm">
-              <dt className="text-muted-foreground">Date & Time</dt>
-              <dd className="font-medium">
-                {new Date(confirmation.appointmentTime).toLocaleString()}
-              </dd>
-            </div>
-
-            <div className="flex justify-between px-6 py-4 text-sm">
-              <dt className="text-muted-foreground">Duration</dt>
-              <dd className="font-medium">
-                {confirmation.durationMinutes} minutes
-              </dd>
-            </div>
-
-            <div className="flex justify-between px-6 py-4 text-sm">
-              <dt className="text-muted-foreground">Deposit Paid</dt>
-              <dd className="font-medium">${confirmation.depositAmount}</dd>
-            </div>
-
-            <div className="flex justify-between px-6 py-4 text-sm">
-              <dt className="text-muted-foreground">Remaining Balance</dt>
-              <dd className="font-medium">
-                ${confirmation.remainingBalance ?? "0"}
-              </dd>
-            </div>
-          </dl>
-        </div>
-        <Button variant="outline" className="mt-4">
-          <Calendar /> Add to calendar
-        </Button>
+        <ReceiptCard
+          heading="You’re booked 🎉"
+          subheading="Your appointment has been successfully scheduled."
+          serviceName={confirmation.serviceName}
+          servicePrice={confirmation.servicePrice}
+          appointmentTime={confirmation.appointmentTime}
+          durationMinutes={confirmation.durationMinutes}
+          depositAmount={confirmation.depositAmount}
+          remainingBalance={confirmation.remainingBalance}
+          addOns={confirmation.addOns}
+          totalAmount={confirmation.totalAmount}
+          isFinalPayment={false}
+        />
+        {calendarHref && (
+          <a href={calendarHref}>
+            <Button variant="outline" className="mt-4">
+              <Calendar className="mr-2" /> Add to calendar
+            </Button>
+          </a>
+        )}
 
         <p className="mt-6 text-sm text-muted-foreground">
           A confirmation email has been sent with your booking details.

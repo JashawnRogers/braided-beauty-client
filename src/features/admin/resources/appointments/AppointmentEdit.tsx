@@ -14,8 +14,11 @@ import {
   AutocompleteArrayInput,
   AutocompleteInput,
 } from "@/features/admin";
+import { useWatch } from "react-hook-form";
+import { useRefresh, useNotify } from "ra-core";
 import { PayViaCashButton } from "../../components/buttons/pay-via-cash-button";
 import { ReferenceInput } from "../../components/inputs/reference-input";
+import { PayViaCardButton } from "../../components/buttons/pay-via-card-button";
 
 const APPOINTMENT_STATUS_CHOICES = [
   { id: "CONFIRMED", name: "Confirmed" },
@@ -67,9 +70,28 @@ function AppointmentEditToolbar() {
   );
 }
 
+function TipInput() {
+  const appointmentStatus = useWatch<{ appointmentStatus?: string }>({
+    name: "appointmentStatus",
+  });
+
+  const disableTip = appointmentStatus == "COMPLETED";
+
+  return <NumberInput source="tipAmount" label="Tip" disabled={disableTip} />;
+}
+
 export default function AppointmentEdit() {
+  const notify = useNotify();
+  const refresh = useRefresh();
+
+  const onSuccess = () => {
+    notify("Changes saved", { type: "success" });
+    refresh();
+  };
+
   return (
     <Edit
+      redirect={false}
       title="Appointment"
       transform={(data) => ({
         appointmentId: data.id,
@@ -82,6 +104,8 @@ export default function AppointmentEdit() {
         appointmentStatus: data.appointmentStatus,
         appointmentTime: data.appointmentTime,
       })}
+      mutationOptions={{ onSuccess }}
+      mutationMode="pessimistic"
     >
       <SimpleForm
         toolbar={<AppointmentEditToolbar />}
@@ -95,11 +119,7 @@ export default function AppointmentEdit() {
             </h3>
 
             <ReferenceInput source="serviceId" reference="services">
-              <AutocompleteInput
-                source="name"
-                label="Service"
-                className="min-h-14"
-              />
+              <AutocompleteInput label="Service" className="min-h-14" />
             </ReferenceInput>
 
             <ReferenceArrayInput source="addOnIds" reference="addons">
@@ -128,9 +148,12 @@ export default function AppointmentEdit() {
               validate={required()}
             />
 
+            <TipInput />
+
             <NumberInput
-              source="tipAmount"
-              label="Tip (Only update for cash payments)"
+              source="remainingBalance"
+              label="Remaining Balance (excluding tip)"
+              disabled
             />
 
             <NumberInput
@@ -138,10 +161,6 @@ export default function AppointmentEdit() {
               label="Total Cost (including tip)"
               disabled
             />
-
-            <NumberInput source="remainingBalance" label="Remaining Balance" />
-
-            {/* Note */}
           </section>
 
           {/* Right: read-only meta & embedded service info (optional) */}
@@ -177,6 +196,7 @@ export default function AppointmentEdit() {
 
             <div className="flex mt-10 gap-2">
               <PayViaCashButton />
+              <PayViaCardButton />
             </div>
           </section>
         </div>
