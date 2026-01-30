@@ -54,6 +54,12 @@ const resourceMap: Record<string, ResourceConfig> = {
     update: "loyalty/settings",
   },
   categories: { base: "category" },
+  businessSettings: { base: "business/settings" },
+  "business-settings": {
+    base: "business/settings",
+    getOne: "business/settings",
+    update: "business/settings",
+  },
 };
 
 /** Map alternate UI names to canonical resource keys */
@@ -163,7 +169,8 @@ function totalFrom(json: unknown, headers: Headers): number {
 }
 
 const isSingleton = (resource: string) =>
-  normalizeResource(resource) === "loyalty-settings";
+  normalizeResource(resource) === "loyalty-settings" ||
+  normalizeResource(resource) === "business-settings";
 
 type Loyalty = { points?: number | null; redeemedPoints?: number | null };
 
@@ -205,6 +212,14 @@ const normalizeLoyaltySettings = (r: any) => ({
   signupBonusPoints: r.signupBonusPoints,
 });
 
+const normalizeBusinessSettings = (r: any) => ({
+  id: "singleton",
+  companyPhoneNumber: r.companyPhoneNumber,
+  companyAddress: r.companyAddress,
+  companyEmail: r.companyEmail,
+  appointmentBufferTime: r.appointmentBufferTime,
+});
+
 const normalizeHours = <
   T extends RaRecord & { openTime?: string | null; closeTime?: string | null }
 >(
@@ -225,6 +240,7 @@ const normalizeRecordFor = (
   if (key === "users") return normalizeUser;
   if (key === "hours" && mode === "list") return normalizeHours;
   if (key === "loyalty-settings") return normalizeLoyaltySettings;
+  if (key === "business-settings") return normalizeBusinessSettings;
   return (x: any) => x;
 };
 

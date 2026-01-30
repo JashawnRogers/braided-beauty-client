@@ -24,6 +24,7 @@ import {
   ClipboardClock,
   CopyPlus,
   TextSelect,
+  Settings,
 } from "lucide-react";
 import AddOnEdit from "@/features/admin/resources/addons/AddOnEdit";
 import AddOnCreate from "@/features/admin/resources/addons/AddOnCreate";
@@ -31,6 +32,8 @@ import CreateBusinessHours from "@/features/admin/resources/businessHours/Create
 import { httpClient } from "@/lib/httpClient";
 import ListLoyaltyRedirect from "@/features/admin/resources/loyalty/ListLoyaltyRedirect";
 import "@/styles/index.css";
+import EditBusinessSettings from "../resources/businessSettings/EditBusinessSettings";
+import ListBusinessSettingsRedirect from "../resources/businessSettings/ListBusinessSettingsRedirect";
 
 const dataPovider = withLogger(
   springDataProvider(`${import.meta.env.VITE_SERVER_API_URL}/admin`, httpClient)
@@ -86,6 +89,14 @@ export default function AdminDashboard() {
         edit={EditLoyaltySettings}
         icon={ArrowBigUp}
         options={{ label: "Loyalty points" }}
+      />
+
+      <Resource
+        name="business-settings"
+        list={ListBusinessSettingsRedirect}
+        edit={EditBusinessSettings}
+        icon={Settings}
+        options={{ label: "Business settings" }}
       />
     </Admin>
   );
