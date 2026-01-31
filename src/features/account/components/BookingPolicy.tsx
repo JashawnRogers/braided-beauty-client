@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { MapPin, Clock, DollarSign, Ban, Brush, Phone } from "lucide-react";
+import { useBusinessSettingsContext } from "@/context/useBusinessSettingsContext";
+import { phone } from "@/lib/formatPhone";
 
 type BookingPolicyProps = {
   readonly className?: string;
@@ -14,6 +16,7 @@ export default function BookingPolicy({
     accent === "gold"
       ? "ring-[#c7a451] ring-1"
       : "ring-zinc-300 ring-1 dark:ring-zinc-700";
+  const settings = useBusinessSettingsContext();
 
   return (
     <section className={`mx-auto w-full ${className}`}>
@@ -61,7 +64,7 @@ export default function BookingPolicy({
             <div>
               <h3 className="text-sm font-semibold">Location</h3>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Phoenix, Arizona 85022
+                {settings?.companyAddress}
               </p>
             </div>
           </div>
@@ -93,8 +96,11 @@ export default function BookingPolicy({
             <div>
               <h3 className="text-sm font-semibold">Contact</h3>
               <p className="mt-1 text-sm">
-                <a className="hover:underline" href="tel:+14808618901">
-                  (480) 861-8901
+                <a
+                  className="hover:underline"
+                  href={settings?.companyPhoneNumber}
+                >
+                  {phone.formatFromE164(settings?.companyPhoneNumber)}
                 </a>
               </p>
               <div className="mt-2 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
@@ -147,8 +153,8 @@ export default function BookingPolicy({
             <div>
               <h3 className="text-sm font-semibold">Payment</h3>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Remaining balances are <strong>cash only</strong>. No other
-                payment methods accepted.
+                We now accept debit and credit as a valid form of payment.
+                Payment is due after appointment is completed.
               </p>
             </div>
           </div>
@@ -182,8 +188,6 @@ export default function BookingPolicy({
                 Please arrive with hair washed, blow-dried, and free of product
                 for best results.
               </p>
-              {/* Optional CTA */}
-              {/* <Button variant="secondary" size="sm" className="mt-3">Prep Guide</Button> */}
             </div>
           </div>
         </Card>

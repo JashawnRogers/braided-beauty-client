@@ -21,6 +21,17 @@ import { ListServicesPage } from "@/features/marketing/pages/ListServicesPage";
 import BookingSuccessPage from "@/features/marketing/pages/BookingSuccessPage";
 import BookingCancelPage from "@/features/marketing/pages/BookingCancelPage";
 import FinalPaymentSuccessPage from "./features/marketing/pages/FinalPaymentSuccessPage";
+import { BusinessSettingsProvider } from "./context/useBusinessSettingsContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -95,8 +106,12 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <UserProvider>
-      <RouterProvider router={router} />
-    </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <BusinessSettingsProvider>
+        <UserProvider>
+          <RouterProvider router={router} />
+        </UserProvider>
+      </BusinessSettingsProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

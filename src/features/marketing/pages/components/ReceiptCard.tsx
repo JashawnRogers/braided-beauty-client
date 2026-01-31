@@ -109,7 +109,7 @@ export function ReceiptCard({
         {isFinalPayment ? (
           <>
             <dt className="px-6 py-4 text-sm text-muted-foreground">
-              Appointment total less deposit
+              Remaining balance
             </dt>
             <dd className="px-6 py-4 text-sm font-semibold text-right">
               {formatUsd(aptCostLessDeposit)}
@@ -148,7 +148,7 @@ export function ReceiptCard({
         )}
 
         {/* Remaining balance */}
-        {remainingBalance != null && (
+        {remainingBalance != null && remainingBalance > 0 && (
           <>
             <dt className="px-6 py-4 text-sm text-muted-foreground">
               Remaining balance

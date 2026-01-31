@@ -127,8 +127,9 @@ export default function FinalPaymentSuccessPage() {
         />
 
         <p className="mt-6 text-sm text-muted-foreground">
-          Tip: if you’re the customer, you can close this page. The business
-          will still receive confirmation once processing completes.
+          Tip: You can close this page. The business will still receive
+          confirmation once processing completes and an emailed receipt will be
+          sent to you.
         </p>
       </div>
     </div>

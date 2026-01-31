@@ -6,6 +6,7 @@ import {
   SaveButton,
   FormToolbar,
 } from "@/features/admin";
+import { phone } from "@/lib/formatPhone";
 
 function SettingsToolbar() {
   return (
@@ -18,6 +19,10 @@ function SettingsToolbar() {
 export default function EditBusinessSettings() {
   return (
     <Edit
+      transform={(data) => ({
+        ...data,
+        companyPhoneNumber: phone.toE164(data.companyPhoneNumber) ?? "",
+      })}
       resource="business-settings"
       id="singleton"
       title="Edit Business Settings"
@@ -25,7 +30,12 @@ export default function EditBusinessSettings() {
       <SimpleForm toolbar={<SettingsToolbar />}>
         <TextInput source="companyAddress" label="Company Address" multiline />
 
-        <TextInput source="companyPhoneNumber" label="Company Phone Number" />
+        <TextInput
+          source="companyPhoneNumber"
+          label="Company Phone Number"
+          format={(value) => phone.formatFromE164(value)}
+          parse={(value) => phone.toRaw(value)}
+        />
 
         <TextInput source="companyEmail" label="Company Email Address" />
 
