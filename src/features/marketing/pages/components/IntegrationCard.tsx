@@ -22,9 +22,13 @@ export default function IntegrationCard({
   linkTitle,
 }: IntegrationCardProps) {
   return (
-    <Card className="p-6">
+    <Card className="p-6 rounded-xl border border-border bg-card shadow-sm">
       <div className="relative">
-        {img && <div className="w-full h-40 overflow-hidden">{img}</div>}
+        {img && (
+          <div className="w-full overflow-hidden rounded-lg bg-muted aspect-[16/10]">
+            {img}
+          </div>
+        )}
 
         {children && <div className="*:size-10">{children}</div>}
 

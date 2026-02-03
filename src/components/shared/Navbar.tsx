@@ -124,7 +124,7 @@ export function Navbar() {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className="block text-muted-foreground duration-150 hover:text-accent-foreground"
+                      className="block text-muted-foreground duration-150 hover:text-accent-foreground text-base font-semibold"
                     >
                       {item.name}
                     </Link>

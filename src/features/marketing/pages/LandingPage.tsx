@@ -5,12 +5,12 @@ import About from "@/components/ui/content-1";
 
 function LandingPage() {
   return (
-    <>
+    <div className="min-h-screen bg-background">
       <Hero />
       <Banner />
       <CallToAction />
       <About />
-    </>
+    </div>
   );
 }
 

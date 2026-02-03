@@ -165,12 +165,14 @@ export interface ServiceResponseDTO {
   price: number;
   addOns: AddOnResponseDTO[];
   durationMinutes: number;
+  coverImageUrl: string;
 }
 
 export interface ServiceCategoryResponseDTO {
   id: string;
   name: string;
   description: string;
+  coverImageUrl: string;
 }
 
 export interface UserMemberProfile {

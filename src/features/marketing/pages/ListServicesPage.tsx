@@ -3,15 +3,13 @@ import { useParams } from "react-router-dom";
 import IntegrationCard from "./components/IntegrationCard";
 import { apiGet } from "@/lib/apiClient";
 import { ServiceCategoryResponseDTO } from "@/features/account/types";
-import PLACEHOLDER from "@/assets/featured-work/featured-pic1.webp";
+// import PLACEHOLDER from "@/assets/featured-work/featured-pic1.webp";
 
 export function ListServicesPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [services, setServices] = useState<ServiceCategoryResponseDTO[]>([]);
   const { categoryId } = useParams<{ categoryId: string }>();
-
-  const image = <img src={PLACEHOLDER} alt="" className="object-cover" />;
 
   useEffect(() => {
     const getServices = async () => {
@@ -63,15 +61,21 @@ export function ListServicesPage() {
           {!isLoading && !error && (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-12">
               {services.map((service) => {
-                console.log("service:", service);
-                console.log("service.id:", service.id);
-
                 return (
                   <IntegrationCard
                     key={service.id ?? service.name}
                     title={service.name}
                     description={service.description}
-                    img={image}
+                    img={
+                      service.coverImageUrl ? (
+                        <img
+                          src={service.coverImageUrl}
+                          alt={service.name}
+                          className="h-40 w-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : null
+                    }
                     linkTitle="Book"
                     link={`/book/service/${service.id}`}
                   />

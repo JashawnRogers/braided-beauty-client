@@ -25,11 +25,6 @@ const required =
 const nonNegative = (v: any) =>
   v != null && Number(v) < 0 ? "Must be ≥ 0" : undefined;
 
-const isUrl =
-  (msg = "Invalid URL") =>
-  (v: string) =>
-    v && !/^https?:\/\/\S+$/i.test(v) ? msg : undefined;
-
 const maxLen =
   (n: number, msg = `Max ${n} characters`) =>
   (v: string) =>
@@ -116,18 +111,10 @@ export default function ServiceEdit() {
             </h3>
 
             <FileInput
-              source="photoUrl"
+              source="photoFiles"
               label="Photo URL"
-              multiple={true}
-              validate={isUrl()}
-              placeholder="https://example.com/photo.jpg"
-            />
-
-            <FileInput
-              source="videoUrl"
-              label="Video URL"
-              validate={isUrl()}
-              placeholder="https://example.com/video.mp4"
+              multiple
+              placeholder="Drag and drop an image here"
             />
 
             {/* Tiny preview area */}
@@ -166,35 +153,40 @@ export default function ServiceEdit() {
 }
 
 /**
- * Optional inline preview for photo/video based on current form values.
+ * Optional inline preview for photo based on current form values.
  * Falls back gracefully if fields are empty/invalid.
  */
 function MediaPreview() {
-  // local import to avoid polluting top-level bundle if you don’t use it elsewhere
-  const photoUrl: string | undefined = useWatch({ name: "photoUrl" });
-  const videoUrl: string | undefined = useWatch({ name: "videoUrl" });
+  const photoFiles: any[] = useWatch({ name: "photoFiles" }) ?? [];
 
-  const isValidUrl = (u?: string) => !!u && /^https?:\/\/\S+$/i.test(u);
+  const files = Array.isArray(photoFiles) ? photoFiles : [];
+
+  if (!files.length) return null;
 
   return (
     <div className="space-y-2">
-      {isValidUrl(photoUrl) ? (
-        <div className="rounded-md border p-2">
-          <p className="mb-2 text-xs text-muted-foreground">Photo preview</p>
-          <img
-            src={photoUrl}
-            alt="Service preview"
-            className="max-h-40 w-full rounded object-cover"
-          />
-        </div>
-      ) : null}
+      <p className="text-xs text-muted-foreground">Preview ({files.length})</p>
 
-      {isValidUrl(videoUrl) ? (
-        <div className="rounded-md border p-2">
-          <p className="mb-2 text-xs text-muted-foreground">Video preview</p>
-          <video src={videoUrl} controls className="h-40 w-full rounded" />
-        </div>
-      ) : null}
+      <div className="grid grid-cols-3 gap-2">
+        {files.slice(0, 6).map((item, idx) => {
+          const src =
+            item?.src ??
+            (item?.rawFile instanceof File
+              ? URL.createObjectURL(item.rawFile)
+              : null);
+
+          if (!src) return null;
+
+          return (
+            <img
+              key={idx}
+              src={src}
+              alt="Preview"
+              className="h-20 w-full rounded object-cover border"
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -75,10 +75,6 @@ export default function ServiceCreate() {
               <FileInput source="src" />
             </FileInput>
 
-            <FileInput source="videoUrl" label="Video" multiple={false}>
-              <FileInput source="src" />
-            </FileInput>
-
             <div className="mt-4 space-y-3">
               <MediaPreview />
             </div>
@@ -92,7 +88,6 @@ export default function ServiceCreate() {
 /** Inline media preview from the current form values */
 function MediaPreview() {
   const photoUrl: string | undefined = useWatch({ name: "photoUrl" });
-  const videoUrl: string | undefined = useWatch({ name: "videoUrl" });
 
   const isValidUrl = (u?: string) => !!u && /^https?:\/\/\S+$/i.test(u);
 
@@ -106,13 +101,6 @@ function MediaPreview() {
             alt="Service preview"
             className="max-h-40 w-full rounded object-cover"
           />
-        </div>
-      ) : null}
-
-      {isValidUrl(videoUrl) ? (
-        <div className="rounded-md border p-2">
-          <p className="mb-2 text-xs text-muted-foreground">Video preview</p>
-          <video src={videoUrl} controls className="h-40 w-full rounded" />
         </div>
       ) : null}
     </div>

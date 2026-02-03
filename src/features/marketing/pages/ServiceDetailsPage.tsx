@@ -232,7 +232,7 @@ export default function ServiceDetailsPage() {
       </div>
     );
   }
-
+  console.log("coverImageUrl", service.coverImageUrl);
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-6">

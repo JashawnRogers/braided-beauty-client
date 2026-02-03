@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -42,7 +42,7 @@ function Banner() {
   };
 
   return (
-    <div className="relative w-full max-w-sm mx-auto px-5 lg:mt-3">
+    <div className="relative w-full max-w-7xl mx-auto px-5 lg:mt-3">
       <Carousel
         setApi={setCarouselApi}
         opts={{ loop: true }}
@@ -51,7 +51,7 @@ function Banner() {
             startDelay: 2000,
           }),
         ]}
-        className="w-full max-w-7xl max-h-[600px] z-10"
+        className="w-full max-h-[600px] z-10"
       >
         <CarouselContent>
           {[
@@ -61,16 +61,29 @@ function Banner() {
             featuredPic4,
             featuredPic5,
           ].map((src, index) => (
-            <CarouselItem key={index} className="relative w-full h-[600px]">
-              <Card className="w-full h-full overflow-hidden">
-                <CardContent className="relative w-full h-full p-0">
+            <CarouselItem key={index} className="relative w-full">
+              <Card className="w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                <div className="relative w-full h-[520px] sm:h-[560px] lg:h-[600px]">
+                  {/* Blurred background fill (same image) */}
+                  <img
+                    src={src}
+                    loading="lazy"
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 h-full w-full object-cover blur-xl scale-105 opacity-40"
+                  />
+
+                  {/* Subtle side vignette to blend into the page */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-background/70" />
+
+                  {/* Main crisp image (no stretching) */}
                   <img
                     src={src}
                     loading="lazy"
                     alt={`Banner ${index + 1}`}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="relative mx-auto h-full w-auto object-contain scale-[1.60]"
                   />
-                </CardContent>
+                </div>
               </Card>
             </CarouselItem>
           ))}
@@ -102,7 +115,7 @@ function Banner() {
             key={index}
             onClick={() => scrollToIndex(index)}
             className={`w-3 h-3 rounded-full ${
-              currentIndex === index ? "bg-black" : "bg-gray-300"
+              currentIndex === index ? "bg-primary" : "bg-muted"
             }`}
           />
         ))}
