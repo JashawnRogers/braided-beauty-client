@@ -25,9 +25,15 @@ type UploadPurpose = "service-photo";
  */
 function extractFileOrKey(item: any): File | string | null {
   if (!item) return null;
-  if (typeof item === "string") return item; // already an S3 key
-  if (item instanceof File) return item;
-  if (item?.rawFile instanceof File) return item.rawFile;
+
+  // new upload
+  if (item.rawFile instanceof File) return item.rawFile;
+
+  // existing from server hydration
+  if (typeof item.title === "string" && item.title.trim()) return item.title;
+
+  if (typeof item === "string") return item;
+
   return null;
 }
 
@@ -38,6 +44,7 @@ async function uploadToS3AndReturnKey(
 ): Promise<string | null> {
   if (!fileOrKey) return null;
   if (typeof fileOrKey === "string") return fileOrKey; // already uploaded
+  if (fileOrKey.size === 0) throw new Error("File is empty");
 
   // 1) Ask YOUR server for presigned PUT
   const presigned = await apiPost<PresignPutResponse>("/media/presign-put", {
@@ -106,33 +113,32 @@ export async function transformServiceCreate(data: any) {
 export async function transformServiceEdit(
   data: any,
   options?: { previousData: any }
-): Promise<any> {
+) {
   const prev = options?.previousData ?? {};
-  const prevPhotos: string[] = Array.isArray(prev.photoKeys)
+  const prevKeys: string[] = Array.isArray(prev.photoKeys)
     ? prev.photoKeys
     : [];
 
-  // Source must match your FileInput:
-  const inputs = Array.isArray(data.photoFiles) ? data.photoFiles : [];
+  const inputs: any[] = Array.isArray(data.photoFiles) ? data.photoFiles : [];
 
-  // Convert current UI value → array of keys (upload Files, keep existing strings)
   const nextKeys: string[] = [];
   for (const item of inputs) {
     const fileOrKey = extractFileOrKey(item);
+
     const key = await uploadToS3AndReturnKey(
       fileOrKey,
       "service-photo",
       data.id
     );
+
     if (key) nextKeys.push(key);
   }
 
-  // Diff vs previous keys for incremental add/remove
-  const prevSet = new Set(prevPhotos);
+  const prevSet = new Set(prevKeys);
   const nextSet = new Set(nextKeys);
 
   const addPhotoKeys = nextKeys.filter((k) => !prevSet.has(k));
-  const removePhotoKeys = prevPhotos.filter((k) => !nextSet.has(k));
+  const removePhotoKeys = prevKeys.filter((k) => !nextSet.has(k));
 
   return {
     id: data.id,

@@ -166,6 +166,7 @@ export interface ServiceResponseDTO {
   addOns: AddOnResponseDTO[];
   durationMinutes: number;
   coverImageUrl: string;
+  photoUrls: string[];
 }
 
 export interface ServiceCategoryResponseDTO {

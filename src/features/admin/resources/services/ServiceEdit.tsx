@@ -13,8 +13,8 @@ import {
   FileInput,
 } from "@/features/admin";
 import { ReferenceInput } from "@/features/admin/components/inputs/reference-input";
-import { useWatch } from "react-hook-form";
 import { transformServiceEdit } from "../../../../lib/mediaTransform";
+import ExistingPhotos from "../../components/inputs/ExistingPhotos";
 
 // Simple validators
 const required =
@@ -45,10 +45,31 @@ export default function ServiceEdit() {
       mutationMode="pessimistic"
       transform={transformServiceEdit}
       queryOptions={{
-        select: (data) => ({
-          ...data,
-          addOnIds: data.addOnIds ?? data.addOns?.map((a: any) => a.id ?? []),
-        }),
+        select: (data) => {
+          const addOnIds =
+            data.addOnIds ?? data.addOns?.map((a: any) => a.id) ?? [];
+
+          // Build FileInput-friendly array for existing photos
+          const keys: string[] = Array.isArray(data.photoKeys)
+            ? data.photoKeys
+            : [];
+          const urls: string[] = Array.isArray(data.photoUrls)
+            ? data.photoUrls
+            : [];
+
+          const existingPhotoFiles = keys
+            .map((key, idx) => ({
+              title: key, // we'll use this as the key identity
+              src: urls[idx] ?? "", // presigned URL from backend
+            }))
+            .filter((x) => x.src);
+
+          return {
+            ...data,
+            addOnIds,
+            photoFiles: existingPhotoFiles, // ✅ THIS is what FileInput will render
+          };
+        },
       }}
     >
       <SimpleForm toolbar={<ServiceEditToolbar />}>
@@ -117,9 +138,8 @@ export default function ServiceEdit() {
               placeholder="Drag and drop an image here"
             />
 
-            {/* Tiny preview area */}
             <div className="mt-4 space-y-3">
-              <MediaPreview />
+              <ExistingPhotos />
             </div>
 
             <h3 className="mt-6 mb-3 text-sm font-semibold text-muted-foreground">
@@ -149,44 +169,5 @@ export default function ServiceEdit() {
         </div>
       </SimpleForm>
     </Edit>
-  );
-}
-
-/**
- * Optional inline preview for photo based on current form values.
- * Falls back gracefully if fields are empty/invalid.
- */
-function MediaPreview() {
-  const photoFiles: any[] = useWatch({ name: "photoFiles" }) ?? [];
-
-  const files = Array.isArray(photoFiles) ? photoFiles : [];
-
-  if (!files.length) return null;
-
-  return (
-    <div className="space-y-2">
-      <p className="text-xs text-muted-foreground">Preview ({files.length})</p>
-
-      <div className="grid grid-cols-3 gap-2">
-        {files.slice(0, 6).map((item, idx) => {
-          const src =
-            item?.src ??
-            (item?.rawFile instanceof File
-              ? URL.createObjectURL(item.rawFile)
-              : null);
-
-          if (!src) return null;
-
-          return (
-            <img
-              key={idx}
-              src={src}
-              alt="Preview"
-              className="h-20 w-full rounded object-cover border"
-            />
-          );
-        })}
-      </div>
-    </div>
   );
 }
