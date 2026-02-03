@@ -1,58 +1,94 @@
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { useEffect, useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 type PhotoItem = {
-  src?: string;
-  title?: string; // existing photos store S3 key here
-  rawFile?: File; // new uploads
+  src?: string; // existing S3 URL
+  title?: string; // S3 key (existing)
+  rawFile?: File; // newly added photo
 };
 
 export default function ExistingPhotos() {
   const { setValue } = useFormContext();
-  const photoFiles: PhotoItem[] = useWatch({ name: "photoFiles" }) ?? [];
 
-  if (!photoFiles.length) return null;
+  // stable fallback (avoids dependency warning + unnecessary reruns)
+  const empty: PhotoItem[] = [];
+  const photoFiles: PhotoItem[] = useWatch({ name: "photoFiles" }) ?? empty;
+
+  const previews = useMemo(() => {
+    return photoFiles.map((item) => {
+      const isNew = item?.rawFile instanceof File;
+      const isSaved = !isNew && (!!item?.title || !!item?.src);
+
+      // Existing saved photos: server-provided URL
+      if (item?.src) {
+        return { ...item, previewUrl: item.src, isNew, isSaved };
+      }
+
+      // New uploads: create object URL once
+      if (item.rawFile instanceof File) {
+        return {
+          ...item,
+          previewUrl: URL.createObjectURL(item.rawFile),
+          isNew,
+          isSaved,
+        };
+      }
+
+      return null;
+    });
+  }, [photoFiles]);
+
+  // cleanup object URLs for new uploads
+  useEffect(() => {
+    return () => {
+      previews.forEach((p) => {
+        if (p?.isNew && p.previewUrl?.startsWith("blob:")) {
+          URL.revokeObjectURL(p.previewUrl);
+        }
+      });
+    };
+  }, [previews]);
+
+  if (!previews.length) return null;
 
   const removeAt = (idx: number) => {
     const next = photoFiles.filter((_, i) => i !== idx);
     setValue("photoFiles", next, { shouldDirty: true, shouldTouch: true });
   };
 
-  const badgeClass =
-    "absolute left-1 bottom-1 rounded-full px-2 py-0.5 text-[10px] font-medium " +
-    "backdrop-blur bg-background/80 border shadow-sm";
-
   return (
     <div className="space-y-2">
       <div className="text-xs text-muted-foreground">
-        Photos ({photoFiles.length})
+        Photos ({previews.filter(Boolean).length})
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        {photoFiles.map((item, idx) => {
-          const isNew = item?.rawFile instanceof File;
-          const isSaved = !!item?.title && !isNew;
-
-          const src =
-            item?.src ??
-            (isNew ? URL.createObjectURL(item.rawFile as File) : null);
-
-          if (!src) return null;
+        {previews.map((item, idx) => {
+          if (!item?.previewUrl) return null;
 
           return (
             <div key={`${item.title ?? "new"}-${idx}`} className="relative">
               <img
-                src={src}
-                alt="Service"
+                src={item.previewUrl}
+                alt="Service photo"
                 className="h-20 w-full rounded object-cover border"
               />
 
               {/* Badge */}
-              {isNew ? (
-                <span className={badgeClass}>New</span>
-              ) : isSaved ? (
-                <span className={badgeClass}>Saved</span>
+              {item.isNew || item.isSaved ? (
+                <span
+                  className={[
+                    "absolute left-1 top-1 rounded-full px-2 py-0.5 text-[10px] font-medium",
+                    "border shadow-sm",
+                    item.isNew
+                      ? "bg-primary text-primary-foreground border-primary/40"
+                      : "bg-muted text-foreground border-border",
+                  ].join(" ")}
+                >
+                  {item.isNew ? "New" : "Existing"}
+                </span>
               ) : null}
 
               {/* Remove */}
