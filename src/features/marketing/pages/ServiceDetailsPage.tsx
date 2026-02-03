@@ -32,6 +32,7 @@ import {
 } from "@/features/account/types";
 
 import { useUser } from "@/context/UserContext";
+import ServiceGallery from "./components/ServiceGallery";
 
 export default function ServiceDetailsPage() {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -232,7 +233,6 @@ export default function ServiceDetailsPage() {
       </div>
     );
   }
-  console.log("coverImageUrl", service.coverImageUrl);
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-6">
@@ -241,13 +241,15 @@ export default function ServiceDetailsPage() {
           <div>
             <h1 className="text-3xl font-semibold">{service.name}</h1>
 
-            {/* {service.heroImage && (
-              <img
-                src={service.heroImage}
-                alt={service.name}
-                className="mt-6 w-full rounded-xl border"
-              />
-            )} */}
+            <ServiceGallery
+              images={
+                service.photoUrls?.length
+                  ? service.photoUrls
+                  : service.coverImageUrl
+                  ? [service.coverImageUrl]
+                  : []
+              }
+            />
 
             <article className="prose prose-zinc dark:prose-invert mt-6">
               <p>{service.description}</p>
