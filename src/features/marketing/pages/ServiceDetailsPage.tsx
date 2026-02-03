@@ -71,11 +71,20 @@ export default function ServiceDetailsPage() {
       try {
         setIsLoadingSlots(true);
         setAvailabilityError(null);
-        console.log("Service Id: " + serviceId);
+
         const dateStr = toISO(date);
-        console.log("dateStr: " + dateStr);
+
+        const addOnIdsArray = Array.from(selectedAddOnIds);
+        const addOnsQuery = addOnIdsArray.length
+          ? `&${addOnIdsArray
+              .map((id) => `addOnIds=${encodeURIComponent(id)}`)
+              .join("&")}`
+          : "";
+
         const data = await apiGet<AvailableTimeSlotsDTO[]>(
-          `/availability?serviceId=${serviceId}&date=${dateStr}`
+          `/availability?serviceId=${serviceId}&date=${encodeURIComponent(
+            dateStr
+          )}${addOnsQuery}`
         );
 
         setTimeSlots(toTimeSlots(data));
@@ -89,7 +98,7 @@ export default function ServiceDetailsPage() {
     };
 
     getAvailability();
-  }, [serviceId, date]);
+  }, [serviceId, date, selectedAddOnIds]);
 
   useEffect(() => {
     if (!serviceId) return;
@@ -180,6 +189,8 @@ export default function ServiceDetailsPage() {
       }
       return next;
     });
+
+    setTime(null); // To prevent stale time selection
   };
 
   const totalMinutes = useMemo(() => {
