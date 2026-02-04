@@ -13,13 +13,14 @@ import { Button } from "@/components/ui/button";
 import { AppointmentSummaryDTO, Page } from "../types";
 import { apiGet } from "@/lib/apiClient";
 import { Link } from "react-router-dom";
+import { formatJavaDate } from "@/lib/date";
 
 const PAST_PAGE_SIZE = 5;
 
 export function UserAppointmentsPage() {
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
 
-  const [upcoming, setUpcoming] = useState<AppointmentSummaryDTO[]>([]);
+  const [upcoming, setUpcoming] = useState<AppointmentSummaryDTO | null>(null);
   const [pastPage, setPastPage] = useState<Page<AppointmentSummaryDTO> | null>(
     null
   );
@@ -33,29 +34,23 @@ export function UserAppointmentsPage() {
   useEffect(() => {
     let isCancelled = false;
 
-    // fetchData() is called within the useEffect
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async function fetchData() {
       setIsLoading(true);
       setError(null);
 
       try {
         if (tab === "upcoming") {
-          const data = await apiGet<AppointmentSummaryDTO[]>(
+          const data = await apiGet<AppointmentSummaryDTO | null>(
             "/appointments/me/next"
           );
 
-          if (!isCancelled) {
-            setUpcoming(data);
-          }
+          if (!isCancelled) setUpcoming(data);
         } else {
           const data = await apiGet<Page<AppointmentSummaryDTO>>(
-            `/appointments/me/previous?page=${pastPageIndex}$size=${PAST_PAGE_SIZE}`
+            `/appointments/me/previous?page=${pastPageIndex}&size=${PAST_PAGE_SIZE}`
           );
 
-          if (!isCancelled) {
-            setPastPage(data);
-          }
+          if (!isCancelled) setPastPage(data);
         }
       } catch (err) {
         if (!isCancelled) {
@@ -63,20 +58,19 @@ export function UserAppointmentsPage() {
           setError("Something went wrong loading your appointments");
         }
       } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
-        }
+        if (!isCancelled) setIsLoading(false);
       }
-
-      fetchData();
-
-      return () => {
-        isCancelled = true;
-      };
     }
+
+    fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [tab, pastPageIndex]);
 
-  const rows = tab === "upcoming" ? upcoming : pastPage?.content ?? [];
+  const rows =
+    tab === "upcoming" ? (upcoming ? [upcoming] : []) : pastPage?.content ?? [];
 
   const handleCancel = async (appointmentId: string) => {
     // call cancel appointment endpoint
@@ -134,7 +128,7 @@ export function UserAppointmentsPage() {
 
           {error && <p className="py-6 text-sm text-destructive">{error}</p>}
 
-          {(rows.length === 0 || upcoming.length === 0) && (
+          {!isLoading && !error && rows.length === 0 && (
             <p className="py-6 text-sm text-muted-foreground">
               {tab === "upcoming"
                 ? "You don’t have any upcoming appointments."
@@ -158,7 +152,7 @@ export function UserAppointmentsPage() {
                 {rows.map((appointment) => (
                   <TableRow key={appointment.id}>
                     <TableCell className="whitespace-nowrap">
-                      {appointment.appointmentTime}
+                      {formatJavaDate(appointment.appointmentTime)}
                     </TableCell>
                     <TableCell>{appointment.serviceName}</TableCell>
                     <TableCell>

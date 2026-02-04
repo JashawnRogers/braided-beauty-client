@@ -20,7 +20,9 @@ async function request<T>(
 
   const headers = new Headers(init.headers || {});
   headers.set("Accept", "application/json");
-  headers.set("Content-Type", "application/json");
+  if (init.body !== undefined) {
+    headers.set("Content-Type", "application/json");
+  }
 
   const token = localStorage.getItem("accessToken");
   if (token) {
@@ -71,7 +73,18 @@ async function request<T>(
 
   if (res.status === 204) return undefined as T;
 
-  return (await res.json()) as T;
+  // Some endpoints may legitimately return 200 with an empty body (e.g. null),
+  // which will break res.json(). Handle that safely.
+  const text = await res.text();
+  if (!text) return undefined as T;
+
+  // If it's JSON, parse it. Otherwise return raw text.
+  const contentType = res.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    return JSON.parse(text) as T;
+  }
+
+  return text as unknown as T;
 }
 
 export const apiGet = <T>(path: string) => request<T>(path);
