@@ -23,6 +23,7 @@ import BookingCancelPage from "@/features/marketing/pages/BookingCancelPage";
 import FinalPaymentSuccessPage from "./features/marketing/pages/FinalPaymentSuccessPage";
 import { BusinessSettingsProvider } from "./context/useBusinessSettingsContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GuestCancelAppointmentPage } from "./features/marketing/pages/GuestCancelAppointmentPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: "/book/cancel",
         element: <BookingCancelPage />,
+      },
+      {
+        path: "/guest/cancel/:token",
+        element: <GuestCancelAppointmentPage />,
       },
       {
         path: "/auth/callback",

@@ -87,6 +87,32 @@ async function request<T>(
   return text as unknown as T;
 }
 
+async function publicRequest<T>(
+  path: string,
+  init: RequestInit = {}
+): Promise<T> {
+  const url = `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  console.log("PUBLIC REQUEST URL: " + url);
+
+  const headers = new Headers(init.headers || {});
+  headers.set("Accept", "application/json");
+  headers.set("Content-Type", "application/json");
+
+  const res = await fetch(url, { ...init, headers });
+
+  if (!res.ok) {
+    const text = await res.text();
+    let data: any = text;
+    try {
+      data = JSON.parse(text);
+    } catch {}
+    throw new Error(data?.message || data?.error || "Request failed");
+  }
+
+  if (res.status === 204) return undefined as T;
+  return (await res.json()) as T;
+}
+
 export const apiGet = <T>(path: string) => request<T>(path);
 export const apiPost = <T>(path: string, body?: unknown) =>
   request<T>(path, {
@@ -105,3 +131,10 @@ export const apiPatch = <T>(path: string, body?: unknown) =>
   });
 export const apiDelete = <T>(path: string) =>
   request<T>(path, { method: "DELETE" });
+
+export const apiPublicGet = <T>(path: string) => publicRequest<T>(path);
+export const apiPublicPost = <T>(path: string, body?: unknown) =>
+  publicRequest<T>(path, {
+    method: "POST",
+    body: body ? JSON.stringify(body) : undefined,
+  });
