@@ -61,7 +61,7 @@ export default function ServiceGallery({
           <img
             src={activeSrc}
             alt={alt}
-            className="h-[240px] w-full object-cover sm:h-[320px]"
+            className="h-[240px] w-full object-cover sm:h-[320px] rounded-md block"
             loading="lazy"
           />
 

@@ -248,10 +248,12 @@ export default function ServiceDetailsPage() {
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-6">
         <BookingPolicy />
-        <div className="pt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div>
-            <h1 className="text-3xl font-semibold">{service.name}</h1>
 
+        <h1 className="text-4xl font-semibold mt-10">{service.name}</h1>
+
+        <div className="pt-8 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-start">
+          {/* LEFT */}
+          <div className="self-start">
             <ServiceGallery
               images={
                 service.photoUrls?.length
@@ -342,10 +344,12 @@ export default function ServiceDetailsPage() {
           </div>
 
           {/* RIGHT: booking calendar (controlled) */}
-          {availabilityError && (
-            <p className="mb-2 text-sm text-destructive">{availabilityError}</p>
-          )}
-          <div className="md:pl-2">
+          <div className="self-start md:pl-6 mt-6">
+            {availabilityError && (
+              <p className="mb-2 text-sm text-destructive">
+                {availabilityError}
+              </p>
+            )}
             {isLoadingSlots ? (
               <p>Loading time slots...</p>
             ) : (
