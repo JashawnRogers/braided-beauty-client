@@ -25,11 +25,6 @@ const required =
 const nonNegative = (v: any) =>
   v != null && Number(v) < 0 ? "Must be ≥ 0" : undefined;
 
-const maxLen =
-  (n: number, msg = `Max ${n} characters`) =>
-  (v: string) =>
-    v && v.length > n ? msg : undefined;
-
 function ServiceEditToolbar() {
   return (
     <div className="mt-6 flex justify-end gap-2 border-t pt-4">
@@ -95,7 +90,7 @@ export default function ServiceEdit() {
               label="Description"
               multiline
               rows={4}
-              validate={maxLen(250)}
+              maxLength={250}
             />
 
             {/* Money fields (BigDecimal on backend) */}

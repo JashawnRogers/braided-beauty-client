@@ -42,6 +42,14 @@ export default function ServiceCreate() {
               <AutocompleteArrayInput label="Add-Ons" optionText="name" />
             </ReferenceArrayInput>
 
+            <TextInput
+              source="description"
+              label="Description"
+              multiline
+              rows={4}
+              maxLength={250}
+            />
+
             <NumberInput
               source="price"
               label="Price (USD)"
