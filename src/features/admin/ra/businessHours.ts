@@ -9,8 +9,8 @@ export const DAYS_OF_WEEK = [
 ];
 
 export const CLOSED_CHOICES = [
-  { id: false, name: "Open" },
-  { id: true, name: "Closed" },
+  { id: "false", name: "Open" },
+  { id: "true", name: "Closed" },
 ];
 
 export const TIME_MENU_PROPS = {
@@ -24,11 +24,17 @@ export const required =
   (v: any) =>
     v == null || v == "" ? msg : undefined;
 
+export const toBoolean = (v: any) => ["true", true, 1, "1"].includes(v);
+
 export const validateTimes = (values: any) => {
   const errors: Record<string, string> = {};
-  if (!values.isClosed) {
+
+  const isClosed = toBoolean(values.isClosed);
+
+  if (!isClosed) {
     if (!values.openTime) errors.openTime = "Required";
     if (!values.closeTime) errors.closeTime = "Required";
+
     if (
       values.openTime &&
       values.closeTime &&
@@ -37,6 +43,7 @@ export const validateTimes = (values: any) => {
       errors.closeTime = "Close time must be after open time";
     }
   }
+
   return errors;
 };
 

@@ -5,6 +5,7 @@ import {
   DAYS_OF_WEEK,
   required,
   validateTimes,
+  toBoolean,
 } from "@/features/admin/ra/businessHours";
 import RASelect from "../../components/inputs/RASelect";
 
@@ -23,7 +24,7 @@ export default function CreateBusinessHours() {
     <Create
       redirect="list"
       transform={(data) => {
-        const isClosed = ["true", true, 1, "1"].includes(data.isClosed);
+        const isClosed = toBoolean(data.isClosed);
         return {
           dayOfWeek: data.dayOfWeek,
           isClosed,
@@ -48,6 +49,8 @@ export default function CreateBusinessHours() {
               label="Open for business?"
               source="isClosed"
               choices={CLOSED_CHOICES}
+              format={(v) => (v === true ? "true" : v === false ? "false" : v)}
+              parse={(v) => v === "true"}
               className="py-3 w-1/2"
             />
             <SelectInput
