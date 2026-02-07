@@ -10,6 +10,7 @@ import { passwordIssues, sanitizePasswordInput } from "@/lib/password";
 import { useUser } from "@/context/UserContext";
 import { RegisterRequestPayload, CurrentUser } from "../account/types";
 import { apiGet, apiPost } from "@/lib/apiClient";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignUpPage() {
   const { setUser } = useUser();
@@ -22,6 +23,8 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
   const issues = useMemo(
     () =>
@@ -176,15 +179,31 @@ export default function SignUpPage() {
                   Password
                 </Label>
               </div>
-              <Input
-                type="password"
-                name="pwd"
-                id="pwd"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input sz-md variant-mixed"
-                required
-              />
+
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="pwd"
+                  id="pwd"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input sz-md variant-mixed pr-10"
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-0.5">
@@ -193,15 +212,31 @@ export default function SignUpPage() {
                   Confirm Password
                 </Label>
               </div>
-              <Input
-                type="password"
-                required
-                name="confirm"
-                id="confirm"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                className="input sz-md variant-mixed"
-              />
+
+              <div className="relative">
+                <Input
+                  type={showConfirm ? "text" : "password"}
+                  required
+                  name="confirm"
+                  id="confirm"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  className="input sz-md variant-mixed pr-10"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label={showConfirm ? "Hide password" : "Show password"}
+                >
+                  {showConfirm ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <ol className="mt-3 space-y-1 text-sm">
