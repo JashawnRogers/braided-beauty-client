@@ -14,6 +14,7 @@ import { AppointmentSummaryDTO, Page } from "../types";
 import { apiGet } from "@/lib/apiClient";
 import { Link } from "react-router-dom";
 import { formatJavaDate } from "@/lib/date";
+import { CancelAppointmentModal } from "../components/CancelAppointmentModal";
 
 const PAST_PAGE_SIZE = 5;
 
@@ -29,6 +30,26 @@ export function UserAppointmentsPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [reloadKey, setReloadKey] = useState(0);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<AppointmentSummaryDTO | null>(null);
+
+  const handleCancel = (appointment: AppointmentSummaryDTO) => {
+    setSelectedAppointment(appointment);
+    setCancelOpen(true);
+  };
+
+  const handleCanceled = () => {
+    setCancelOpen(false);
+    setSelectedAppointment(null);
+
+    setUpcoming(null);
+
+    // Force reload of upcoming data
+    setReloadKey((k) => k + 1);
+  };
 
   // Fetch data whenever tab or page changes
   useEffect(() => {
@@ -67,15 +88,10 @@ export function UserAppointmentsPage() {
     return () => {
       isCancelled = true;
     };
-  }, [tab, pastPageIndex]);
+  }, [tab, pastPageIndex, reloadKey]);
 
   const rows =
     tab === "upcoming" ? (upcoming ? [upcoming] : []) : pastPage?.content ?? [];
-
-  const handleCancel = async (appointmentId: string) => {
-    // call cancel appointment endpoint
-    console.log("Cancel appointment", appointmentId);
-  };
 
   const handleTabChange = (value: string) => {
     const nextTab = value as "upcoming" | "past";
@@ -165,7 +181,7 @@ export function UserAppointmentsPage() {
                         variant="outline"
                         size="sm"
                         className="border-red-200 text-red-600 hover:bg-red-50"
-                        onClick={() => handleCancel(appointment.id)}
+                        onClick={() => handleCancel(appointment)}
                       >
                         Cancel
                       </Button>
@@ -215,6 +231,12 @@ export function UserAppointmentsPage() {
           )}
         </CardContent>
       </Card>
+      <CancelAppointmentModal
+        open={cancelOpen}
+        onOpenChange={setCancelOpen}
+        appointment={selectedAppointment}
+        onCanceled={handleCanceled}
+      />
     </div>
   );
 }
