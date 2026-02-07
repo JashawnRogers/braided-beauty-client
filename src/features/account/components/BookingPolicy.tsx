@@ -1,7 +1,12 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { MapPin, Clock, DollarSign, Ban, Brush, Phone } from "lucide-react";
 import { useBusinessSettingsContext } from "@/context/useBusinessSettingsContext";
 import { phone } from "@/lib/formatPhone";
+import {
+  useBusinessHours,
+  BusinessHoursResponseDTO,
+} from "@/hooks/useBusinessHours";
 
 type BookingPolicyProps = {
   readonly className?: string;
@@ -12,11 +17,45 @@ export default function BookingPolicy({
   className = "",
   accent = "gold",
 }: BookingPolicyProps) {
+  const [showAllHours, setShowAllHours] = useState<boolean>(false);
+
   const accentRing =
     accent === "gold"
       ? "ring-[#c7a451] ring-1"
       : "ring-zinc-300 ring-1 dark:ring-zinc-700";
   const settings = useBusinessSettingsContext();
+  const {
+    data: hours,
+    isLoading: hoursLoading,
+    isError: hoursError,
+  } = useBusinessHours();
+
+  const formatTime = (t: string) => {
+    // t comes from LocalTime -> JSON like "06:00:00" or "06:00"
+    const [hh, mm] = t.split(":");
+    const h = Number(hh);
+    const m = Number(mm);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const hour12 = h % 12 === 0 ? 12 : h % 12;
+    return `${hour12}:${String(m).padStart(2, "0")} ${ampm}`;
+  };
+
+  const DAY_ORDER = [
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+  ] as const;
+
+  const hoursByDay = (hours ?? []).reduce<
+    Record<string, BusinessHoursResponseDTO>
+  >((acc, h) => {
+    acc[h.dayOfWeek] = h;
+    return acc;
+  }, {});
 
   return (
     <section className={`mx-auto w-full ${className}`}>
@@ -78,11 +117,81 @@ export default function BookingPolicy({
             </div>
             <div>
               <h3 className="text-sm font-semibold">Hours</h3>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Sat–Tues: 6:00 AM
-                <br />
-                Friday: 10:00 AM
-              </p>
+              <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                {hoursLoading && <p>Loading hours…</p>}
+
+                {hoursError && !hoursLoading && (
+                  <p className="text-xs text-muted-foreground">
+                    Hours unavailable
+                  </p>
+                )}
+
+                {!hoursLoading && !hoursError && (
+                  <>
+                    {/* Compact (today only) */}
+                    {!showAllHours &&
+                      (() => {
+                        const today = new Date().getDay(); // 0=Sun ... 6=Sat
+                        const todayKey = DAY_ORDER[today];
+                        const row = hoursByDay[todayKey];
+                        const label =
+                          todayKey[0] + todayKey.slice(1).toLowerCase();
+
+                        if (!row || row.isClosed) {
+                          return (
+                            <p>
+                              <span className="font-medium">{label}:</span>{" "}
+                              <span className="text-zinc-500">Closed</span>
+                            </p>
+                          );
+                        }
+
+                        return (
+                          <p>
+                            <span className="font-medium">{label}:</span>{" "}
+                            {formatTime(row.openTime)} –{" "}
+                            {formatTime(row.closeTime)}
+                          </p>
+                        );
+                      })()}
+
+                    {/* Expanded (all days) */}
+                    {showAllHours && (
+                      <div className="mt-2 space-y-1">
+                        {DAY_ORDER.map((day) => {
+                          const row = hoursByDay[day];
+                          const label = day[0] + day.slice(1).toLowerCase();
+
+                          if (!row || row.isClosed) {
+                            return (
+                              <p key={day}>
+                                <span className="font-medium">{label}:</span>{" "}
+                                <span className="text-zinc-500">Closed</span>
+                              </p>
+                            );
+                          }
+
+                          return (
+                            <p key={day}>
+                              <span className="font-medium">{label}:</span>{" "}
+                              {formatTime(row.openTime)} –{" "}
+                              {formatTime(row.closeTime)}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => setShowAllHours((v) => !v)}
+                      className="mt-2 text-xs font-medium text-primary hover:underline"
+                    >
+                      {showAllHours ? "Hide hours" : "View all hours"}
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </Card>
