@@ -15,6 +15,7 @@ import { apiGet } from "@/lib/apiClient";
 import { Link } from "react-router-dom";
 import { formatJavaDate } from "@/lib/date";
 import { CancelAppointmentModal } from "../components/CancelAppointmentModal";
+import { CheckCircle2, Clock, MapPin, Sparkles } from "lucide-react";
 
 const PAST_PAGE_SIZE = 5;
 
@@ -231,6 +232,80 @@ export function UserAppointmentsPage() {
           )}
         </CardContent>
       </Card>
+      {tab === "upcoming" && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Before your appointment
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="rounded-lg border p-4 transition-colors hover:border-amber-300/60 hover:bg-amber-50/40 dark:hover:bg-amber-950/20">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="mt-0.5 h-5 w-5 text-amber-600" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Come prepped</p>
+                    <p className="text-xs text-muted-foreground">
+                      Please arrive with your hair{" "}
+                      <span className="font-medium">washed and blow-dried</span>
+                      .
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border p-4 transition-colors hover:border-amber-300/60 hover:bg-amber-50/40 dark:hover:bg-amber-950/20">
+                <div className="flex items-start gap-3">
+                  <Clock className="mt-0.5 h-5 w-5 text-amber-600" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Arrival window</p>
+                    <p className="text-xs text-muted-foreground">
+                      There is a{" "}
+                      <span className="font-medium">
+                        10-minute grace period
+                      </span>
+                      . After that, a late fee may apply.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border p-4 transition-colors hover:border-amber-300/60 hover:bg-amber-50/40 dark:hover:bg-amber-950/20">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 text-amber-600" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Confirm details</p>
+                    <p className="text-xs text-muted-foreground">
+                      Double-check your date/time and add-ons before your visit.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border p-4 transition-colors hover:border-amber-300/60 hover:bg-amber-50/40 dark:hover:bg-amber-950/20">
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-5 w-5 text-amber-600" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Need help?</p>
+                    <p className="text-xs text-muted-foreground">
+                      If you have any questions, reply to your confirmation
+                      email.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              These reminders help your appointment start on time and go
+              smoothly.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       <CancelAppointmentModal
         open={cancelOpen}
         onOpenChange={setCancelOpen}
