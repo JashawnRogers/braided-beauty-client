@@ -58,10 +58,7 @@ export function UserDashboardPage() {
                     </span>
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    Reschedule
-                  </Button>
+                <div className="flex">
                   <Button variant="outline" size="sm">
                     Cancel
                   </Button>
