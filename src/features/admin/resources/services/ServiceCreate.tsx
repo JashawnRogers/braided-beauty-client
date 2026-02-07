@@ -10,8 +10,8 @@ import {
   SelectInput,
 } from "@/features/admin";
 import { ReferenceInput } from "@/features/admin/components/inputs/reference-input";
-import { useWatch } from "react-hook-form";
 import { transformServiceCreate } from "../../../../lib/mediaTransform";
+import ExistingPhotos from "../../components/inputs/ExistingPhotos";
 
 function ServiceCreateToolbar() {
   return (
@@ -79,38 +79,19 @@ export default function ServiceCreate() {
               Media
             </h3>
 
-            <FileInput source="photoFiles" multiple label="Photos">
-              <FileInput source="src" />
-            </FileInput>
+            <FileInput
+              source="photoFiles"
+              multiple
+              label="Photos (up to 5)"
+              placeholder="Drag and drop an image here"
+            />
 
             <div className="mt-4 space-y-3">
-              <MediaPreview />
+              <ExistingPhotos />
             </div>
           </section>
         </div>
       </SimpleForm>
     </Create>
-  );
-}
-
-/** Inline media preview from the current form values */
-function MediaPreview() {
-  const photoUrl: string | undefined = useWatch({ name: "photoUrl" });
-
-  const isValidUrl = (u?: string) => !!u && /^https?:\/\/\S+$/i.test(u);
-
-  return (
-    <div className="space-y-2">
-      {isValidUrl(photoUrl) ? (
-        <div className="rounded-md border p-2">
-          <p className="mb-2 text-xs text-muted-foreground">Photo preview</p>
-          <img
-            src={photoUrl}
-            alt="Service preview"
-            className="max-h-40 w-full rounded object-cover"
-          />
-        </div>
-      ) : null}
-    </div>
   );
 }

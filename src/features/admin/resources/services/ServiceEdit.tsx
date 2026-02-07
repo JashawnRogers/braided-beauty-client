@@ -128,7 +128,7 @@ export default function ServiceEdit() {
 
             <FileInput
               source="photoFiles"
-              label="Photo URL (up to 5)"
+              label="Photos (up to 5)"
               multiple
               placeholder="Drag and drop an image here"
             />

@@ -19,6 +19,7 @@ const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },
   { id: "MEMBER", name: "Member" },
   { id: "GUEST", name: "Guest" },
+  { id: "AMBASSADOR", name: "Ambassador" },
 ];
 
 // validation helpers
@@ -69,7 +70,7 @@ function RecentAppointmentsPanel() {
               showDate
               showTime
             />
-            <TextField source="serviceName" aria-label="Service" />
+            <TextField source="service.name" aria-label="Service" />
             <TextField
               source="appointmentStatus"
               aria-label="Appointment Status"
