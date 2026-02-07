@@ -161,7 +161,7 @@ export function UserAppointmentsPage() {
                   <TableHead>Date</TableHead>
                   <TableHead>Service</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
 
