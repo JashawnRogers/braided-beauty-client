@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import Logo from "@/assets/bb-logo.svg";
+import Logo from "@/assets/logos/braided-beauty-alt-dark.png";
 const links = [
   {
     title: "Contact",
@@ -24,12 +24,14 @@ export default function Footer() {
           aria-label="go home"
           className="mx-auto flex size-fit items-center gap-2"
         >
-          <img
-            src={Logo}
-            alt="Braided Beauty Logo"
-            className="h-10 w-auto rounded-md"
-          />
-          <p className="font-semibold">Braided Beauty</p>
+          <div className="flex flex-col gap-y-3">
+            <img
+              src={Logo}
+              alt="Braided Beauty Logo"
+              className="h-24 w-auto rounded-md"
+            />
+            <p className="font-semibold">Braided Beauty</p>
+          </div>
         </Link>
 
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
@@ -45,7 +47,7 @@ export default function Footer() {
         </div>
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           <Link
-            to="#"
+            to="https://www.facebook.com/share/17hdUKAB8/?mibextid=wwXlfr"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
@@ -64,33 +66,9 @@ export default function Footer() {
               ></path>
             </svg>
           </Link>
+
           <Link
-            to="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Threads"
-            className="text-muted-foreground hover:text-primary block"
-          >
-            <svg
-              className="size-6"
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M19.25 8.505c-1.577-5.867-7-5.5-7-5.5s-7.5-.5-7.5 8.995s7.5 8.996 7.5 8.996s4.458.296 6.5-3.918c.667-1.858.5-5.573-6-5.573c0 0-3 0-3 2.5c0 .976 1 2 2.5 2s3.171-1.027 3.5-3c1-6-4.5-6.5-6-4"
-                color="currentColor"
-              ></path>
-            </svg>
-          </Link>
-          <Link
-            to="#"
+            to="https://instagram.com/braidedbeautyphx"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -110,7 +88,7 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            to="#"
+            to="https://www.tiktok.com/@braidedbeautyphx"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="TikTok"

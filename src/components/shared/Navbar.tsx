@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Logo from "@/assets/bb-logo.svg";
+import Logo from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -90,9 +90,9 @@ export function Navbar() {
                   alt="Braided Beauty Logo"
                   loading="eager"
                   fetchPriority="high"
-                  className="h-10 w-auto rounded-md"
+                  className="h-24 w-auto rounded-md"
                 />
-                <h3 className="font-semibold">Braided Beauty</h3>
+                {/* <h3 className="font-semibold">Braided Beauty</h3> */}
               </Link>
 
               <button

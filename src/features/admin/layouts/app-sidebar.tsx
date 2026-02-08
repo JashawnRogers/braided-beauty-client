@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { House, List, LogOut } from "lucide-react";
-import Logo from "@/assets/bb-logo.svg";
+import Logo from "@/assets/logos/braided-beauty-alt-dark.png";
 import { hardLogout } from "@/lib/authClient";
 
 export function AppSidebar() {
@@ -45,7 +45,11 @@ export function AppSidebar() {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link to="/">
-                <img src={Logo} alt="Link to homepage" className="!size-5" />
+                <img
+                  src={Logo}
+                  alt="Link to homepage"
+                  className="!size-20 rounded-md"
+                />
                 <span className="text-base font-semibold">Braided Beauty</span>
               </Link>
             </SidebarMenuButton>

@@ -11,7 +11,6 @@ import {
   Typography,
   Skeleton,
   Alert,
-  Chip,
 } from "@mui/material";
 import {
   ResponsiveContainer,
@@ -182,7 +181,6 @@ export default function AdminAnalyticsDashboard() {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          <Chip label="Monthly" variant="outlined" />
           <Select
             size="small"
             value={month}
