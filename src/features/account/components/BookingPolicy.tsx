@@ -261,7 +261,8 @@ export default function BookingPolicy({
               <h3 className="text-sm font-semibold">Lateness</h3>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                 10-minute grace period. Please notify beforehand. A{" "}
-                <strong>$25</strong> fee applies after.
+                <strong>$25</strong> fee applies after 15 minutes. 20 mintues or
+                more may result in appointment cancellation.
               </p>
             </div>
           </div>
@@ -292,8 +293,9 @@ export default function BookingPolicy({
             <div>
               <h3 className="text-sm font-semibold">Cancellation</h3>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Cancel within <strong>48 hours</strong> of booking. Deposits can
-                be rescheduled once.
+                Reschedule at least <strong>48 hours prior</strong> to
+                appointment for a <strong>one time</strong> deposit transfer to
+                new appointment.
               </p>
             </div>
           </div>
@@ -308,8 +310,19 @@ export default function BookingPolicy({
             <div className="flex-1">
               <h3 className="text-sm font-semibold">Prep</h3>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Please arrive with hair washed, blow-dried, and free of product
-                for best results.
+                · Please arrive with hair washed, blow-dried, detaingled and
+                free of product for best results.
+              </p>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                · A prep fee of <strong>$25</strong> is incurred for hair
+                prepped inproperly.
+              </p>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                · Hair must be at least <strong>4 inches</strong> all around.
+              </p>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                · Hair loss or damaged edges? A phone consultation is{" "}
+                <strong>required</strong> before booking appointment.
               </p>
             </div>
           </div>
