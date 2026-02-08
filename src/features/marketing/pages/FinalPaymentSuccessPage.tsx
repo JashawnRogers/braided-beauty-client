@@ -21,6 +21,8 @@ type FinalPaymentConfirmation = Readonly<{
   paymentStatus: string;
   addOns: AddOns[];
   totalAmount: number;
+  discountPercent?: number | null;
+  discountAmount?: number | null;
 }>;
 
 export default function FinalPaymentSuccessPage() {
@@ -112,7 +114,7 @@ export default function FinalPaymentSuccessPage() {
     <div className="min-h-[75vh] flex items-center">
       <div className="max-w-xl w-full mx-auto px-6 text-center">
         <ReceiptCard
-          heading="Payment complete ✅"
+          heading="Payment complete!"
           subheading="Thanks! Your final payment has been received."
           serviceName={confirmation.serviceName}
           servicePrice={confirmation.servicePrice}
@@ -124,6 +126,8 @@ export default function FinalPaymentSuccessPage() {
           addOns={confirmation.addOns}
           totalAmount={confirmation.totalAmount}
           isFinalPayment={true}
+          discountAmount={confirmation.discountAmount}
+          discountPercent={confirmation.discountPercent}
         />
 
         <p className="mt-6 text-sm text-muted-foreground">

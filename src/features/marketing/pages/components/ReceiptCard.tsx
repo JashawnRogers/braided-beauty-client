@@ -26,6 +26,10 @@ type ReceiptCardProps = Readonly<{
 
   addOns?: AddOnLine[] | null;
 
+  // NEW (optional)
+  discountPercent?: number | null; // e.g. 15 for 15%
+  discountAmount?: number | null; // dollars
+
   // Optional label override per page
   heading?: string;
   subheading?: string;
@@ -36,6 +40,11 @@ type ReceiptCardProps = Readonly<{
 function formatUsd(n?: number | null) {
   if (n == null || !Number.isFinite(n)) return "-";
   return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
+}
+
+function toNumber(n?: number | null) {
+  const v = Number(n ?? 0);
+  return Number.isFinite(v) ? v : 0;
 }
 
 export function ReceiptCard({
@@ -50,6 +59,8 @@ export function ReceiptCard({
   tipAmount,
   addOns,
   totalAmount,
+  discountPercent,
+  discountAmount,
   isFinalPayment,
 }: ReceiptCardProps) {
   const safeAddOns = useMemo(() => addOns ?? [], [addOns]);
@@ -61,13 +72,24 @@ export function ReceiptCard({
 
   const hasTip = (tipAmount ?? 0) > 0;
 
-  const paidToday =
-    (servicePrice ?? 0) - (depositAmount ?? 0) + (tipAmount ?? 0) + addOnsTotal;
+  const svc = toNumber(servicePrice);
+  const dep = toNumber(depositAmount);
+  const tip = toNumber(tipAmount);
+  const discAmt = toNumber(discountAmount);
+  const discPct = Math.max(0, Math.min(100, toNumber(discountPercent)));
 
-  const aptCostLessDeposit =
-    (servicePrice ?? 0) + (addOnsTotal ?? 0) - (depositAmount ?? 0);
+  const hasDiscount = isFinalPayment && discAmt > 0 && discPct > 0;
 
-  const aptCostLessTip = (servicePrice ?? 0) + (addOnsTotal ?? 0);
+  // Existing values you already show:
+  const aptCostLessDeposit = svc + addOnsTotal - dep;
+  const aptCostLessTip = svc + addOnsTotal;
+
+  // Final payment “Paid today” should be (service + addOns - deposit - discount) + tip
+  // Deposit flow still shows deposit only (unchanged).
+  const paidTodayFinal = Math.max(
+    0,
+    aptCostLessDeposit - (hasDiscount ? discAmt : 0) + tip
+  );
 
   return (
     <div className="mt-32 rounded-xl border bg-background shadow-sm">
@@ -106,6 +128,18 @@ export function ReceiptCard({
           </>
         )}
 
+        {/* NEW: Discount (final payment only, if applicable) */}
+        {hasDiscount && (
+          <>
+            <dt className="px-6 py-4 text-sm text-muted-foreground">
+              Discount ({discPct}%)
+            </dt>
+            <dd className="px-6 py-4 text-sm font-medium text-right">
+              -{formatUsd(discAmt)}
+            </dd>
+          </>
+        )}
+
         {isFinalPayment ? (
           <>
             <dt className="px-6 py-4 text-sm text-muted-foreground">
@@ -133,7 +167,7 @@ export function ReceiptCard({
               Paid today
             </dt>
             <dd className="px-6 py-4 text-sm font-semibold text-right">
-              {formatUsd(Math.abs(paidToday))}
+              {formatUsd(paidTodayFinal)}
             </dd>
           </>
         ) : (
@@ -142,7 +176,7 @@ export function ReceiptCard({
               {"Paid today (deposit)"}
             </dt>
             <dd className="px-6 py-4 text-sm font-semibold text-right">
-              {formatUsd(Math.abs(depositAmount ?? 0))}
+              {formatUsd(Math.abs(dep))}
             </dd>
           </>
         )}
@@ -199,6 +233,16 @@ export function ReceiptCard({
                     <dd className="font-medium">{formatUsd(a.price)}</dd>
                   </div>
                 ))}
+
+                {/* NEW: Discount line in breakdown (final payment only, if applicable) */}
+                {hasDiscount && (
+                  <div className="flex justify-between px-4 py-3 text-sm">
+                    <dt className="text-muted-foreground">
+                      Discount ({discPct}%)
+                    </dt>
+                    <dd className="font-medium">-{formatUsd(discAmt)}</dd>
+                  </div>
+                )}
 
                 <div className="flex justify-between px-4 py-3 text-sm">
                   <dt className="text-muted-foreground">

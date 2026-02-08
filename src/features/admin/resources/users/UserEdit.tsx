@@ -141,9 +141,11 @@ export default function UserEdit() {
               parse={(value) => phone.toRaw(value) ?? ""}
               inputMode="numeric"
               placeholder="(123) 456-7890"
-              validate={(value) =>
-                phone.isValid(value) ? undefined : "Enter 10 digits"
-              }
+              validate={(value) => {
+                const v = String(value ?? "").trim();
+                if (!v) return undefined;
+                return phone.isValid(value) ? undefined : "Enter 10 digits";
+              }}
             />
 
             <SelectInput

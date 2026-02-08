@@ -140,7 +140,7 @@ export default function BookingSuccessPage() {
     <div className="min-h-[75vh] flex items-center">
       <div className="max-w-xl w-full mx-auto px-6 text-center">
         <ReceiptCard
-          heading="You’re booked 🎉"
+          heading="You’re booked!"
           subheading="Your appointment has been successfully scheduled."
           serviceName={confirmation.serviceName}
           servicePrice={confirmation.servicePrice}

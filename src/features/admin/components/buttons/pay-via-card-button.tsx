@@ -60,6 +60,8 @@ export function PayViaCardButton() {
       totalAmount: v.totalAmount ?? record?.totalAmount,
       paymentStatus: v.paymentStatus ?? record?.paymentStatus,
       appointmentStatus: v.appointmentStatus ?? record?.appointmentStatus,
+      discountAmount: v.discountAmount ?? null,
+      discountPercent: v.discountPercent ?? null,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [record]);
@@ -189,10 +191,18 @@ export function PayViaCardButton() {
                 {formatUsd(summary.tipAmount)}
               </div>
               <div>
+                <span className="text-muted-foreground">Discount amount: </span>
+                - {formatUsd(summary.discountAmount)}
+              </div>
+              <div>
                 <span className="text-muted-foreground">
                   Total to be paid today:{" "}
                 </span>
-                {formatUsd(summary.remainingBalance + summary.tipAmount)}
+                {formatUsd(
+                  summary.remainingBalance +
+                    summary.tipAmount -
+                    summary.discountAmount
+                )}
               </div>
             </div>
           </AlertDialogHeader>

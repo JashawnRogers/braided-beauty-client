@@ -156,9 +156,16 @@ export default function AppointmentEdit() {
             />
 
             <NumberInput
+              source="discountAmount"
+              label="Discount Amount"
+              disabled
+            />
+
+            <NumberInput
               source="totalAmount"
               label="Total Cost (including tip)"
               disabled
+              className="mb-5"
             />
           </section>
 

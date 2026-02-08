@@ -129,6 +129,8 @@ export interface AdminAppointmentRequestDTO {
   serviceId: string;
   addOnIds: string[] | null;
   tipAmount: number | null;
+  discountAmount?: number | null;
+  discountPercent?: number | null;
 }
 
 export interface AdminAppointmentSummaryDTO {
@@ -144,6 +146,8 @@ export interface AdminAppointmentSummaryDTO {
   customerName: string;
   customerEmail: string;
   tipAmount: number;
+  discountAmount?: number | null;
+  discountPercent?: number | null;
 }
 
 // -------------- SERVICE ----------------

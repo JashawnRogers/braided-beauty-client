@@ -28,21 +28,39 @@ export default function EditBusinessSettings() {
       title="Edit Business Settings"
     >
       <SimpleForm toolbar={<SettingsToolbar />}>
-        <TextInput source="companyAddress" label="Company Address" multiline />
+        <TextInput
+          source="companyAddress"
+          label="Company Address"
+          multiline
+          className="w-1/2"
+        />
 
         <TextInput
           source="companyPhoneNumber"
           label="Company Phone Number"
           format={(value) => phone.formatFromE164(value)}
           parse={(value) => phone.toRaw(value)}
+          className="w-1/2"
         />
 
-        <TextInput source="companyEmail" label="Company Email Address" />
+        <TextInput
+          source="companyEmail"
+          label="Company Email Address"
+          className="w-1/2"
+        />
 
         <NumberInput
           source="appointmentBufferTime"
           label="Appointment Buffer Time (in minutes)"
           min={0}
+          className="w-1/2"
+        />
+
+        <NumberInput
+          source="ambassadorDiscountPercent"
+          label="Ambassador Discount Percentage"
+          min={0}
+          className="w-1/2"
         />
       </SimpleForm>
     </Edit>
