@@ -31,8 +31,7 @@ const APPOINTMENT_STATUS_CHOICES = [
 const PAYMENT_STATUS_CHOICES = [
   { id: "PENDING_PAYMENT", name: "Pending payment" },
   { id: "PAID_DEPOSIT", name: "Paid deposit" },
-  { id: "PAID_IN_FULL_ACH", name: "Paid in full (ACH)" },
-  { id: "PAID_IN_FULL_CASH", name: "Paid in full (CASH)" },
+  { id: "PAID_IN_FULL", name: "Paid in full" },
   { id: "PAYMENT_FAILED", name: "Payment failed" },
   { id: "REFUNDED", name: "Refunded" },
   { id: "NO_DEPOSIT_REQUIRED", name: "No deposit required" },

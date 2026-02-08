@@ -92,9 +92,7 @@ export function PayViaCashButton() {
 
   const isAlreadyPaid =
     record?.paymentStatus === "PAID_IN_FULL" ||
-    getValues().paymentStatus == "PAID_IN_FULL" ||
-    record?.paymentStatus == "PAID_IN_FULL_CASH" ||
-    getValues().paymentStatus == "PAID_IN_FULL_CASH";
+    getValues().paymentStatus == "PAID_IN_FULL";
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>

@@ -98,7 +98,7 @@ export const DashboardMenuItem = ({ onClick }: { onClick?: () => void }) => {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={!!match}>
-        <Link to="/" onClick={onClick}>
+        <Link to="/dashboard/admin" onClick={onClick}>
           <House />
           {label}
         </Link>

@@ -64,9 +64,7 @@ export function PayViaCardButton() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [record]);
 
-  const isAlreadyPaid =
-    summary.paymentStatus === "PAID_IN_FULL_CASH" ||
-    summary.paymentStatus === "PAID_IN_FULL_ACH";
+  const isAlreadyPaid = summary.paymentStatus === "PAID_IN_FULL";
 
   const startPolling = (appointmentId: string) => {
     if (pollRef.current) window.clearInterval(pollRef.current);
@@ -79,7 +77,7 @@ export function PayViaCardButton() {
 
         const paid = data.paymentStatus;
 
-        if (paid === "PAID_IN_FULL_ACH") {
+        if (paid === "PAID_IN_FULL") {
           window.clearInterval(pollRef.current!);
 
           notify("Payment successful ✅", { type: "success" });

@@ -60,6 +60,11 @@ const resourceMap: Record<string, ResourceConfig> = {
     getOne: "business/settings",
     update: "business/settings",
   },
+  analytics: {
+    base: "analytics",
+    list: "analytics/monthly",
+    getOne: "analytics/all-time",
+  },
 };
 
 /** Map alternate UI names to canonical resource keys */
@@ -143,6 +148,14 @@ function buildQuery(params: GetListParams | GetManyReferenceParams) {
 /** Extract array from Page<T> | {items:[]} | T[] */
 function itemsFrom(json: unknown): any[] {
   if (!json) return [];
+
+  if (typeof json === "object" && json !== null) {
+    const anyJson = json as any;
+    if (anyJson.month && anyJson.completedAppointments != null) {
+      return [anyJson];
+    }
+  }
+
   if (Array.isArray(json)) return json;
   if (typeof json === "object" && json !== null) {
     const anyJson = json as any;

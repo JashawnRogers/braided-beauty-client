@@ -34,6 +34,7 @@ import ListLoyaltyRedirect from "@/features/admin/resources/loyalty/ListLoyaltyR
 import "@/styles/index.css";
 import EditBusinessSettings from "../resources/businessSettings/EditBusinessSettings";
 import ListBusinessSettingsRedirect from "../resources/businessSettings/ListBusinessSettingsRedirect";
+import AdminAnalyticsDashboard from "../resources/analytics/AdminAnalyticsDashboard";
 
 const dataPovider = withLogger(
   springDataProvider(`${import.meta.env.VITE_SERVER_API_URL}/admin`, httpClient)
@@ -41,7 +42,11 @@ const dataPovider = withLogger(
 
 export default function AdminDashboard() {
   return (
-    <Admin basename="/dashboard/admin" dataProvider={dataPovider}>
+    <Admin
+      basename="/dashboard/admin"
+      dataProvider={dataPovider}
+      dashboard={AdminAnalyticsDashboard}
+    >
       <Resource
         name="users"
         list={UserList}
