@@ -5,16 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toTimeSlots } from "@/components/utils/timeSlotsMapper";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-
 import BookingCalendar, {
   TimeSlot,
 } from "@/features/account/components/BookingCalendar";
@@ -33,6 +23,7 @@ import {
 
 import { useUser } from "@/context/UserContext";
 import ServiceGallery from "./components/ServiceGallery";
+import BookingDetailsDialog from "./components/BookingDetailsDialog";
 
 export default function ServiceDetailsPage() {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -55,6 +46,7 @@ export default function ServiceDetailsPage() {
   const [note, setNote] = useState<string | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
   const [guestEmail, setGuestEmail] = useState<string>("");
+  const [promoCode, setPromoCode] = useState<string>("");
 
   const { user } = useUser();
 
@@ -64,6 +56,11 @@ export default function ServiceDetailsPage() {
     return `${toISO(date)}T${time}:00`;
   };
 
+  const openModal = () => {
+    setAppointmentError(null);
+    setIsBookingModalOpen(true);
+  };
+
   useEffect(() => {
     if (!serviceId || !date) return;
 
@@ -71,6 +68,8 @@ export default function ServiceDetailsPage() {
       try {
         setIsLoadingSlots(true);
         setAvailabilityError(null);
+        setNote(null);
+        setPromoCode("");
 
         const dateStr = toISO(date);
 
@@ -146,6 +145,7 @@ export default function ServiceDetailsPage() {
         receiptEmail: user ? null : guestEmail?.trim() || null,
         note: note?.trim() || null,
         addOnIds: Array.from(selectedAddOnIds),
+        promoText: promoCode.trim() ? promoCode.trim().toUpperCase() : null,
       };
 
       console.log(payload);
@@ -328,11 +328,7 @@ export default function ServiceDetailsPage() {
             </article>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button
-                type="button"
-                onClick={() => setIsBookingModalOpen(true)}
-                disabled={!canBook}
-              >
+              <Button type="button" onClick={openModal} disabled={!canBook}>
                 {canBook && time
                   ? `Book ${formatJavaDate(`${toISO(date)}T${time}:00`)}`
                   : "Select a date & time to book"}
@@ -363,61 +359,28 @@ export default function ServiceDetailsPage() {
             )}
           </div>
 
-          <Dialog
+          <BookingDetailsDialog
             open={isBookingModalOpen}
             onOpenChange={setIsBookingModalOpen}
-          >
-            <DialogContent className="sm:max-w-lg">
-              <DialogHeader>
-                <div className="flex items-start justify-between">
-                  <DialogTitle>Confirm your booking</DialogTitle>
-                </div>
-              </DialogHeader>
-
-              {/* Guest Email */}
-              {!user && (
-                <div className="space-y-2">
-                  <Label htmlFor="guestEmail">Email for confirmation</Label>
-                  <Input
-                    id="guestEmail"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={guestEmail}
-                    onChange={(e) => setGuestEmail(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    We'll only use this to send your booking confirmation and
-                    receipt.
-                  </p>
-                </div>
-              )}
-
-              {/* Notes */}
-              <div className="space-y-2">
-                <Label htmlFor="note">Notes (optional)</Label>
-                <Textarea
-                  id="note"
-                  placeholder="Anything the stylist should know?"
-                  value={note ?? ""}
-                  onChange={(e) => setNote(e.target.value)}
-                />
-              </div>
-
-              {appointmentError && (
-                <p className="text-sm text-destructive">{appointmentError}</p>
-              )}
-
-              <DialogFooter>
-                <Button
-                  type="button"
-                  onClick={handleBook}
-                  disabled={isLoadingAppointment}
-                >
-                  {isLoadingAppointment ? "Booking..." : "Book"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            isGuest={!user}
+            guestEmail={guestEmail}
+            onGuestEmailChange={setGuestEmail}
+            promoCode={promoCode}
+            onPromoCodeChange={setPromoCode}
+            note={note ?? ""}
+            onNoteChange={(v) => setNote(v)}
+            appointmentError={appointmentError}
+            isSubmitting={isLoadingAppointment}
+            onSubmit={handleBook}
+            summaryTitle={
+              canBook && time
+                ? formatJavaDate(`${toISO(date)}T${time}:00`)
+                : undefined
+            }
+            serviceName={service.name}
+            totalMinutes={totalMinutes}
+            totalPrice={totalPrice}
+          />
         </div>
       </div>
     </section>

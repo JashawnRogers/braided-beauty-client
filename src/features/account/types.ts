@@ -107,6 +107,7 @@ export interface CreateAppointmentDTO {
   receiptEmail: string | null;
   note: string | null;
   addOnIds: string[] | null;
+  promoText: string | null;
 }
 
 export interface AppointmentResponseDTO {
