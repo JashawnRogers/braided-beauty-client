@@ -145,6 +145,8 @@ export default function ServiceDetailsPage() {
   const handleBook = async () => {
     if (!canBook || !service || !serviceId || !time) return;
 
+    if (isLoadingPreview) return;
+
     if (!user && !guestEmail) {
       setAppointmentError("Please enter an email for your receipt");
       return;
@@ -208,6 +210,8 @@ export default function ServiceDetailsPage() {
     });
 
     setTime(null); // To prevent stale time selection
+    setPromoCode("");
+    setPricingPreview(null);
   };
 
   const normalizedPromoText = useMemo(() => {
@@ -448,7 +452,7 @@ export default function ServiceDetailsPage() {
             note={note ?? ""}
             onNoteChange={(v) => setNote(v)}
             appointmentError={appointmentError}
-            isSubmitting={isLoadingAppointment}
+            isSubmitting={isLoadingAppointment || isLoadingPreview}
             onSubmit={handleBook}
             summaryTitle={
               canBook && time

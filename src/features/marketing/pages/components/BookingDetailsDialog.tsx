@@ -320,7 +320,11 @@ export default function BookingDetailsDialog({
 
         <DialogFooter>
           <Button type="button" onClick={handleSubmit} disabled={!canSubmit}>
-            {isSubmitting ? "Booking..." : "Book"}
+            {isLoadingPreview
+              ? "Calculating..."
+              : isSubmitting
+              ? "Booking..."
+              : "Book"}
           </Button>
         </DialogFooter>
       </DialogContent>
