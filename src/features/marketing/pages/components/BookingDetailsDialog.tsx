@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useMemo, useState } from "react";
+import { BookingPricingPreview } from "@/features/account/types";
 
 type Props = {
   readonly open: boolean;
@@ -40,6 +41,10 @@ type Props = {
 
   // Optional: if you want the checkbox label to link to a policy page/section
   readonly policyHref?: string; // e.g. "/policy"
+
+  readonly pricingPreview?: BookingPricingPreview | null;
+  readonly isLoadingPreview?: boolean;
+  readonly previewError?: string | null;
 };
 
 function isValidEmail(email: string) {
@@ -65,6 +70,9 @@ export default function BookingDetailsDialog({
   totalMinutes,
   totalPrice,
   policyHref,
+  pricingPreview,
+  isLoadingPreview,
+  previewError,
 }: Readonly<Props>) {
   const guestEmailError = useMemo(() => {
     if (!isGuest) return null;
@@ -155,6 +163,74 @@ export default function BookingDetailsDialog({
             )}
           </div>
         )}
+
+        {/* Pricing preview (server-calculated) */}
+        <div className="rounded-lg border p-3 text-sm space-y-2">
+          <div className="font-medium">Pricing</div>
+
+          {isLoadingPreview && (
+            <p className="text-muted-foreground">Calculating…</p>
+          )}
+
+          {!isLoadingPreview && previewError && (
+            <p className="text-destructive">{previewError}</p>
+          )}
+
+          {!isLoadingPreview && !previewError && pricingPreview && (
+            <div className="space-y-1 text-muted-foreground">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>${pricingPreview.subtotal.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Deposit due today</span>
+                <span>${pricingPreview.deposit.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Remaining after deposit</span>
+                <span>${pricingPreview.postDepositBalance.toFixed(2)}</span>
+              </div>
+
+              {/* Promo result */}
+              {pricingPreview.promo && (
+                <>
+                  {pricingPreview.promo.valid ? (
+                    <>
+                      <div className="flex justify-between">
+                        <span>Promo ({pricingPreview.promo.promoLabel})</span>
+                        <span>
+                          - $
+                          {Number(
+                            pricingPreview.promo.discountAmount ?? 0
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between font-medium text-foreground">
+                        <span>Remaining after promo</span>
+                        <span>
+                          $
+                          {Number(
+                            pricingPreview.promo.remainingAfterPromo ??
+                              pricingPreview.postDepositBalance
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    pricingPreview.promo.message && (
+                      <p className="text-xs text-destructive">
+                        {pricingPreview.promo.message}
+                      </p>
+                    )
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Promo code (guest + member) */}
         <div className="space-y-2">

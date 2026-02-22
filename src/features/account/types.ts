@@ -33,6 +33,24 @@ export type AvailableTimeSlotsDTO = {
   endTime: string;
 };
 
+// ---------------- PRICING ---------------
+export type PromoPreviewResult = {
+  valid: boolean;
+  message: string | null;
+  promoId: string | null;
+  promoLabel: string | null;
+  discountAmount: number | null; // backend BigDecimal -> JSON number
+  remainingAfterPromo: number | null;
+};
+
+export type BookingPricingPreview = {
+  subtotal: number;
+  deposit: number;
+  postDepositBalance: number;
+  promo: PromoPreviewResult | null; // or PromoPreviewResult (depends on your backend)
+  remainingAfterPromo: number; // if you included this at top-level; otherwise derive from promo
+};
+
 // ---------------- USER ---------------
 export type CurrentUser = {
   id: string;

@@ -19,6 +19,7 @@ import {
   AvailableTimeSlotsDTO,
   ServiceResponseDTO,
   CheckoutSessionResponse,
+  BookingPricingPreview,
 } from "@/features/account/types";
 
 import { useUser } from "@/context/UserContext";
@@ -48,6 +49,11 @@ export default function ServiceDetailsPage() {
   const [guestEmail, setGuestEmail] = useState<string>("");
   const [promoCode, setPromoCode] = useState<string>("");
 
+  const [pricingPreview, setPricingPreview] =
+    useState<BookingPricingPreview | null>(null);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+
   const { user } = useUser();
 
   const navigate = useNavigate();
@@ -60,6 +66,17 @@ export default function ServiceDetailsPage() {
     setAppointmentError(null);
     setIsBookingModalOpen(true);
   };
+
+  function useDebouncedValue<T>(value: T, delayMs: number) {
+    const [debounced, setDebounced] = useState(value);
+
+    useEffect(() => {
+      const id = window.setTimeout(() => setDebounced(value), delayMs);
+      return () => window.clearTimeout(id);
+    }, [value, delayMs]);
+
+    return debounced;
+  }
 
   useEffect(() => {
     if (!serviceId || !date) return;
@@ -192,6 +209,67 @@ export default function ServiceDetailsPage() {
 
     setTime(null); // To prevent stale time selection
   };
+
+  const normalizedPromoText = useMemo(() => {
+    const trimmed = promoCode.trim();
+    return trimmed ? trimmed.toUpperCase() : null;
+  }, [promoCode]);
+
+  const debouncedPromoText = useDebouncedValue(normalizedPromoText, 300);
+
+  const previewPayload = useMemo(() => {
+    if (!serviceId) return null;
+    return {
+      serviceId,
+      addOnIds: Array.from(selectedAddOnIds),
+      promoText: debouncedPromoText,
+    };
+  }, [serviceId, selectedAddOnIds, debouncedPromoText]);
+
+  useEffect(() => {
+    if (!isBookingModalOpen) return;
+    if (!previewPayload) return;
+
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        setIsLoadingPreview(true);
+        setPreviewError(null);
+
+        // IMPORTANT: use the correct endpoint + method for your API
+        // If your endpoint is GET with query params, switch accordingly.
+        const res = await apiPost<BookingPricingPreview>(
+          `/pricing/preview`,
+          previewPayload
+        );
+
+        if (!cancelled) setPricingPreview(res);
+      } catch (e) {
+        console.error(e);
+        if (!cancelled) {
+          setPricingPreview(null);
+          setPreviewError("Failed to load pricing preview");
+        }
+      } finally {
+        if (!cancelled) setIsLoadingPreview(false);
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isBookingModalOpen, previewPayload]);
+
+  useEffect(() => {
+    if (!isBookingModalOpen) {
+      setPricingPreview(null);
+      setPreviewError(null);
+      setIsLoadingPreview(false);
+    }
+  }, [isBookingModalOpen]);
 
   const totalMinutes = useMemo(() => {
     if (!service) return 0;
@@ -380,6 +458,9 @@ export default function ServiceDetailsPage() {
             serviceName={service.name}
             totalMinutes={totalMinutes}
             totalPrice={totalPrice}
+            pricingPreview={pricingPreview}
+            isLoadingPreview={isLoadingPreview}
+            previewError={previewError}
           />
         </div>
       </div>
