@@ -123,11 +123,11 @@ export default function ServiceDetailsPage() {
       try {
         setIsLoadingService(true);
         setServiceError(null);
+        setPricingPreview(null);
 
         const data = await apiGet<ServiceResponseDTO>(`/service/${serviceId}`);
 
         setService(data);
-        console.log(data);
       } catch (err) {
         console.error(err);
         setServiceError("Failed to load service");
@@ -138,6 +138,10 @@ export default function ServiceDetailsPage() {
     };
 
     getService();
+  }, [serviceId]);
+
+  useEffect(() => {
+    setPricingPreview(null);
   }, [serviceId]);
 
   const canBook = Boolean(time) && !isLoadingSlots && !availabilityError;
@@ -241,8 +245,6 @@ export default function ServiceDetailsPage() {
         setIsLoadingPreview(true);
         setPreviewError(null);
 
-        // IMPORTANT: use the correct endpoint + method for your API
-        // If your endpoint is GET with query params, switch accordingly.
         const res = await apiPost<BookingPricingPreview>(
           `/pricing/preview`,
           previewPayload
