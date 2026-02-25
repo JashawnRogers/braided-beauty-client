@@ -172,14 +172,23 @@ function itemsFrom(json: unknown): any[] {
 function totalFrom(json: unknown, headers: Headers): number {
   if (json && typeof json === "object" && json !== null) {
     const anyJson = json as any;
+
+    // Old PageImpl-ish structure
     if (typeof anyJson.totalElements === "number") return anyJson.totalElements;
     if (typeof anyJson.total === "number") return anyJson.total;
+
+    // New Spring PageSerializationMode.VIA_DTO structure
+    if (anyJson.page && typeof anyJson.page.totalElements === "number") {
+      return anyJson.page.totalElements;
+    }
   }
+
   const cr = headers.get("Content-Range");
   if (cr) {
     const m = cr.match(/\/(\d+)$/);
     if (m) return Number(m[1]);
   }
+
   if (Array.isArray(json)) return json.length;
   return 0;
 }
