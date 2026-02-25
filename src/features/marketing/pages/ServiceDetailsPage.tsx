@@ -25,6 +25,7 @@ import {
 import { useUser } from "@/context/UserContext";
 import ServiceGallery from "./components/ServiceGallery";
 import BookingDetailsDialog from "./components/BookingDetailsDialog";
+import ReviewsCard from "./components/ReviewsCard";
 
 export default function ServiceDetailsPage() {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -441,6 +442,7 @@ export default function ServiceDetailsPage() {
                 timeSlots={timeSlots}
               />
             )}
+            <ReviewsCard />
           </div>
 
           <BookingDetailsDialog
