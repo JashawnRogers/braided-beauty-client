@@ -53,14 +53,13 @@ export default function AddOnEdit() {
             <NumberInput
               source="price"
               label="Price (USD)"
-              step={5}
+              step={0.01}
               min={0}
               validate={nonNegative}
             />
             <NumberInput
               source="durationMinutes"
               label="Duration (in minutes)"
-              step={30}
               min={0}
               validate={nonNegative}
             />
