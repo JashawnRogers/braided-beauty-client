@@ -25,6 +25,7 @@ import {
   CopyPlus,
   TextSelect,
   Settings,
+  BadgeDollarSignIcon,
 } from "lucide-react";
 import AddOnEdit from "@/features/admin/resources/addons/AddOnEdit";
 import AddOnCreate from "@/features/admin/resources/addons/AddOnCreate";
@@ -35,6 +36,9 @@ import "@/styles/index.css";
 import EditBusinessSettings from "../resources/businessSettings/EditBusinessSettings";
 import ListBusinessSettingsRedirect from "../resources/businessSettings/ListBusinessSettingsRedirect";
 import AdminAnalyticsDashboard from "../resources/analytics/AdminAnalyticsDashboard";
+import ListPromoCodes from "../resources/promo/ListPromo";
+import CreatePromoCodes from "../resources/promo/CreatePromo";
+import EditPromoCode from "../resources/promo/EditPromo";
 
 const dataPovider = withLogger(
   springDataProvider(`${import.meta.env.VITE_SERVER_API_URL}/admin`, httpClient)
@@ -102,6 +106,15 @@ export default function AdminDashboard() {
         edit={EditBusinessSettings}
         icon={Settings}
         options={{ label: "Business settings" }}
+      />
+
+      <Resource
+        name="promo"
+        create={CreatePromoCodes}
+        list={ListPromoCodes}
+        edit={EditPromoCode}
+        icon={BadgeDollarSignIcon}
+        options={{ label: "Promo Codes" }}
       />
     </Admin>
   );

@@ -65,6 +65,9 @@ const resourceMap: Record<string, ResourceConfig> = {
     list: "analytics/monthly",
     getOne: "analytics/all-time",
   },
+  promo: {
+    base: "promo",
+  },
 };
 
 /** Map alternate UI names to canonical resource keys */
