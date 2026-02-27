@@ -90,7 +90,7 @@ export function Navbar() {
                   alt="Braided Beauty Logo"
                   loading="eager"
                   fetchPriority="high"
-                  className="h-24 w-auto rounded-md"
+                  className="h-36 w-auto rounded-md"
                 />
                 {/* <h3 className="font-semibold">Braided Beauty</h3> */}
               </Link>

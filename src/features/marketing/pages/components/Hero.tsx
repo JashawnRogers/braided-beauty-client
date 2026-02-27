@@ -18,7 +18,7 @@ export default function Hero() {
             <p>Hours of experience</p>
           </div>
           <div className="space-y-4">
-            <div className="text-5xl font-bold">16+</div>
+            <div className="text-5xl font-bold">5+</div>
             <p>Years perfecting braids</p>
           </div>
         </div>
