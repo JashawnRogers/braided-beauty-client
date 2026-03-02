@@ -150,6 +150,7 @@ export interface AdminAppointmentRequestDTO {
   tipAmount: number | null;
   discountAmount?: number | null;
   discountPercent?: number | null;
+  fee: number;
 }
 
 export interface AdminAppointmentSummaryDTO {

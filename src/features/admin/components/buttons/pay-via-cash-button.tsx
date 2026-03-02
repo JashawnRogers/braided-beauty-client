@@ -46,6 +46,7 @@ export function PayViaCashButton() {
       totalAmount: v.totalAmount ?? record?.totalAmount,
       discountAmount: v.discountAmount ?? null,
       discountPercent: v.discountPercent ?? null,
+      fee: v.fee,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [record]); // record changes when navigating; form values are read on open/confirm anyway
@@ -69,10 +70,8 @@ export function PayViaCashButton() {
       serviceId: values.serviceId ?? record?.serviceId,
       addOnIds: values.addOnIds ?? null,
       tipAmount: values.tipAmount ?? null,
+      fee: values.fee,
     };
-
-    console.log("params id: ", id);
-    console.log("payload: ", payload);
 
     try {
       setBusy(true);
@@ -131,6 +130,12 @@ export function PayViaCashButton() {
               <span className="text-muted-foreground">Tip amount: </span>
               {formatUsd(summary.tipAmount)}
             </div>
+            {summary.fee > 0 && (
+              <div>
+                <span className="text-muted-foreground">Fees: </span>{" "}
+                {formatUsd(summary.fee)}
+              </div>
+            )}
             <div>
               <span className="text-muted-foreground">Discount amount: </span>-{" "}
               {formatUsd(summary.discountAmount)}
@@ -141,7 +146,8 @@ export function PayViaCashButton() {
               </span>
               {formatUsd(
                 summary.remainingBalance +
-                  summary.tipAmount -
+                  summary.tipAmount +
+                  summary.fee -
                   summary.discountAmount
               )}
             </div>

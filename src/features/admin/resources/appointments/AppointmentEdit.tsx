@@ -161,6 +161,8 @@ export default function AppointmentEdit() {
               disabled
             />
 
+            <NumberInput source="fee" label="Fees" />
+
             <NumberInput
               source="totalAmount"
               label="Total Cost (including tip)"

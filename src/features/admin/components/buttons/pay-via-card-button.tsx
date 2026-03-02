@@ -62,6 +62,7 @@ export function PayViaCardButton() {
       appointmentStatus: v.appointmentStatus ?? record?.appointmentStatus,
       discountAmount: v.discountAmount ?? null,
       discountPercent: v.discountPercent ?? null,
+      fee: v.fee,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [record]);
@@ -124,6 +125,7 @@ export function PayViaCardButton() {
       serviceId: values.serviceId ?? record?.serviceId,
       addOnIds: values.addOnIds ?? null,
       tipAmount: values.tipAmount ?? null,
+      fee: values.fee,
     };
 
     try {
@@ -190,6 +192,12 @@ export function PayViaCardButton() {
                 <span className="text-muted-foreground">Tip amount: </span>
                 {formatUsd(summary.tipAmount)}
               </div>
+              {summary.fee > 0 && (
+                <div>
+                  <span className="text-muted-foreground">Fees: </span>{" "}
+                  {formatUsd(summary.fee)}
+                </div>
+              )}
               <div>
                 <span className="text-muted-foreground">Discount amount: </span>
                 - {formatUsd(summary.discountAmount)}
@@ -200,7 +208,8 @@ export function PayViaCardButton() {
                 </span>
                 {formatUsd(
                   summary.remainingBalance +
-                    summary.tipAmount -
+                    summary.tipAmount +
+                    summary.fee -
                     summary.discountAmount
                 )}
               </div>
