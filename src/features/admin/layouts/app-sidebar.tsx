@@ -21,7 +21,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { House, List, LogOut } from "lucide-react";
+import { CalendarDays, House, List, LogOut } from "lucide-react";
 import Logo from "@/assets/logos/braided-beauty-alt-dark.png";
 import { hardLogout } from "@/lib/authClient";
 
@@ -63,6 +63,7 @@ export function AppSidebar() {
               {hasDashboard ? (
                 <DashboardMenuItem onClick={handleClick} />
               ) : null}
+              <CalendarMenuItem onClick={handleClick} />
               {Object.keys(resources)
                 .filter((name) => resources[name].hasList)
                 .map((name) => (
@@ -147,6 +148,21 @@ export const ResourceMenuItem = ({
             <List />
           )}
           {getResourceLabel(name, 2)}
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+};
+
+export const CalendarMenuItem = ({ onClick }: { onClick?: () => void }) => {
+  const match = useMatch({ path: "/dashboard/admin/calendar", end: false });
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton asChild isActive={!!match}>
+        <Link to="/dashboard/admin/calendar" onClick={onClick}>
+          <CalendarDays />
+          Calendar
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

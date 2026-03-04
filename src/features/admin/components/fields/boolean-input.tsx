@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
 import { Switch } from "@/components/ui/switch";
-import { FormError, FormField, FormLabel } from "@/components/admin/form";
+import { FormError, FormField, FormLabel } from "@/features/admin/components/form";
 import { useInput, FieldTitle } from "ra-core";
-import { InputHelperText } from "../hooks/input-helper-text";
+import { InputHelperText } from "@/features/admin/hooks/input-helper-text";
 
 export const BooleanInput = (props: BooleanInputProps) => {
   const {

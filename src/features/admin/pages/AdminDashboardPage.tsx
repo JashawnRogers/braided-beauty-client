@@ -1,4 +1,5 @@
-import { Resource } from "ra-core";
+import { CustomRoutes, Resource } from "ra-core";
+import { Route } from "react-router-dom";
 import { Admin } from "@/features/admin";
 import springDataProvider from "@/features/admin/ra/dataProvider";
 import withLogger from "@/features/admin/ra/loggerDataProvider";
@@ -39,6 +40,7 @@ import AdminAnalyticsDashboard from "../resources/analytics/AdminAnalyticsDashbo
 import ListPromoCodes from "../resources/promo/ListPromo";
 import CreatePromoCodes from "../resources/promo/CreatePromo";
 import EditPromoCode from "../resources/promo/EditPromo";
+import AdminCalendarPage from "./AdminCalendarPage";
 
 const dataPovider = withLogger(
   springDataProvider(`${import.meta.env.VITE_SERVER_API_URL}/admin`, httpClient)
@@ -51,6 +53,10 @@ export default function AdminDashboard() {
       dataProvider={dataPovider}
       dashboard={AdminAnalyticsDashboard}
     >
+      <CustomRoutes>
+        <Route path="/calendar" element={<AdminCalendarPage />} />
+      </CustomRoutes>
+
       <Resource
         name="users"
         list={UserList}

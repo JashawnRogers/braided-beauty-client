@@ -5,6 +5,8 @@ import type { RaRecord } from "ra-core";
 export type CustomFieldProps<R extends RaRecord = RaRecord> = {
   /** Key (supports dot notation) to read from the record */
   source?: string;
+  /** Optional typed record reference for custom renderers */
+  record?: R;
   /** Optional column label (table usually supplies this) */
   label?: string;
   /** Whether the column is sortable (your table may use this) */
