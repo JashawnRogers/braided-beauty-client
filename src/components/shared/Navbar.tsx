@@ -3,7 +3,7 @@ import Logo from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
 
 const menuItems = [
@@ -16,8 +16,13 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, isAuthenticated, isLoading } = useUser();
-
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
+  function closeMenu() {
+    setMenuOpen(false);
+  }
 
   function handleDashboardClick() {
     if (!user) return;
@@ -27,20 +32,18 @@ export function Navbar() {
     } else {
       navigate("/dashboard/me", { replace: false });
     }
+
+    closeMenu();
   }
 
-  function DashboardLink({ className }: { className: string }) {
-    if (isLoading) return null;
-    if (!isAuthenticated || !user) return null;
+  function DashboardLink({ className }: { className?: string }) {
+    if (isLoading || !isAuthenticated || !user) return null;
 
     return (
       <Button
         type="button"
-        onClick={() => {
-          handleDashboardClick();
-          setMenuOpen(false);
-        }}
-        className={cn("duration-150 hover:text-accent-foreground", className)}
+        onClick={handleDashboardClick}
+        className={cn(className)}
       >
         Dashboard
       </Button>
@@ -48,83 +51,89 @@ export function Navbar() {
   }
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 50);
+    const onScroll = () => setIsScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // optional: close the menu when resizing to desktop
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth >= 1024) setMenuOpen(false);
+      if (window.innerWidth >= 1024) {
+        setMenuOpen(false);
+      }
     };
+
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
-    <header role="banner" className="relative overflow-x-hidden">
+    <header className="relative">
       <nav
         role="navigation"
-        aria-label="Main"
-        className="fixed inset-x-0 top-0 z-20 w-full px-2"
+        aria-label="Main navigation"
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 px-3 pt-3 lg:transition-[padding] lg:duration-500 lg:ease-out",
+          isScrolled ? "lg:px-6" : "lg:px-0"
+        )}
       >
         <div
           className={cn(
-            "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
-            isScrolled &&
-              // feature-detect backdrop-filter so it degrades gracefully
-              "max-w-4xl rounded-2xl border bg-background/50 lg:px-5 supports-[backdrop-filter]:bg-background/40 supports-[backdrop-filter]:backdrop-blur-lg"
+            "w-full rounded-2xl bg-transparent transition-[background-color,box-shadow,border-color] duration-300 lg:origin-top lg:transform lg:transition-[transform,background-color,box-shadow,border-color] lg:duration-500 lg:ease-out",
+            isScrolled
+              ? "border border-border/60 bg-background/80 shadow-lg supports-[backdrop-filter]:backdrop-blur-md lg:scale-[0.975]"
+              : "lg:scale-100"
           )}
         >
-          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-            {/* Brand + mobile toggle */}
-            <div className="flex w-full items-center justify-between lg:w-auto">
-              <Link
-                to="/"
-                aria-label="Home"
-                className="flex items-center gap-2"
-              >
-                <img
-                  src={Logo}
-                  alt="Braided Beauty Logo"
-                  loading="eager"
-                  fetchPriority="high"
-                  className="h-36 w-auto rounded-md"
-                />
-                {/* <h3 className="font-semibold">Braided Beauty</h3> */}
-              </Link>
+          <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:grid-cols-[auto_1fr_auto] lg:px-10 xl:px-12">
+            {/* Left: logo */}
+            <Link
+              to="/"
+              aria-label="Braided Beauty home"
+              className="col-start-1 flex items-center"
+              onClick={closeMenu}
+            >
+              <img
+                src={Logo}
+                alt="Braided Beauty Logo"
+                loading="eager"
+                fetchPriority="high"
+                className="h-16 w-auto rounded-md sm:h-20 lg:h-24"
+              />
+            </Link>
 
-              <button
-                type="button"
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-                aria-controls="mobile-menu"
-                onClick={() => setMenuOpen((v) => !v)}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
-              >
-                <Menu
-                  className={cn(
-                    "m-auto size-6 transition duration-200",
-                    menuOpen && "rotate-180 scale-0 opacity-0"
-                  )}
-                />
-                <X
-                  className={cn(
-                    "absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 transition duration-200",
-                    menuOpen && "rotate-0 scale-100 opacity-100"
-                  )}
-                />
-              </button>
-            </div>
+            {/* Center: mobile brand text */}
+            {!isHomePage && (
+              <div className="col-start-2 min-w-0 text-center lg:hidden">
+                <Link
+                  to="/"
+                  onClick={closeMenu}
+                  className="block truncate text-2xl font-semibold leading-none tracking-tight text-foreground"
+                >
+                  Braided Beauty
+                </Link>
+              </div>
+            )}
 
-            {/* Desktop menu (centered) */}
-            <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-              <ul className="flex gap-8 text-sm">
+            {/* Desktop center nav */}
+            <div className="hidden lg:flex lg:justify-center">
+              <ul className="flex items-center gap-10 xl:gap-12">
                 {menuItems.map((item) => (
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className="block text-muted-foreground duration-150 hover:text-accent-foreground text-base font-semibold"
+                      className="text-base font-semibold text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {item.name}
                     </Link>
@@ -133,60 +142,126 @@ export function Navbar() {
               </ul>
             </div>
 
-            {/* Actions + Mobile menu panel */}
-            <div
-              id="mobile-menu"
-              className={cn(
-                "mb-6 mx-auto hidden max-w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border bg-background px-4 shadow-2xl shadow-zinc-300/20 sm:px-6 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none",
-                menuOpen && "block lg:flex"
-              )}
-            >
-              {/* Mobile links */}
-              <div className="lg:hidden pt-3">
-                <ul className="space-y-6 text-base">
-                  {menuItems.map((item) => (
-                    <li key={item.name}>
-                      <a
-                        href={item.href}
-                        className="block text-muted-foreground duration-150 hover:text-accent-foreground"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-
-                  {/* <li>
-                    <DashboardLink className="text-muted-foreground" />
-                  </li> */}
-                </ul>
-              </div>
-
-              {/* Auth/CTA */}
+            {/* Desktop right actions */}
+            <div className="hidden lg:flex lg:justify-end">
               {!isAuthenticated ? (
-                <div className="flex w-full flex-col space-y-3 pb-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                  {/* On mobile, show Login/Sign Up; on scroll */}
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    className={cn(isScrolled)}
-                  >
+                <div className="flex items-center gap-3">
+                  <Button asChild variant="outline" size="sm">
                     <Link to="/login">Login</Link>
                   </Button>
-                  <Button asChild size="sm" className={cn(isScrolled)}>
+                  <Button asChild size="sm">
                     <Link to="/signup">Sign Up</Link>
                   </Button>
                 </div>
               ) : (
-                <div className="flex w-full flex-col space-y-3 pb-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                  <DashboardLink className="text-muted-foreground text-white mt-3" />
-                </div>
+                <DashboardLink className="bg-primary text-primary-foreground hover:opacity-90" />
+              )}
+            </div>
+
+            {/* Right: mobile toggle */}
+            {!menuOpen && (
+              <button
+                type="button"
+                aria-label="Open menu"
+                aria-expanded="false"
+                aria-controls="mobile-menu"
+                onClick={() => setMenuOpen(true)}
+                className="col-start-3 justify-self-end inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm transition hover:bg-accent lg:hidden"
+              >
+                <Menu className="size-5" />
+              </button>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile backdrop + drawer */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[60] lg:hidden",
+          menuOpen ? "pointer-events-auto" : "pointer-events-none"
+        )}
+      >
+        {/* Backdrop */}
+        <button
+          type="button"
+          aria-label="Close menu"
+          onClick={closeMenu}
+          className={cn(
+            "absolute inset-0 h-full w-full bg-black/40 transition-opacity duration-300",
+            menuOpen ? "opacity-100" : "opacity-0"
+          )}
+        />
+
+        {/* Drawer */}
+        <div
+          id="mobile-menu"
+          className={cn(
+            "absolute right-0 top-0 flex h-full w-[88%] max-w-sm flex-col bg-background shadow-2xl transition-transform duration-300",
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          )}
+        >
+          <div className="flex items-center justify-between border-b px-5 py-4">
+            <Link
+              to="/"
+              onClick={closeMenu}
+              aria-label="Go to home page"
+              className="flex items-center gap-3 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <img
+                src={Logo}
+                alt="Braided Beauty Logo"
+                className="h-12 w-auto rounded-md"
+              />
+              <span className="text-lg font-semibold">Menu</span>
+            </Link>
+
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={closeMenu}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition hover:bg-accent"
+            >
+              <X className="size-5" />
+            </button>
+          </div>
+
+          <div className="flex flex-1 flex-col justify-between px-5 py-6">
+            <ul className="space-y-5">
+              {menuItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.href}
+                    onClick={closeMenu}
+                    className="block text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 space-y-3">
+              {!isAuthenticated ? (
+                <>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to="/login" onClick={closeMenu}>
+                      Login
+                    </Link>
+                  </Button>
+                  <Button asChild className="w-full">
+                    <Link to="/signup" onClick={closeMenu}>
+                      Sign Up
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <DashboardLink className="w-full bg-primary text-primary-foreground hover:opacity-90" />
               )}
             </div>
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }

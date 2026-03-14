@@ -59,6 +59,12 @@ export default function ServiceDetailsPage() {
 
   const navigate = useNavigate();
 
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(amount);
+
   const buildAppointmentTime = (date: Date, time: string) => {
     return `${toISO(date)}T${time}:00`;
   };
@@ -353,7 +359,7 @@ export default function ServiceDetailsPage() {
               <p>{service.description}</p>
               {service.price !== undefined && (
                 <p>
-                  <strong>Starting at:</strong> ${totalPrice}
+                  <strong>Price: </strong> {formatCurrency(totalPrice)}
                 </p>
               )}
               {service.durationMinutes != null && (
@@ -387,7 +393,7 @@ export default function ServiceDetailsPage() {
                               {addOn.name}
                               {addOn.price > 0 && (
                                 <span className="ml-2 text-sm text-muted-foreground">
-                                  +${addOn.price}
+                                  +{formatCurrency(addOn.price)}
                                 </span>
                               )}
                             </Label>
