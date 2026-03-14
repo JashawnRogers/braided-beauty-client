@@ -4,6 +4,14 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toTimeSlots } from "@/components/utils/timeSlotsMapper";
 import BookingCalendar, {
   TimeSlot,
@@ -47,6 +55,8 @@ export default function ServiceDetailsPage() {
   );
   const [note, setNote] = useState<string | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
+  const [isSameDayWarningOpen, setIsSameDayWarningOpen] =
+    useState<boolean>(false);
   const [guestEmail, setGuestEmail] = useState<string>("");
   const [promoCode, setPromoCode] = useState<string>("");
 
@@ -69,9 +79,26 @@ export default function ServiceDetailsPage() {
     return `${toISO(date)}T${time}:00`;
   };
 
-  const openModal = () => {
+  const isSameLocalCalendarDay = (a: Date, b: Date) => {
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
+  };
+
+  const openBookingDetailsModal = () => {
     setAppointmentError(null);
     setIsBookingModalOpen(true);
+  };
+
+  const openModal = () => {
+    if (isSameLocalCalendarDay(date, new Date())) {
+      setIsSameDayWarningOpen(true);
+      return;
+    }
+
+    openBookingDetailsModal();
   };
 
   function useDebouncedValue<T>(value: T, delayMs: number) {
@@ -476,6 +503,40 @@ export default function ServiceDetailsPage() {
             isLoadingPreview={isLoadingPreview}
             previewError={previewError}
           />
+
+          <Dialog
+            open={isSameDayWarningOpen}
+            onOpenChange={setIsSameDayWarningOpen}
+          >
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Same-Day Appointment Request</DialogTitle>
+                <DialogDescription>
+                  Same-day appointments are not guaranteed. Please call or
+                  contact Braided Beauty to confirm availability before
+                  proceeding with your squeeze-in request.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setIsSameDayWarningOpen(false)}
+                >
+                  Go Back
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setIsSameDayWarningOpen(false);
+                    openBookingDetailsModal();
+                  }}
+                >
+                  I Understand
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </section>
