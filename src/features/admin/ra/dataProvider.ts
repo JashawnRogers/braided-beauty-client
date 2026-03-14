@@ -68,6 +68,9 @@ const resourceMap: Record<string, ResourceConfig> = {
   promo: {
     base: "promo",
   },
+  fee: {
+    base: "fee",
+  },
 };
 
 /** Map alternate UI names to canonical resource keys */

@@ -102,6 +102,8 @@ export default function AppointmentEdit() {
         paymentStatus: data.paymentStatus,
         appointmentStatus: data.appointmentStatus,
         appointmentTime: data.appointmentTime,
+        feeIds: data.feeIds ?? null,
+        totalAmount: data.totalAmount,
       })}
       mutationOptions={{ onSuccess }}
       mutationMode="pessimistic"
@@ -151,7 +153,7 @@ export default function AppointmentEdit() {
 
             <NumberInput
               source="remainingBalance"
-              label="Remaining Balance (excluding tip)"
+              label="Remaining Balance (excluding tip & fees)"
               disabled
             />
 
@@ -161,11 +163,13 @@ export default function AppointmentEdit() {
               disabled
             />
 
-            <NumberInput source="fee" label="Fees" />
+            <ReferenceArrayInput source="feeIds" reference="fee">
+              <AutocompleteArrayInput label="Fees" optionText="name" />
+            </ReferenceArrayInput>
 
             <NumberInput
               source="totalAmount"
-              label="Total Cost (including tip)"
+              label="Total Cost (including tip & fees)"
               disabled
               className="mb-5"
             />

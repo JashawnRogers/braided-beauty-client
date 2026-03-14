@@ -27,6 +27,7 @@ import {
   TextSelect,
   Settings,
   BadgeDollarSignIcon,
+  PiggyBank,
 } from "lucide-react";
 import AddOnEdit from "@/features/admin/resources/addons/AddOnEdit";
 import AddOnCreate from "@/features/admin/resources/addons/AddOnCreate";
@@ -41,6 +42,9 @@ import ListPromoCodes from "../resources/promo/ListPromo";
 import CreatePromoCodes from "../resources/promo/CreatePromo";
 import EditPromoCode from "../resources/promo/EditPromo";
 import AdminCalendarPage from "./AdminCalendarPage";
+import ListFees from "../resources/fees/ListFees";
+import CreateFees from "../resources/fees/CreateFees";
+import EditFees from "../resources/fees/EditFees";
 
 const dataPovider = withLogger(
   springDataProvider(`${import.meta.env.VITE_SERVER_API_URL}/admin`, httpClient)
@@ -121,6 +125,13 @@ export default function AdminDashboard() {
         edit={EditPromoCode}
         icon={BadgeDollarSignIcon}
         options={{ label: "Promo Codes" }}
+      />
+      <Resource
+        name="fee"
+        create={CreateFees}
+        list={ListFees}
+        edit={EditFees}
+        icon={PiggyBank}
       />
     </Admin>
   );
