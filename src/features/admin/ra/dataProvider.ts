@@ -246,6 +246,7 @@ const normalizeBusinessSettings = (r: any) => ({
   companyAddress: r.companyAddress,
   companyEmail: r.companyEmail,
   appointmentBufferTime: r.appointmentBufferTime,
+  discountPercentage: r.discountPercentage,
 });
 
 const normalizeHours = <

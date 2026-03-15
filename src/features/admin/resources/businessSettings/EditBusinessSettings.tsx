@@ -21,6 +21,7 @@ export default function EditBusinessSettings() {
     <Edit
       transform={(data) => ({
         ...data,
+        discountPercentage: data.discountPercentage,
         companyPhoneNumber: phone.toE164(data.companyPhoneNumber) ?? "",
       })}
       resource="business-settings"
@@ -57,9 +58,11 @@ export default function EditBusinessSettings() {
         />
 
         <NumberInput
-          source="ambassadorDiscountPercent"
-          label="Ambassador Discount Percentage"
+          source="discountPercentage"
+          label="Deposit Percentage"
           min={0}
+          step={0.01}
+          format={(value) => (value == null ? 0 : Number(value))}
           className="w-1/2"
         />
       </SimpleForm>
