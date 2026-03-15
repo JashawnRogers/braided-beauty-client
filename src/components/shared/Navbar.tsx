@@ -7,9 +7,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
 
 const menuItems = [
-  { name: "Gallery", href: "/" },
-  { name: "Book an appointment", href: "/categories" },
-  { name: "Meet your braider", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Policies", href: "/policies" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
@@ -133,7 +133,7 @@ export function Navbar() {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className="text-base font-semibold text-muted-foreground transition-colors hover:text-foreground"
+                      className="text-lg xl:text-xl font-semibold text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {item.name}
                     </Link>
@@ -144,18 +144,14 @@ export function Navbar() {
 
             {/* Desktop right actions */}
             <div className="hidden lg:flex lg:justify-end">
-              {!isAuthenticated ? (
-                <div className="flex items-center gap-3">
-                  <Button asChild variant="outline" size="sm">
-                    <Link to="/login">Login</Link>
-                  </Button>
-                  <Button asChild size="sm">
-                    <Link to="/signup">Sign Up</Link>
-                  </Button>
-                </div>
-              ) : (
-                <DashboardLink className="bg-primary text-primary-foreground hover:opacity-90" />
-              )}
+              <div className="flex items-center gap-3">
+                {isAuthenticated && (
+                  <DashboardLink className="border border-border bg-transparent text-foreground hover:bg-accent" />
+                )}
+                <Button asChild size="sm">
+                  <Link to="/categories">Book Appointment</Link>
+                </Button>
+              </div>
             </div>
 
             {/* Right: mobile toggle */}
@@ -242,22 +238,14 @@ export function Navbar() {
             </ul>
 
             <div className="mt-8 space-y-3">
-              {!isAuthenticated ? (
-                <>
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to="/login" onClick={closeMenu}>
-                      Login
-                    </Link>
-                  </Button>
-                  <Button asChild className="w-full">
-                    <Link to="/signup" onClick={closeMenu}>
-                      Sign Up
-                    </Link>
-                  </Button>
-                </>
-              ) : (
-                <DashboardLink className="w-full bg-primary text-primary-foreground hover:opacity-90" />
+              {isAuthenticated && (
+                <DashboardLink className="w-full border border-border bg-transparent text-foreground hover:bg-accent" />
               )}
+              <Button asChild className="w-full">
+                <Link to="/categories" onClick={closeMenu}>
+                  Book Appointment
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

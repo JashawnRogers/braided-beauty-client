@@ -4,6 +4,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "@/styles/index.css";
 import "@/styles/ra-overrides.css";
 import LandingPage from "@/features/marketing/pages/LandingPage";
+import AboutPage from "@/features/marketing/pages/AboutPage";
+import PoliciesPage from "@/features/marketing/pages/PoliciesPage";
+import ContactPage from "@/features/marketing/pages/ContactPage";
 import LoginPage from "@/features/auth/LoginPage";
 import SignUpPage from "@/features/auth/SignUpPage";
 import CategoriesPage from "@/features/marketing/pages/CategoriesPage";
@@ -41,6 +44,18 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <LandingPage />,
+      },
+      {
+        path: "/about",
+        element: <AboutPage />,
+      },
+      {
+        path: "/policies",
+        element: <PoliciesPage />,
+      },
+      {
+        path: "/contact",
+        element: <ContactPage />,
       },
       {
         path: "/login",
