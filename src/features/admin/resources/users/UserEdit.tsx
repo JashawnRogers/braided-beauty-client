@@ -13,7 +13,7 @@ import {
 } from "@/features/admin";
 import { useRecordContext } from "ra-core";
 import { phone } from "../../../../lib/formatPhone";
-import { Datagrid } from "react-admin";
+import { BooleanInput, Datagrid } from "react-admin";
 import { MoneyField } from "../../components/fields/fields";
 const USER_TYPE_CHOICES = [
   { id: "ADMIN", name: "Admin" },
@@ -109,6 +109,7 @@ export default function UserEdit() {
           redeemedPoints: data.loyaltyRecord?.redeemedPoints ?? 0,
         },
         phoneNumber: phone.toE164(data.phoneNumber),
+        enabled: data.enabled,
       })}
     >
       {/* One Form that wraps *all* inputs & action buttons */}
@@ -161,6 +162,8 @@ export default function UserEdit() {
               validate={nonNegative}
               min={0}
             />
+
+            <BooleanInput source="enabled" label="Account enabled" />
           </section>
 
           {/* Right column: read-only meta (Fields, not Inputs) */}
