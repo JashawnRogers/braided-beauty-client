@@ -6,11 +6,15 @@ import { Label } from "@/components/ui/label";
 import ChecklistItem from "@/components/shared/CheckListItem";
 import { Link, useNavigate } from "react-router-dom";
 import { phone as phoneUtil } from "@/lib/formatPhone";
-import { passwordIssues, sanitizePasswordInput } from "@/lib/password";
+import {
+  containsPersonalInfo,
+  evaluatePasswordRules,
+  sanitizePasswordInput,
+} from "@/lib/password";
 import { useUser } from "@/context/UserContext";
 import { RegisterRequestPayload, CurrentUser } from "../account/types";
 import { apiGet, apiPost } from "@/lib/apiClient";
-import { Eye, EyeOff } from "lucide-react";
+import PasswordInput from "./components/PasswordInput";
 
 export default function SignUpPage() {
   const { setUser } = useUser();
@@ -23,19 +27,19 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
-  const issues = useMemo(
+  const passwordRules = useMemo(() => evaluatePasswordRules(password), [password]);
+  const hasPersonalInfo = useMemo(
     () =>
-      passwordIssues(password, {
+      containsPersonalInfo(sanitizePasswordInput(password), {
         name,
         email,
         phone,
-        confirm,
       }),
-    [password, name, email, phone, confirm]
+    [password, name, email, phone]
   );
+  const passwordsMatch =
+    sanitizePasswordInput(password) === sanitizePasswordInput(confirm);
 
   const handleOAuth = async () => {
     const apiBase = import.meta.env.VITE_SERVER_API_URL as string;
@@ -47,12 +51,17 @@ export default function SignUpPage() {
     e.preventDefault();
     setError(null);
 
-    if (issues.length > 0) {
+    if (!passwordRules.isPasswordValid) {
       setError("Please fix the password requirements before continuing");
       return;
     }
 
-    if (password !== confirm) {
+    if (hasPersonalInfo) {
+      setError("Password cannot contain your personal information");
+      return;
+    }
+
+    if (!passwordsMatch) {
       setError("Passwords do not match");
       return;
     }
@@ -180,30 +189,13 @@ export default function SignUpPage() {
                 </Label>
               </div>
 
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  name="pwd"
-                  id="pwd"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input sz-md variant-mixed pr-10"
-                  required
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
+              <PasswordInput
+                name="pwd"
+                id="pwd"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
             </div>
 
             <div className="space-y-0.5">
@@ -213,52 +205,48 @@ export default function SignUpPage() {
                 </Label>
               </div>
 
-              <div className="relative">
-                <Input
-                  type={showConfirm ? "text" : "password"}
-                  required
-                  name="confirm"
-                  id="confirm"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  className="input sz-md variant-mixed pr-10"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowConfirm((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showConfirm ? "Hide password" : "Show password"}
-                >
-                  {showConfirm ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
+              <PasswordInput
+                required
+                name="confirm"
+                id="confirm"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+              />
             </div>
 
             <ol className="mt-3 space-y-1 text-sm">
               <li>
-                <ChecklistItem ok={!issues.includes("length")}>
+                <ChecklistItem ok={passwordRules.minLengthMet}>
                   At least 8 characters
                 </ChecklistItem>
               </li>
               <li>
-                <ChecklistItem ok={!issues.includes("personal")}>
+                <ChecklistItem ok={passwordRules.hasUppercase}>
+                  Must include 1 uppercase letter
+                </ChecklistItem>
+              </li>
+              <li>
+                <ChecklistItem ok={passwordRules.hasLowercase}>
+                  Must include 1 lowercase letter
+                </ChecklistItem>
+              </li>
+              <li>
+                <ChecklistItem ok={passwordRules.hasNumber}>
+                  Must include 1 number
+                </ChecklistItem>
+              </li>
+              <li>
+                <ChecklistItem ok={passwordRules.hasSymbol}>
+                  Must include at least one symbol: Ex. !, &, %, etc..
+                </ChecklistItem>
+              </li>
+              <li>
+                <ChecklistItem ok={!hasPersonalInfo}>
                   Doesn’t include your name, email, or phone
                 </ChecklistItem>
               </li>
               <li>
-                <ChecklistItem ok={!issues.includes("confirm")}>
-                  Passwords match
-                </ChecklistItem>
-              </li>
-              <li>
-                <ChecklistItem ok={!issues.includes("symbol")}>
-                  Must include at least one symbol: Ex. !, &, %, etc..
-                </ChecklistItem>
+                <ChecklistItem ok={passwordsMatch}>Passwords match</ChecklistItem>
               </li>
             </ol>
 
@@ -267,7 +255,12 @@ export default function SignUpPage() {
             <Button
               className="w-full"
               type="submit"
-              disabled={isSubmitting || issues.length > 0}
+              disabled={
+                isSubmitting ||
+                !passwordRules.isPasswordValid ||
+                hasPersonalInfo ||
+                !passwordsMatch
+              }
             >
               Sign Up
             </Button>

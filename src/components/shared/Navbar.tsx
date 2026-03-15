@@ -145,6 +145,16 @@ export function Navbar() {
             {/* Desktop right actions */}
             <div className="hidden lg:flex lg:justify-end">
               <div className="flex items-center gap-3">
+                {!isAuthenticated && (
+                  <>
+                    <Button asChild variant="ghost" size="sm">
+                      <Link to="/login">Login</Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm">
+                      <Link to="/signup">Sign Up</Link>
+                    </Button>
+                  </>
+                )}
                 {isAuthenticated && (
                   <DashboardLink className="border border-border bg-transparent text-foreground hover:bg-accent" />
                 )}
@@ -238,6 +248,20 @@ export function Navbar() {
             </ul>
 
             <div className="mt-8 space-y-3">
+              {!isAuthenticated && (
+                <>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to="/login" onClick={closeMenu}>
+                      Login
+                    </Link>
+                  </Button>
+                  <Button asChild variant="secondary" className="w-full">
+                    <Link to="/signup" onClick={closeMenu}>
+                      Sign Up
+                    </Link>
+                  </Button>
+                </>
+              )}
               {isAuthenticated && (
                 <DashboardLink className="w-full border border-border bg-transparent text-foreground hover:bg-accent" />
               )}

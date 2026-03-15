@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useUser } from "@/context/UserContext";
 import type { CurrentUser } from "@/features/account/types";
 import { refreshAccessToken } from "@/lib/authClient";
-import { Eye, EyeOff } from "lucide-react";
+import PasswordInput from "./components/PasswordInput";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -15,7 +15,6 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -133,37 +132,20 @@ export default function LoginPage() {
                 </Label>
                 <Button asChild variant="link" size="sm">
                   <Link
-                    to="#"
+                    to="/forgot-password"
                     className="link intent-info variant-ghost text-sm"
                   >
-                    Forgot your Password ?
+                    Forgot password?
                   </Link>
                 </Button>
               </div>
 
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  name="pwd"
-                  id="pwd"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input sz-md variant-mixed pr-10"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
+              <PasswordInput
+                required
+                name="pwd"
+                id="pwd"
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
             <Button type="submit" disabled={isSubmitting} className="w-full">

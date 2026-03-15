@@ -1,10 +1,43 @@
 export type PasswordIssue = "length" | "symbol" | "personal" | "confirm";
 
-const SYMBOL = /[^\w\s]/;
+const HAS_UPPERCASE = /[A-Z]/;
+const HAS_LOWERCASE = /[a-z]/;
+const HAS_NUMBER = /\d/;
+const HAS_SYMBOL = /[^A-Za-z0-9\s]/;
+const MIN_PASSWORD_LENGTH = 8;
+
+export type PasswordRuleResult = {
+  minLengthMet: boolean;
+  hasUppercase: boolean;
+  hasLowercase: boolean;
+  hasNumber: boolean;
+  hasSymbol: boolean;
+  isPasswordValid: boolean;
+};
 
 export function sanitizePasswordInput(raw: string): string {
   // strip only leading/trailing whitespace; allow spaces inside passphrases
   return raw.replace(/^\s+|\s+$/g, "");
+}
+
+export function evaluatePasswordRules(rawPassword: string): PasswordRuleResult {
+  const password = sanitizePasswordInput(rawPassword);
+
+  const minLengthMet = password.length >= MIN_PASSWORD_LENGTH;
+  const hasUppercase = HAS_UPPERCASE.test(password);
+  const hasLowercase = HAS_LOWERCASE.test(password);
+  const hasNumber = HAS_NUMBER.test(password);
+  const hasSymbol = HAS_SYMBOL.test(password);
+
+  return {
+    minLengthMet,
+    hasUppercase,
+    hasLowercase,
+    hasNumber,
+    hasSymbol,
+    isPasswordValid:
+      minLengthMet && hasUppercase && hasLowercase && hasNumber && hasSymbol,
+  };
 }
 
 export function containsPersonalInfo(
@@ -36,11 +69,12 @@ export function passwordIssues(
   options: { name?: string; email?: string; phone?: string; confirm?: string }
 ): PasswordIssue[] {
   const sanitizedPassword = sanitizePasswordInput(rawPassword);
+  const passwordRules = evaluatePasswordRules(sanitizedPassword);
   const issues: PasswordIssue[] = [];
 
-  if (sanitizedPassword.length < 8) issues.push("length");
+  if (!passwordRules.minLengthMet) issues.push("length");
 
-  if (SYMBOL.test(sanitizedPassword)) {
+  if (!passwordRules.hasSymbol) {
     issues.push("symbol");
   }
 

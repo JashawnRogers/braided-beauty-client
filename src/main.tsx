@@ -9,6 +9,8 @@ import PoliciesPage from "@/features/marketing/pages/PoliciesPage";
 import ContactPage from "@/features/marketing/pages/ContactPage";
 import LoginPage from "@/features/auth/LoginPage";
 import SignUpPage from "@/features/auth/SignUpPage";
+import ForgotPasswordPage from "@/features/auth/ForgotPasswordPage";
+import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
 import CategoriesPage from "@/features/marketing/pages/CategoriesPage";
 import ServiceDetailsPage from "@/features/marketing/pages/ServiceDetailsPage";
 import Layout from "@/components/shared/Layout";
@@ -64,6 +66,14 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUpPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
       },
       {
         path: "/categories",
