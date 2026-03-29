@@ -11,6 +11,7 @@ import LoginPage from "@/features/auth/LoginPage";
 import SignUpPage from "@/features/auth/SignUpPage";
 import ForgotPasswordPage from "@/features/auth/ForgotPasswordPage";
 import ResetPasswordPage from "@/features/auth/ResetPasswordPage";
+import BootstrapAdminPage from "@/features/auth/BootstrapAdminPage";
 import CategoriesPage from "@/features/marketing/pages/CategoriesPage";
 import ServiceDetailsPage from "@/features/marketing/pages/ServiceDetailsPage";
 import Layout from "@/components/shared/Layout";
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
       {
         path: "/reset-password",
         element: <ResetPasswordPage />,
+      },
+      {
+        path: "/bootstrap-admin",
+        element: <BootstrapAdminPage />,
       },
       {
         path: "/categories",

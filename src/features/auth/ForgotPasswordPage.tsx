@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
               <img
                 src={Logo}
                 alt="Braided Beauty Logo"
-                className="h-16 w-auto rounded-md"
+                className="h-32 w-auto rounded-md"
               />
             </Link>
             <h1 className="mb-1 mt-4 text-xl font-semibold">

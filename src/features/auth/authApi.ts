@@ -1,4 +1,4 @@
-import { apiPublicPost } from "@/lib/apiClient";
+import { apiPost, apiPublicPost } from "@/lib/apiClient";
 
 export type ForgotPasswordPayload = {
   email: string;
@@ -15,3 +15,10 @@ export type ResetPasswordPayload = {
 
 export const resetPassword = (payload: ResetPasswordPayload) =>
   apiPublicPost<void>("/auth/reset-password", payload);
+
+export type BootstrapAdminPayload = {
+  secret: string;
+};
+
+export const bootstrapAdmin = (payload: BootstrapAdminPayload) =>
+  apiPost<void>("/auth/bootstrap-admin", payload);
