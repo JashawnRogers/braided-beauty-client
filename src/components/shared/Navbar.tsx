@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
+import { hardLogout } from "@/lib/authClient";
 
 const menuItems = [
   { name: "About", href: "/about" },
@@ -263,7 +264,17 @@ export function Navbar() {
                 </>
               )}
               {isAuthenticated && (
-                <DashboardLink className="w-full border border-border bg-transparent text-foreground hover:bg-accent" />
+                <>
+                  <DashboardLink className="w-full border border-border bg-transparent text-foreground hover:bg-accent" />
+                  <Button
+                    asChild
+                    variant="secondary"
+                    className="w-full"
+                    onClick={hardLogout}
+                  >
+                    Log out
+                  </Button>
+                </>
               )}
               <Button asChild className="w-full">
                 <Link to="/categories" onClick={closeMenu}>

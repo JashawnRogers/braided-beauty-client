@@ -6,7 +6,6 @@ import { CalendarPlus, ClipboardList, Sparkles } from "lucide-react";
 
 export function UserDashboardPage() {
   const profile = useLoaderData<UserDashboardDTO>();
-  console.log("📄 useLoaderData in page:", profile);
 
   if (!profile) {
     return <p>Loading...</p>;
