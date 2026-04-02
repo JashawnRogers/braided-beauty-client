@@ -1,4 +1,4 @@
-import Logo from "@/assets/bb-logo.svg";
+import Logo from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

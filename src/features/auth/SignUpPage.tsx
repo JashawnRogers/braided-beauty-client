@@ -1,5 +1,5 @@
 import { useState, useMemo, FormEvent } from "react";
-import Logo from "@/assets/bb-logo.svg";
+import Logo from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +28,10 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  const passwordRules = useMemo(() => evaluatePasswordRules(password), [password]);
+  const passwordRules = useMemo(
+    () => evaluatePasswordRules(password),
+    [password]
+  );
   const hasPersonalInfo = useMemo(
     () =>
       containsPersonalInfo(sanitizePasswordInput(password), {
@@ -114,7 +117,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
+    <section className="flex min-h-screen bg-zinc-50 px-4 py-24 md:py-32 dark:bg-transparent">
       <form
         onSubmit={handleSubmit}
         className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
@@ -246,7 +249,9 @@ export default function SignUpPage() {
                 </ChecklistItem>
               </li>
               <li>
-                <ChecklistItem ok={passwordsMatch}>Passwords match</ChecklistItem>
+                <ChecklistItem ok={passwordsMatch}>
+                  Passwords match
+                </ChecklistItem>
               </li>
             </ol>
 
