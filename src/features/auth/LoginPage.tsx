@@ -91,7 +91,7 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
+    <section className="flex min-h-screen bg-zinc-50 px-4 py-28 md:py-32 dark:bg-transparent">
       <form
         onSubmit={handleSubmit}
         className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
@@ -106,9 +106,8 @@ export default function LoginPage() {
               />
             </Link>
             <h1 className="mb-1 mt-4 text-xl font-semibold">
-              Sign In to Braided Beauty
+              Welcome back! Sign in to continue
             </h1>
-            <p className="text-sm">Welcome back! Sign in to continue</p>
           </div>
 
           <div className="mt-6 space-y-6">

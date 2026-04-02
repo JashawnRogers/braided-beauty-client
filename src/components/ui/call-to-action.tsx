@@ -18,7 +18,7 @@ export default function CallToAction() {
             </Button>
 
             <Button asChild size="lg" variant="outline">
-              <Link to="/">
+              <Link to="/signup">
                 <span>Sign up</span>
               </Link>
             </Button>

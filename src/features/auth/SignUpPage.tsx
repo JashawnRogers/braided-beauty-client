@@ -117,7 +117,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <section className="flex min-h-screen bg-zinc-50 px-4 py-24 md:py-32 dark:bg-transparent">
+    <section className="flex min-h-screen bg-zinc-50 px-4 py-32 md:py-32 dark:bg-transparent">
       <form
         onSubmit={handleSubmit}
         className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
@@ -132,9 +132,8 @@ export default function SignUpPage() {
               />
             </Link>
             <h1 className=" mb-1 mt-4 text-xl font-semibold">
-              Create a Braided Beauty Account
+              Welcome! Create an account to get started
             </h1>
-            <p className="text-sm">Welcome! Create an account to get started</p>
           </div>
 
           <div className="mt-6 space-y-6">
