@@ -6,7 +6,7 @@ export type BusinessHoursResponseDTO = {
   readonly dayOfWeek: string;
   readonly openTime: string;
   readonly closeTime: string;
-  readonly isClosed: boolean;
+  readonly closed: boolean;
 };
 
 export function useBusinessHours() {

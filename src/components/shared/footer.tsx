@@ -3,15 +3,15 @@ import Logo from "@/assets/logos/braided-beauty-alt-dark.png";
 const links = [
   {
     title: "Contact",
-    href: "#",
+    href: "/contact",
   },
   {
-    title: "Booking Policy",
-    href: "#",
+    title: "Booking policy",
+    href: "/policies",
   },
   {
-    title: "FAQ's",
-    href: "#",
+    title: "Meet your braider",
+    href: "/about",
   },
 ];
 

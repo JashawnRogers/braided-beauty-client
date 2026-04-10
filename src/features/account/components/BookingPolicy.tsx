@@ -63,24 +63,19 @@ export default function BookingPolicy({
     return acc;
   }, {});
 
-  const formatDayLabel = (day: string) =>
-    day[0] + day.slice(1).toLowerCase();
+  const formatDayLabel = (day: string) => day[0] + day.slice(1).toLowerCase();
 
   const renderTodayHours = () => {
     if (hoursLoading) return <p>Loading hours…</p>;
     if (hoursError)
-      return (
-        <p className="text-xs text-muted-foreground">
-          Hours unavailable
-        </p>
-      );
+      return <p className="text-xs text-muted-foreground">Hours unavailable</p>;
 
     const today = new Date().getDay(); // 0=Sun ... 6=Sat
     const todayKey = DAY_ORDER[today];
     const row = hoursByDay[todayKey];
     const label = formatDayLabel(todayKey);
 
-    if (!row || row.isClosed) {
+    if (!row || row.closed) {
       return (
         <p>
           <span className="font-medium">{label}:</span>{" "}
@@ -100,11 +95,7 @@ export default function BookingPolicy({
   const renderAllHours = () => {
     if (hoursLoading) return <p>Loading hours…</p>;
     if (hoursError)
-      return (
-        <p className="text-xs text-muted-foreground">
-          Hours unavailable
-        </p>
-      );
+      return <p className="text-xs text-muted-foreground">Hours unavailable</p>;
 
     return (
       <div className="space-y-1">
@@ -112,7 +103,7 @@ export default function BookingPolicy({
           const row = hoursByDay[day];
           const label = formatDayLabel(day);
 
-          if (!row || row.isClosed) {
+          if (!row || row.closed) {
             return (
               <p key={day}>
                 <span className="font-medium">{label}:</span>{" "}
@@ -151,16 +142,17 @@ export default function BookingPolicy({
             className={`rounded-2xl ${accentRing} bg-white/60 p-4 dark:bg-zinc-900/50`}
           >
             <p className="text-center text-sm font-medium leading-relaxed">
-              We create for women who are selective about their space and stylist—
-              a calm, curated environment where beauty meets intention.
+              We create for women who are selective about their space and
+              stylist— a calm, curated environment where beauty meets intention.
             </p>
           </div>
           <div
             className={`rounded-2xl ${accentRing} bg-white/60 p-4 dark:bg-zinc-900/50`}
           >
             <p className="text-center text-sm font-medium leading-relaxed">
-              Each style is rooted in care for your natural hair. We are committed
-              to helping it grow strong and healthy while saving you time.
+              Each style is rooted in care for your natural hair. We are
+              committed to helping it grow strong and healthy while saving you
+              time.
             </p>
           </div>
           <div
@@ -283,8 +275,8 @@ export default function BookingPolicy({
               </AccordionTrigger>
               <AccordionContent className="text-sm text-zinc-600 dark:text-zinc-400">
                 10-minute grace period. Please notify beforehand. A{" "}
-                <strong>$25</strong> fee applies after 15 minutes. 20 minutes
-                or more may result in appointment cancellation.
+                <strong>$25</strong> fee applies after 15 minutes. 20 minutes or
+                more may result in appointment cancellation.
               </AccordionContent>
             </AccordionItem>
 
@@ -362,180 +354,182 @@ export default function BookingPolicy({
       {/* Policy grid */}
       <div className="mt-8 hidden md:block">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Location */}
-        <Card className="p-5">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-              <MapPin className="h-5 w-5 opacity-70" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">Location</h3>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                {settings?.companyAddress}
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        {/* Hours */}
-        <Card className="p-5">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-              <Clock className="h-5 w-5 opacity-70" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">Hours</h3>
-              <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                {!showAllHours && renderTodayHours()}
-
-                {showAllHours && <div className="mt-2">{renderAllHours()}</div>}
-
-                {!hoursLoading && !hoursError && (
-                  <button
-                    type="button"
-                    onClick={() => setShowAllHours((v) => !v)}
-                    className="mt-2 text-xs font-medium text-primary hover:underline"
-                  >
-                    {showAllHours ? "Hide hours" : "View all hours"}
-                  </button>
-                )}
+          {/* Location */}
+          <Card className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
+                <MapPin className="h-5 w-5 opacity-70" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">Location</h3>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  {settings?.companyAddress}
+                </p>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        {/* Contact */}
-        <Card className="p-5">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-              <Phone className="h-5 w-5 opacity-70" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">Contact</h3>
-              <p className="mt-1 text-sm">
-                <a
-                  className="hover:underline"
-                  href={`tel:${settings?.companyPhoneNumber}`}
-                >
-                  {phone.formatFromE164(settings?.companyPhoneNumber)}
-                </a>
-              </p>
-              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                {/* Instagram */}
-                <a
-                  href="https://instagram.com/braidedbeautyphx"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="h-4 w-4 fill-current opacity-70"
-                  >
-                    <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h10zm-5 3.5A5.5 5.5 0 1 0 17.5 13 5.51 5.51 0 0 0 12 7.5zm0 9A3.5 3.5 0 1 1 15.5 13 3.5 3.5 0 0 1 12 16.5zm4.75-9.75a1.25 1.25 0 1 0 1.25 1.25 1.25 1.25 0 0 0-1.25-1.25z" />
-                  </svg>
-                  <span>@braidedbeautyphx</span>
-                </a>
+          {/* Hours */}
+          <Card className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
+                <Clock className="h-5 w-5 opacity-70" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">Hours</h3>
+                <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  {!showAllHours && renderTodayHours()}
 
-                {/* TikTok */}
-                <a
-                  href="https://www.tiktok.com/@braidedbeautyphx"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="h-4 w-4 fill-current opacity-70"
-                  >
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-2.89-2.89c.29 0 .57.04.83.1V9.4a6.31 6.31 0 0 0-.83-.05A6.33 6.33 0 1 0 15.82 15V8.39a8.26 8.26 0 0 0 3.77.93z" />
-                  </svg>
-                  <span>@braidedb3auty</span>
-                </a>
+                  {showAllHours && (
+                    <div className="mt-2">{renderAllHours()}</div>
+                  )}
+
+                  {!hoursLoading && !hoursError && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAllHours((v) => !v)}
+                      className="mt-2 text-xs font-medium text-primary hover:underline"
+                    >
+                      {showAllHours ? "Hide hours" : "View all hours"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        {/* Lateness */}
-        <Card className="p-5">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-              <Clock className="h-5 w-5 opacity-70" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">Lateness</h3>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                10-minute grace period. Please notify beforehand. A{" "}
-                <strong>$25</strong> fee applies after 15 minutes. 20 minutes or
-                more may result in appointment cancellation.
-              </p>
-            </div>
-          </div>
-        </Card>
+          {/* Contact */}
+          <Card className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
+                <Phone className="h-5 w-5 opacity-70" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">Contact</h3>
+                <p className="mt-1 text-sm">
+                  <a
+                    className="hover:underline"
+                    href={`tel:${settings?.companyPhoneNumber}`}
+                  >
+                    {phone.formatFromE164(settings?.companyPhoneNumber)}
+                  </a>
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                  {/* Instagram */}
+                  <a
+                    href="https://instagram.com/braidedbeautyphx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="h-4 w-4 fill-current opacity-70"
+                    >
+                      <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h10zm-5 3.5A5.5 5.5 0 1 0 17.5 13 5.51 5.51 0 0 0 12 7.5zm0 9A3.5 3.5 0 1 1 15.5 13 3.5 3.5 0 0 1 12 16.5zm4.75-9.75a1.25 1.25 0 1 0 1.25 1.25 1.25 1.25 0 0 0-1.25-1.25z" />
+                    </svg>
+                    <span>@braidedbeautyphx</span>
+                  </a>
 
-        {/* Payment */}
-        <Card className="p-5">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-              <DollarSign className="h-5 w-5 opacity-70" />
+                  {/* TikTok */}
+                  <a
+                    href="https://www.tiktok.com/@braidedbeautyphx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="h-4 w-4 fill-current opacity-70"
+                    >
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-2.89-2.89c.29 0 .57.04.83.1V9.4a6.31 6.31 0 0 0-.83-.05A6.33 6.33 0 1 0 15.82 15V8.39a8.26 8.26 0 0 0 3.77.93z" />
+                    </svg>
+                    <span>@braidedb3auty</span>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="text-sm font-semibold">Payment</h3>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                We now accept debit and credit as a valid form of payment.
-                Payment is due after appointment is completed.
-              </p>
-            </div>
-          </div>
-        </Card>
+          </Card>
 
-        {/* Cancellation */}
-        <Card className="p-5">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-              <Ban className="h-5 w-5 opacity-70" />
+          {/* Lateness */}
+          <Card className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
+                <Clock className="h-5 w-5 opacity-70" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">Lateness</h3>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  10-minute grace period. Please notify beforehand. A{" "}
+                  <strong>$25</strong> fee applies after 15 minutes. 20 minutes
+                  or more may result in appointment cancellation.
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-sm font-semibold">Cancellation</h3>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Reschedule at least <strong>48 hours prior</strong> to
-                appointment for a <strong>one time</strong> deposit transfer to
-                new appointment.
-              </p>
-            </div>
-          </div>
-        </Card>
+          </Card>
 
-        {/* Prep */}
-        <Card className="p-5 sm:col-span-2 lg:col-span-3">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-              <Brush className="h-5 w-5 opacity-70" />
+          {/* Payment */}
+          <Card className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
+                <DollarSign className="h-5 w-5 opacity-70" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">Payment</h3>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  We now accept debit and credit as a valid form of payment.
+                  Payment is due after appointment is completed.
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-sm font-semibold">Prep</h3>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                · Please arrive with hair washed, blow-dried, detangled and
-                free of product for best results.
-              </p>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                · A prep fee of <strong>$25</strong> is incurred for hair
-                prepped improperly.
-              </p>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                · Hair must be at least <strong>4 inches</strong> all around.
-              </p>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                · Hair loss or damaged edges? A phone consultation is{" "}
-                <strong>required</strong> before booking appointment.
-              </p>
+          </Card>
+
+          {/* Cancellation */}
+          <Card className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
+                <Ban className="h-5 w-5 opacity-70" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">Cancellation</h3>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  Reschedule at least <strong>48 hours prior</strong> to
+                  appointment for a <strong>one time</strong> deposit transfer
+                  to new appointment.
+                </p>
+              </div>
             </div>
-          </div>
-        </Card>
-      </div>
+          </Card>
+
+          {/* Prep */}
+          <Card className="p-5 sm:col-span-2 lg:col-span-3">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
+                <Brush className="h-5 w-5 opacity-70" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold">Prep</h3>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  · Please arrive with hair washed, blow-dried, detangled and
+                  free of product for best results.
+                </p>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  · A prep fee of <strong>$25</strong> is incurred for hair
+                  prepped improperly.
+                </p>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  · Hair must be at least <strong>4 inches</strong> all around.
+                </p>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  · Hair loss or damaged edges? A phone consultation is{" "}
+                  <strong>required</strong> before booking appointment.
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
       </div>
     </section>
   );
