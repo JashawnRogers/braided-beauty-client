@@ -21,9 +21,6 @@ export default function LoginPage() {
   const handleOAuth = async () => {
     const apiBase = import.meta.env.VITE_SERVER_API_URL as string;
     const serverOrigin = apiBase.replace(/\/api\/v1\/?$/, "");
-    console.log("Mode = ", import.meta.env.MODE);
-    console.log("VITE_SERVER_API_URL =", apiBase);
-    console.log("OAuth serverOrigin =", serverOrigin);
     window.location.href = `${serverOrigin}/oauth2/authorization/google`;
   };
 
@@ -86,7 +83,6 @@ export default function LoginPage() {
         navigate("/dashboard/me", { replace: true });
       }
     } catch (err) {
-      console.error(err);
       setError("something went wrong while logging in.");
     } finally {
       setIsSubmitting(false);

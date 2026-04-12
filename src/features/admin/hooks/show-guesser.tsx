@@ -13,7 +13,6 @@ import {
   useShowContext,
   InferredTypeMap,
 } from "ra-core";
-import { capitalize, singularize } from "inflection";
 import { ShowView } from "@/features/admin";
 import { RecordField } from "@/features/admin/components/fields/record-field";
 import { DateField } from "../components/fields/date-field";
@@ -39,7 +38,7 @@ const ShowViewGuesser = (props: { enableLog?: boolean }) => {
 
   const { record } = useShowContext();
   const [child, setChild] = useState<ReactNode>(null);
-  const { enableLog = process.env.NODE_ENV === "development", ...rest } = props;
+  const { enableLog: _enableLog, ...rest } = props;
 
   useEffect(() => {
     setChild(null);
@@ -54,45 +53,8 @@ const ShowViewGuesser = (props: { enableLog?: boolean }) => {
         inferredElements
       );
       setChild(inferredChild.getElement());
-
-      if (!enableLog) return;
-
-      const representation = inferredChild.getRepresentation();
-      const components = ["Show"]
-        .concat(
-          Array.from(
-            new Set(
-              Array.from(representation.matchAll(/<([^/\s>]+)/g))
-                .map((match) => match[1])
-                .filter(
-                  (component) => component !== "span" && component !== "div"
-                )
-            )
-          )
-        )
-        .sort();
-
-      // eslint-disable-next-line no-console
-      console.log(
-        `Guessed Show:
-
-${components
-  .map(
-    (component) =>
-      `import { ${component} } from "@/components/admin/${kebabCase(
-        component
-      )}";`
-  )
-  .join("\n")}
-
-export const ${capitalize(singularize(resource))}Show = () => (
-    <Show>
-${inferredChild.getRepresentation()}
-    </Show>
-);`
-      );
     }
-  }, [record, child, resource, enableLog]);
+  }, [record, child, resource]);
 
   return <ShowView {...rest}>{child}</ShowView>;
 };
@@ -199,11 +161,4 @@ ${children
     component: (props: any) => <RecordField source={props.source} />,
     representation: (props: any) => `<RecordField source="${props.source}" />`,
   },
-};
-
-const kebabCase = (name: string) => {
-  return name
-    .replace(/([a-z])([A-Z])/g, "$1-$2")
-    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
-    .toLowerCase();
 };

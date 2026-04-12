@@ -73,7 +73,6 @@ export default function SignUpPage() {
 
     const e164 = phoneUtil.toE164(phone);
     if (!e164) {
-      console.log("No e164");
       return;
     }
 
@@ -106,7 +105,6 @@ export default function SignUpPage() {
         navigate("/dashboard/me", { replace: true });
       }
     } catch (err: any) {
-      console.log(err);
       setError(
         err?.message ??
           "Something went wrong while creating your account. Please try again."

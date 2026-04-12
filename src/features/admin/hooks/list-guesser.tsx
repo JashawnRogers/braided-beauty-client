@@ -15,7 +15,6 @@ import {
   ListView,
   ListViewProps,
 } from "@/features/admin/hooks/list";
-import { capitalize, singularize } from "inflection";
 import { DataTable } from "@/features/admin/components/data-table";
 import { ArrayField } from "@/features/admin/components/fields/array-field";
 import { BadgeField } from "@/features/admin/components/fields/badge-field";
@@ -73,7 +72,7 @@ const ListViewGuesser = (
   const { data } = useListContext();
   const resource = useResourceContext();
   const [child, setChild] = useState<React.ReactElement | null>(null);
-  const { enableLog = process.env.NODE_ENV === "development", ...rest } = props;
+  const { enableLog: _enableLog, ...rest } = props;
 
   useEffect(() => {
     setChild(null);
@@ -99,42 +98,8 @@ const ListViewGuesser = (
       }
 
       setChild(inferredChildElement);
-
-      const components = ["List"]
-        .concat(
-          Array.from(
-            new Set(
-              Array.from(representation.matchAll(/<([^/\s\\.>]+)/g))
-                .map((match) => match[1])
-                .filter((component) => component !== "span")
-            )
-          )
-        )
-        .sort();
-
-      if (enableLog) {
-        // eslint-disable-next-line no-console
-        console.log(
-          `Guessed List:
-
-${components
-  .map(
-    (component) =>
-      `import { ${component} } from "@/components/admin/${kebabCase(
-        component
-      )}";`
-  )
-  .join("\n")}
-
-export const ${capitalize(singularize(resource))}List = () => (
-    <List>
-${inferredChild.getRepresentation()}
-    </List>
-);`
-        );
-      }
     }
-  }, [data, child, resource, enableLog]);
+  }, [data, child, resource]);
 
   return <ListView {...rest}>{child}</ListView>;
 };
@@ -212,11 +177,4 @@ ${children
     representation: (props: any) =>
       `<DataTable.Col source="${props.source}" />`,
   },
-};
-
-const kebabCase = (name: string) => {
-  return name
-    .replace(/([a-z])([A-Z])/g, "$1-$2")
-    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
-    .toLowerCase();
 };
