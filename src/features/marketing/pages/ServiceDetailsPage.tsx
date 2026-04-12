@@ -22,6 +22,7 @@ import { toISO } from "@/lib/toIso";
 import { apiGet, apiPost } from "@/lib/apiClient";
 import { formatJavaDate } from "@/lib/date";
 import { formatDurationMinutes } from "@/lib/formatDuration";
+import { logger } from "@/lib/logger";
 import {
   CreateAppointmentDTO,
   AvailableTimeSlotsDTO,
@@ -139,7 +140,10 @@ export default function ServiceDetailsPage() {
 
         setTimeSlots(toTimeSlots(data));
       } catch (err) {
-        console.error(err);
+        logger.error("booking.availability.load_failed", err, {
+          serviceId,
+          selectedAddOnCount: selectedAddOnIds.size,
+        });
         setAvailabilityError("Failed to load time slots");
         setTimeSlots([]);
       } finally {
@@ -163,7 +167,7 @@ export default function ServiceDetailsPage() {
 
         setService(data);
       } catch (err) {
-        console.error(err);
+        logger.error("booking.service.load_failed", err, { serviceId });
         setServiceError("Failed to load service");
         setService(null);
       } finally {
@@ -204,9 +208,6 @@ export default function ServiceDetailsPage() {
         addOnIds: Array.from(selectedAddOnIds),
         promoText: promoCode.trim() ? promoCode.trim().toUpperCase() : null,
       };
-
-      console.log(payload);
-
       const res = await apiPost<CheckoutSessionResponse>(
         `/appointments/book`,
         payload
@@ -227,7 +228,12 @@ export default function ServiceDetailsPage() {
 
       window.location.href = res.checkoutUrl!;
     } catch (err) {
-      console.error(err);
+      logger.error("booking.submit.failed", err, {
+        serviceId,
+        hasUser: Boolean(user),
+        selectedAddOnCount: selectedAddOnIds.size,
+        hasPromoCode: Boolean(promoCode.trim()),
+      });
       setAppointmentError("Failed to book appointment");
       navigate("/book/cancel");
     } finally {
@@ -286,7 +292,11 @@ export default function ServiceDetailsPage() {
 
         if (!cancelled) setPricingPreview(res);
       } catch (e) {
-        console.error(e);
+        logger.error("booking.pricing_preview.failed", e, {
+          serviceId,
+          selectedAddOnCount: selectedAddOnIds.size,
+          hasPromoCode: Boolean(debouncedPromoText),
+        });
         if (!cancelled) {
           setPricingPreview(null);
           setPreviewError("Failed to load pricing preview");

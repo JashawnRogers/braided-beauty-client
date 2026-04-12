@@ -1,5 +1,6 @@
 import { fetchUtils, HttpError } from "react-admin";
 import { hardLogout, refreshAccessToken } from "./authClient";
+import { logger, toSafePath } from "./logger";
 
 type FetchJson = typeof fetchUtils.fetchJson;
 
@@ -37,6 +38,10 @@ const doFecthJson: typeof fetchUtils.fetchJson = async (
       try {
         const newToken = await refreshAccessToken();
         if (!newToken) {
+          logger.warn("auth.refresh.missing_token", {
+            path: toSafePath(String(url)),
+            status,
+          });
           hardLogout();
           throw e;
         }
@@ -48,7 +53,10 @@ const doFecthJson: typeof fetchUtils.fetchJson = async (
 
         return await fetchUtils.fetchJson(url, opts);
       } catch (refreshErr) {
-        console.error("Failed to generate refresh token", refreshErr);
+        logger.error("auth.refresh.failed", refreshErr, {
+          path: toSafePath(String(url)),
+          status,
+        });
         hardLogout();
         throw e;
       }

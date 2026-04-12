@@ -1,4 +1,5 @@
 import { hardLogout, refreshAccessToken } from "./authClient";
+import { logger, toSafePath } from "./logger";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 const ADMIN_API_BASE_URL = import.meta.env.VITE_SERVER_ADMIN_API_URL;
@@ -47,6 +48,11 @@ async function request<T>(
     if (retry && token && !isAuthEndpoint) {
       const newToken = await refreshAccessToken();
       if (!newToken) {
+        logger.warn("api.request.session_expired", {
+          method: init.method ?? "GET",
+          path: toSafePath(url),
+          status: res.status,
+        });
         hardLogout();
         throw new Error("Session expired");
       }
@@ -55,6 +61,11 @@ async function request<T>(
       return request<T>(path, init, false);
     }
 
+    logger.warn("api.request.unauthorized", {
+      method: init.method ?? "GET",
+      path: toSafePath(url),
+      status: res.status,
+    });
     hardLogout();
     throw new Error("Unauthorized");
   }
@@ -68,6 +79,11 @@ async function request<T>(
       /* ignore */
     }
 
+    logger.error("api.request.failed", new Error("Request failed"), {
+      method: init.method ?? "GET",
+      path: toSafePath(url),
+      status: res.status,
+    });
     throw new Error(data?.message || data?.error || "Request failed");
   }
 
@@ -92,7 +108,6 @@ async function publicRequest<T>(
   init: RequestInit = {}
 ): Promise<T> {
   const url = `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
-  console.log("PUBLIC REQUEST URL: " + url);
 
   const headers = new Headers(init.headers || {});
   headers.set("Accept", "application/json");
@@ -106,6 +121,11 @@ async function publicRequest<T>(
     try {
       data = JSON.parse(text);
     } catch {}
+    logger.error("api.public_request.failed", new Error("Request failed"), {
+      method: init.method ?? "GET",
+      path: toSafePath(url),
+      status: res.status,
+    });
     throw new Error(data?.message || data?.error || "Request failed");
   }
 

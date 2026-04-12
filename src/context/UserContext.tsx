@@ -9,6 +9,7 @@ import {
 } from "react";
 import { apiGet } from "@/lib/apiClient";
 import type { CurrentUser } from "@/features/account/types";
+import { logger } from "@/lib/logger";
 
 type UserContextValue = {
   user: CurrentUser | null;
@@ -48,7 +49,7 @@ export function UserProvider({ children }: UserProviderProps) {
 
       setUser(currentUser);
     } catch (err) {
-      console.error(err);
+      logger.error("user.current.load_failed", err);
       setError("Unable to load user information.");
     } finally {
       setIsLoading(false);

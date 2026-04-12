@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 let refreshPromise: Promise<string | null> | null = null;
 
 async function actuallyRefresh(): Promise<string | null> {
@@ -11,6 +13,7 @@ async function actuallyRefresh(): Promise<string | null> {
   );
 
   if (!res.ok) {
+    logger.warn("auth.refresh.request_failed", { status: res.status });
     localStorage.removeItem("accessToken");
     return null;
   }
@@ -38,7 +41,9 @@ export async function hardLogout() {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("Logout request failed", err);
+    logger.warn("auth.logout.request_failed", {
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
   }
 
   localStorage.removeItem("accessToken");

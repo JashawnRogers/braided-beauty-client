@@ -27,6 +27,7 @@ import {
 
 import { apiGet } from "@/lib/apiClient";
 import { buildMonthOptions } from "@/lib/months";
+import { logger } from "@/lib/logger";
 
 /** --- Types (match your backend DTOs) --- */
 type ServicePopularityRow = {
@@ -105,7 +106,7 @@ export default function AdminAnalyticsDashboard() {
           setAllTime(aRes);
         }
       } catch (e) {
-        console.error(e);
+        logger.error("admin.analytics.load_failed", e, { month });
         if (!cancelled) setError("Failed to load analytics. Please try again.");
       } finally {
         if (!cancelled) setLoading(false);
