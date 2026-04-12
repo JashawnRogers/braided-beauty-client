@@ -205,7 +205,6 @@ The exact backend cookie attributes are not documented here because they are not
 
 - This README documents the frontend only. Backend behavior, required API contracts, and deployment infrastructure details live outside this repo.
 - There are some duplicate or legacy-looking files in the tree, such as `AdminCalendarPage 2.tsx` and `calendarApi 2.ts`. They do not appear to be part of the main route setup and are not treated as the primary implementation here.
-- The frontend contains some debug-oriented console usage in a few auth pages. That is current repo behavior, not recommended README guidance.
 
 ## Onboarding Notes
 
