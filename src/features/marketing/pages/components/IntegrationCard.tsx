@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 type IntegrationCardProps = Readonly<{
   title: string;
-  description: string;
+  description?: string | null;
   link?: string;
   children?: ReactNode;
   img?: ReactNode;
@@ -23,12 +23,14 @@ export default function IntegrationCard({
 }: IntegrationCardProps) {
   const DESCRIPTION_PREVIEW_LENGTH = 180;
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const hasLongDescription = description.length > DESCRIPTION_PREVIEW_LENGTH;
+  const safeDescription = description ?? "";
+  const hasLongDescription =
+    safeDescription.length > DESCRIPTION_PREVIEW_LENGTH;
   const descriptionPreview = hasLongDescription
-    ? `${description.slice(0, DESCRIPTION_PREVIEW_LENGTH).trimEnd()}...`
-    : description;
+    ? `${safeDescription.slice(0, DESCRIPTION_PREVIEW_LENGTH).trimEnd()}...`
+    : safeDescription;
   const visibleDescription = isDescriptionExpanded
-    ? description
+    ? safeDescription
     : descriptionPreview;
 
   return (
@@ -46,7 +48,7 @@ export default function IntegrationCard({
           <h3 className="text-lg font-semibold">{title}</h3>
           <div className="min-w-0 space-y-1">
             <p className="text-sm text-muted-foreground whitespace-pre-line break-words overflow-hidden">
-              {visibleDescription}
+              {visibleDescription || "Details will be available soon."}
             </p>
             {hasLongDescription && (
               <Button
