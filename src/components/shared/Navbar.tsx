@@ -97,7 +97,7 @@ export function Navbar() {
               : "lg:scale-100"
           )}
         >
-          <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:grid-cols-[auto_1fr_auto] lg:px-10 xl:px-12">
+          <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:px-10 xl:px-12">
             {/* Left: logo */}
             <Link
               to="/"
@@ -128,7 +128,7 @@ export function Navbar() {
             )}
 
             {/* Desktop center nav */}
-            <div className="hidden lg:flex lg:justify-center">
+            <div className="hidden lg:flex lg:justify-self-center">
               <ul className="flex items-center gap-10 xl:gap-12">
                 {menuItems.map((item) => (
                   <li key={item.name}>
@@ -144,7 +144,7 @@ export function Navbar() {
             </div>
 
             {/* Desktop right actions */}
-            <div className="hidden lg:flex lg:justify-end">
+            <div className="hidden lg:flex lg:justify-self-end">
               <div className="flex items-center gap-3">
                 {!isAuthenticated && (
                   <>

@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { hardLogout } from "@/lib/authClient";
 import LOGO from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
+import SiteBreadcrumbs from "@/components/shared/SiteBreadcrumbs";
 
 function Logo() {
   return (
@@ -122,6 +123,7 @@ export default function UserLayout() {
         </aside>
 
         <main className="flex-1 px-4 py-6 md:px-12 lg:px-20">
+          <SiteBreadcrumbs className="mb-6" />
           <Outlet />
         </main>
       </div>

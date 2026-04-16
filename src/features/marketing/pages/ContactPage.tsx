@@ -7,13 +7,13 @@ export default function ContactPage() {
   const settings = useBusinessSettingsContext();
 
   return (
-    <section className="py-24">
+    <section className="py-12">
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center">
           <h1 className="text-4xl font-semibold md:text-5xl">Contact</h1>
           <p className="mt-3 text-muted-foreground">
-            Reach out before booking your squeeze-in request and we will help you
-            confirm availability.
+            Reach out before booking your squeeze-in request and we will help
+            you confirm availability.
           </p>
         </div>
 
@@ -24,7 +24,8 @@ export default function ContactPage() {
               href={`tel:${settings?.companyPhoneNumber ?? ""}`}
               className="mt-2 block text-sm text-muted-foreground hover:underline"
             >
-              {phone.formatFromE164(settings?.companyPhoneNumber) || "Unavailable"}
+              {phone.formatFromE164(settings?.companyPhoneNumber) ||
+                "Unavailable"}
             </a>
           </div>
 

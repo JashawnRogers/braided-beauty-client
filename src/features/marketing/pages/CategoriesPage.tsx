@@ -32,7 +32,7 @@ export default function CategoriesPage() {
 
   return (
     <section>
-      <div className="py-32">
+      <div className="py-16">
         <div className="mx-auto max-w-5xl px-6">
           <div className="text-center">
             <h2 className="text-balance text-3xl font-semibold md:text-4xl">

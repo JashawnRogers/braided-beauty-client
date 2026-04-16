@@ -91,11 +91,15 @@ export default function BookingSuccessPage() {
 
   const calendarHref =
     id && token
-      ? `webcal://localhost:8080/api/v1/appointments/confirm/ics?id=${id}&token=${encodeURIComponent(
+      ? `webcal://${
+          import.meta.env.VITE_SERVER_API_URL
+        }/api/v1/appointments/confirm/ics?id=${id}&token=${encodeURIComponent(
           token
         )}`
       : sessionId
-      ? `webcal://localhost:8080/api/v1/appointments/confirm/ics/by-session?sessionId=${encodeURIComponent(
+      ? `webcal://${
+          import.meta.env.VITE_SERVER_API_URL
+        }/api/v1/appointments/confirm/ics/by-session?sessionId=${encodeURIComponent(
           sessionId
         )}`
       : null;

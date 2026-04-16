@@ -37,6 +37,7 @@ import BookingDetailsDialog from "./components/BookingDetailsDialog";
 import ReviewsCard from "./components/ReviewsCard";
 
 export default function ServiceDetailsPage() {
+  const DESCRIPTION_PREVIEW_LENGTH = 250;
   const { serviceId } = useParams<{ serviceId: string }>();
   const [service, setService] = useState<ServiceResponseDTO | null>(null);
   const [date, setDate] = useState<Date>(new Date());
@@ -60,6 +61,8 @@ export default function ServiceDetailsPage() {
     useState<boolean>(false);
   const [guestEmail, setGuestEmail] = useState<string>("");
   const [promoCode, setPromoCode] = useState<string>("");
+  const [isDescriptionExpanded, setIsDescriptionExpanded] =
+    useState<boolean>(false);
 
   const [pricingPreview, setPricingPreview] =
     useState<BookingPricingPreview | null>(null);
@@ -180,6 +183,10 @@ export default function ServiceDetailsPage() {
 
   useEffect(() => {
     setPricingPreview(null);
+  }, [serviceId]);
+
+  useEffect(() => {
+    setIsDescriptionExpanded(false);
   }, [serviceId]);
 
   const canBook = Boolean(time) && !isLoadingSlots && !availabilityError;
@@ -351,6 +358,16 @@ export default function ServiceDetailsPage() {
     return base + addOnPrice;
   }, [service, selectedAddOnIds]);
 
+  const descriptionText = service?.description ?? "";
+  const hasLongDescription =
+    descriptionText.length > DESCRIPTION_PREVIEW_LENGTH;
+  const descriptionPreview = hasLongDescription
+    ? `${descriptionText.slice(0, DESCRIPTION_PREVIEW_LENGTH).trimEnd()}...`
+    : descriptionText;
+  const visibleDescription = isDescriptionExpanded
+    ? descriptionText
+    : descriptionPreview;
+
   if (isLoadingService) {
     return <div className="mx-auto max-w-3xl px-6 py-24">Loading service…</div>;
   }
@@ -373,7 +390,7 @@ export default function ServiceDetailsPage() {
     );
   }
   return (
-    <section className="py-24">
+    <section className="py-8">
       <div className="mx-auto max-w-7xl px-6">
         <BookingPolicy />
 
@@ -393,7 +410,19 @@ export default function ServiceDetailsPage() {
             />
 
             <article className="prose prose-zinc dark:prose-invert mt-6">
-              <p>{service.description}</p>
+              <p className="whitespace-pre-line">{visibleDescription}</p>
+              {hasLongDescription && (
+                <Button
+                  type="button"
+                  variant="link"
+                  className="h-auto px-0"
+                  onClick={() =>
+                    setIsDescriptionExpanded((expanded) => !expanded)
+                  }
+                >
+                  {isDescriptionExpanded ? "Show less" : "Show more"}
+                </Button>
+              )}
               {service.price !== undefined && (
                 <p>
                   <strong>Price: </strong> {formatCurrency(totalPrice)}

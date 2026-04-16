@@ -47,7 +47,7 @@ export default function ServiceCreate() {
               label="Description"
               multiline
               rows={4}
-              maxLength={250}
+              maxLength={5000}
             />
 
             <NumberInput

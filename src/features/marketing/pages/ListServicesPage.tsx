@@ -35,7 +35,7 @@ export function ListServicesPage() {
 
   return (
     <section>
-      <div className="py-32">
+      <div className="py-12">
         <div className="mx-auto max-w-5xl px-6">
           <header className="text-center">
             <h2 className="text-balance text-3xl font-semibold md:text-4xl">

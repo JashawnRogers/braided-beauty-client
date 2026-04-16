@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 
 type IntegrationCardProps = Readonly<{
@@ -21,6 +21,16 @@ export default function IntegrationCard({
   img,
   linkTitle,
 }: IntegrationCardProps) {
+  const DESCRIPTION_PREVIEW_LENGTH = 180;
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const hasLongDescription = description.length > DESCRIPTION_PREVIEW_LENGTH;
+  const descriptionPreview = hasLongDescription
+    ? `${description.slice(0, DESCRIPTION_PREVIEW_LENGTH).trimEnd()}...`
+    : description;
+  const visibleDescription = isDescriptionExpanded
+    ? description
+    : descriptionPreview;
+
   return (
     <Card className="p-6 rounded-xl border border-border bg-card shadow-sm">
       <div className="relative">
@@ -34,9 +44,23 @@ export default function IntegrationCard({
 
         <div className="space-y-2 py-6">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-muted-foreground line-clamp-2 text-sm">
-            {description}
-          </p>
+          <div className="min-w-0 space-y-1">
+            <p className="text-sm text-muted-foreground whitespace-pre-line break-words overflow-hidden">
+              {visibleDescription}
+            </p>
+            {hasLongDescription && (
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto px-0 text-sm"
+                onClick={() =>
+                  setIsDescriptionExpanded((expanded) => !expanded)
+                }
+              >
+                {isDescriptionExpanded ? "Show less" : "Show more"}
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-3 border-t border-dashed pt-6">

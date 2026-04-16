@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import Logo from "@/assets/logos/braided-beauty-alt-dark.png";
+import Logo from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
 const links = [
   {
     title: "Contact",

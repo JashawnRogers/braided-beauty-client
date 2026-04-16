@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function PoliciesPage() {
   return (
-    <section className="py-24">
+    <section className="py-12">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center">
           <h1 className="text-4xl font-semibold md:text-5xl">Policies</h1>
