@@ -1,6 +1,6 @@
 import { FormEvent, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import Logo from "@/assets/bb-logo.svg";
+import Logo from "@/assets/logos/Black-official-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ChecklistItem from "@/components/shared/CheckListItem";
@@ -23,7 +23,8 @@ export default function ResetPasswordPage() {
     [newPassword]
   );
   const passwordsMatch =
-    sanitizePasswordInput(newPassword) === sanitizePasswordInput(confirmPassword);
+    sanitizePasswordInput(newPassword) ===
+    sanitizePasswordInput(confirmPassword);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -151,7 +152,9 @@ export default function ResetPasswordPage() {
                 </ChecklistItem>
               </li>
               <li>
-                <ChecklistItem ok={passwordsMatch}>Passwords match</ChecklistItem>
+                <ChecklistItem ok={passwordsMatch}>
+                  Passwords match
+                </ChecklistItem>
               </li>
             </ol>
 
@@ -161,7 +164,11 @@ export default function ResetPasswordPage() {
               <Button
                 className="w-full"
                 type="submit"
-                disabled={isSubmitting || !passwordRules.isPasswordValid || !passwordsMatch}
+                disabled={
+                  isSubmitting ||
+                  !passwordRules.isPasswordValid ||
+                  !passwordsMatch
+                }
               >
                 {isSubmitting ? "Saving..." : "Reset password"}
               </Button>

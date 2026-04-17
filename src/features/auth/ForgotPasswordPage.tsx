@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import Logo from "@/assets/logos/braided-beauty-alt-dark.png";
+import Logo from "@/assets/logos/Black-official-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

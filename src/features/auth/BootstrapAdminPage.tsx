@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import Logo from "@/assets/bb-logo.svg";
+import Logo from "@/assets/logos/Black-official-logo.jpeg";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarDays, House, List, LogOut } from "lucide-react";
-import Logo from "@/assets/logos/braided-beauty-alt-dark.png";
+import Logo from "@/assets/logos/Black-official-logo.jpeg";
 import { hardLogout } from "@/lib/authClient";
 
 export function AppSidebar() {

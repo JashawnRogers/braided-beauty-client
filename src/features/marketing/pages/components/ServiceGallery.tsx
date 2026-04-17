@@ -55,13 +55,13 @@ export default function ServiceGallery({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="relative block w-full"
+          className="relative mx-auto block w-full max-w-[15rem] sm:max-w-[16rem]"
           title="View photo"
         >
           <img
             src={activeSrc}
             alt={alt}
-            className="h-[240px] w-full object-cover sm:h-[320px] rounded-md block"
+            className="block h-[360px] w-full rounded-md object-cover sm:h-[440px]"
             loading="lazy"
           />
 

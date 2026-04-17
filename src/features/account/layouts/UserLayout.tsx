@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { hardLogout } from "@/lib/authClient";
-import LOGO from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
+import LOGO from "@/assets/logos/Black-official-logo.jpeg";
 import SiteBreadcrumbs from "@/components/shared/SiteBreadcrumbs";
 
 function Logo() {

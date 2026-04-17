@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Logo from "@/assets/logos/braided-beauty-alt-light-gold-logo.png";
+import Logo from "@/assets/logos/Black-official-logo.jpeg";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

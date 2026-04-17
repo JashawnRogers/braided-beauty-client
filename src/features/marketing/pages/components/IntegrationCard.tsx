@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 type IntegrationCardProps = Readonly<{
@@ -9,72 +9,36 @@ type IntegrationCardProps = Readonly<{
   description?: string | null;
   link?: string;
   children?: ReactNode;
-  img?: ReactNode;
   linkTitle: string;
 }>;
 
 export default function IntegrationCard({
   title,
-  description,
   link = "/",
   children,
-  img,
   linkTitle,
 }: IntegrationCardProps) {
-  const DESCRIPTION_PREVIEW_LENGTH = 180;
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const safeDescription = description ?? "";
-  const hasLongDescription =
-    safeDescription.length > DESCRIPTION_PREVIEW_LENGTH;
-  const descriptionPreview = hasLongDescription
-    ? `${safeDescription.slice(0, DESCRIPTION_PREVIEW_LENGTH).trimEnd()}...`
-    : safeDescription;
-  const visibleDescription = isDescriptionExpanded
-    ? safeDescription
-    : descriptionPreview;
-
   return (
-    <Card className="p-6 rounded-xl border border-border bg-card shadow-sm">
+    <Card className="group overflow-hidden rounded-[2rem] border border-primary/15 bg-white/88 p-0 shadow-[0_24px_60px_-40px_rgba(52,34,12,0.42)] backdrop-blur">
       <div className="relative">
-        {img && (
-          <div className="w-full overflow-hidden rounded-lg bg-muted aspect-[16/10]">
-            {img}
-          </div>
-        )}
+        {children && <div className="px-7 pt-7 *:size-10">{children}</div>}
 
-        {children && <div className="*:size-10">{children}</div>}
-
-        <div className="space-y-2 py-6">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <div className="min-w-0 space-y-1">
-            <p className="text-sm text-muted-foreground whitespace-pre-line break-words overflow-hidden">
-              {visibleDescription || "Details will be available soon."}
-            </p>
-            {hasLongDescription && (
-              <Button
-                type="button"
-                variant="link"
-                className="h-auto px-0 text-sm"
-                onClick={() =>
-                  setIsDescriptionExpanded((expanded) => !expanded)
-                }
-              >
-                {isDescriptionExpanded ? "Show less" : "Show more"}
-              </Button>
-            )}
-          </div>
+        <div className="px-7 py-7">
+          <h3 className="font-serif text-2xl leading-tight text-stone-950">
+            {title}
+          </h3>
         </div>
 
-        <div className="flex gap-3 border-t border-dashed pt-6">
+        <div className="flex gap-3 border-t border-primary/10 px-7 py-5">
           <Button
             asChild
             variant="secondary"
             size="sm"
-            className="gap-1 pr-2 shadow-none"
+            className="h-10 rounded-full border border-primary/15 bg-primary/10 px-5 text-foreground shadow-none hover:bg-primary/15"
           >
             <Link to={link}>
               {linkTitle}
-              <ChevronRight className="ml-0 !size-3.5 opacity-50" />
+              <ChevronRight className="ml-0 !size-3.5 opacity-60" />
             </Link>
           </Button>
         </div>
