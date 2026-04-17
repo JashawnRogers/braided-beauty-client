@@ -25,7 +25,7 @@ export default function AboutPage() {
       <div className="absolute left-[-7rem] top-36 -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div className="absolute right-[-4rem] top-20 -z-10 h-64 w-64 rounded-full bg-amber-100 blur-3xl" />
 
-      <section className="px-6 pb-16 pt-32 sm:pt-36 lg:px-8 lg:pb-20">
+      <section className="px-6 pb-16 pt-32 sm:pt-12 lg:px-8 lg:pb-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/70 px-4 py-1.5 text-sm text-foreground/80 shadow-sm backdrop-blur">
@@ -40,7 +40,11 @@ export default function AboutPage() {
               experience that honors your time and your natural hair.
             </p>
             <div className="mt-10">
-              <Button asChild size="lg" className="h-12 rounded-full px-7 text-sm">
+              <Button
+                asChild
+                size="lg"
+                className="h-12 rounded-full px-7 text-sm"
+              >
                 <Link to="/categories">
                   Book Appointment
                   <ArrowRight className="h-4 w-4" />
@@ -93,8 +97,8 @@ export default function AboutPage() {
                   </h2>
                   <div className="mt-6 space-y-4 text-sm leading-7 text-stone-200 sm:text-base sm:leading-8">
                     <p>
-                      Hi there! I'm Sophia Rochelle, a braider with over 16 years
-                      of experience{" "}
+                      Hi there! I'm Sophia Rochelle, a braider with over 16
+                      years of experience{" "}
                       <span className="font-semibold text-white">
                         specializing in intentional, high-quality styles and
                         prioritizing you.
@@ -138,9 +142,8 @@ export default function AboutPage() {
               That moment when your energy shifts from anticipation to joy, is
               what drives our commitment to excellence. We're not just about
               beautiful outcomes. We take pride in the process; thoughtful and
-              intentional from start to finish. No performative
-              professionalism, just integrity, high standards, and service that
-              honors your time.
+              intentional from start to finish. No performative professionalism,
+              just integrity, high standards, and service that honors your time.
             </p>
             <p className="mt-6">
               Every appointment is designed to leave you feeling empowered,

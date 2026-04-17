@@ -25,7 +25,7 @@ export default function PoliciesPage() {
       <div className="absolute left-[-7rem] top-36 -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div className="absolute right-[-4rem] top-20 -z-10 h-64 w-64 rounded-full bg-amber-100 blur-3xl" />
 
-      <section className="px-6 pb-16 pt-32 sm:pt-36 lg:px-8 lg:pb-18">
+      <section className="px-6 pb-16 pt-32 sm:pt-12 lg:px-8 lg:pb-18">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/70 px-4 py-1.5 text-sm text-foreground/80 shadow-sm backdrop-blur">
@@ -36,9 +36,8 @@ export default function PoliciesPage() {
               Policies
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-foreground/72 sm:text-xl">
-              Please review these details before booking your appointment so
-              the experience stays clear, smooth, and respectful of everyone’s
-              time.
+              Please review these details before booking your appointment so the
+              experience stays clear, smooth, and respectful of everyone’s time.
             </p>
           </div>
         </div>

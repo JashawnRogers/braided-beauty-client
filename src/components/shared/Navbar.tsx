@@ -120,7 +120,7 @@ export function Navbar() {
                 <Link
                   to="/"
                   onClick={closeMenu}
-                  className="block truncate text-2xl font-semibold leading-none tracking-tight text-foreground"
+                  className="block truncate sm:text-xl md:text-2xl font-serif leading-none tracking-tight text-foreground"
                 >
                   Braided Beauty
                 </Link>
