@@ -35,7 +35,7 @@ import { useUser } from "@/context/UserContext";
 import ServiceGallery from "./components/ServiceGallery";
 import BookingDetailsDialog from "./components/BookingDetailsDialog";
 import ReviewsCard from "./components/ReviewsCard";
-import { ChevronLeft, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export default function ServiceDetailsPage() {
   const DESCRIPTION_PREVIEW_LENGTH = 250;
@@ -398,9 +398,6 @@ export default function ServiceDetailsPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           The service you’re looking for doesn’t exist or was moved.
         </p>
-        <Button asChild className="mt-6">
-          <Link to="/categories">Back to categories</Link>
-        </Button>
       </div>
     );
   }
@@ -412,23 +409,6 @@ export default function ServiceDetailsPage() {
 
       <section className="px-6 pb-14 pt-32 sm:pt-36 lg:px-8 lg:pb-18">
         <div className="mx-auto max-w-7xl">
-          <Button
-            asChild
-            variant="ghost"
-            className="mb-6 rounded-full px-0 text-foreground/70 hover:bg-transparent hover:text-foreground"
-          >
-            <Link
-              to={
-                service.categoryId
-                  ? `/services/${service.categoryId}`
-                  : "/categories"
-              }
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" />
-              Back to services
-            </Link>
-          </Button>
-
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/70 px-4 py-1.5 text-sm text-foreground/80 shadow-sm backdrop-blur">
               <Sparkles className="h-4 w-4 text-primary" />
