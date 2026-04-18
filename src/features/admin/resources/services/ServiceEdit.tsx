@@ -102,11 +102,11 @@ export default function ServiceEdit() {
               validate={nonNegative}
             />
 
+            {/* Serves as a quick reference to see how much a deposit is */}
             <NumberInput
               source="depositAmount"
               label="Deposit (USD)"
-              step={0.01}
-              min={0}
+              disabled
               validate={nonNegative}
             />
 

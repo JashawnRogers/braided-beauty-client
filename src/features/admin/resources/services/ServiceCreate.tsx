@@ -58,14 +58,6 @@ export default function ServiceCreate() {
             />
 
             <NumberInput
-              disabled
-              source="depositAmount"
-              label="Deposit (USD)"
-              step={0.01}
-              min={0}
-            />
-
-            <NumberInput
               source="durationMinutes"
               label="Duration (minutes)"
               min={0}
