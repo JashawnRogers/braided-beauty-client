@@ -15,6 +15,7 @@ import {
 import { ReferenceInput } from "@/features/admin/components/inputs/reference-input";
 import { transformServiceEdit } from "../../../../lib/mediaTransform";
 import ExistingPhotos from "../../components/inputs/ExistingPhotos";
+import { BooleanInput, useRecordContext } from "react-admin";
 
 // Simple validators
 const required =
@@ -34,6 +35,18 @@ function ServiceEditToolbar() {
   );
 }
 
+function ServiceUrlField() {
+  const record = useRecordContext();
+
+  if (!record) return null;
+
+  return (
+    <span>
+      {`${import.meta.env.VITE_CLIENT_API_URL}/book/service/${record.id}`}
+    </span>
+  );
+}
+
 export default function ServiceEdit() {
   return (
     <Edit
@@ -41,6 +54,8 @@ export default function ServiceEdit() {
       transform={transformServiceEdit}
       queryOptions={{
         select: (data) => {
+          const privateService = Boolean(data.privateService);
+
           const addOnIds =
             data.addOnIds ?? data.addOns?.map((a: any) => a.id) ?? [];
 
@@ -62,6 +77,7 @@ export default function ServiceEdit() {
           return {
             ...data,
             addOnIds,
+            privateService,
             photoFiles: existingPhotoFiles, // ✅ THIS is what FileInput will render
           };
         },
@@ -118,6 +134,8 @@ export default function ServiceEdit() {
               step={5}
               validate={nonNegative}
             />
+
+            <BooleanInput label="Private" source="privateService" />
           </section>
 
           {/* Right column: media + meta */}
@@ -158,6 +176,13 @@ export default function ServiceEdit() {
               <div className="space-x-5">
                 <span className="text-muted-foreground">Updated</span>
                 <DateField source="updatedAt" showTime />
+              </div>
+
+              <div>
+                <span className="text-muted-foreground block">
+                  Private booking link
+                </span>
+                <ServiceUrlField />
               </div>
             </div>
           </section>

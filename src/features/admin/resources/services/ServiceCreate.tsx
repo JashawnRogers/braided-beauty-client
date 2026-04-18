@@ -12,6 +12,7 @@ import {
 import { ReferenceInput } from "@/features/admin/components/inputs/reference-input";
 import { transformServiceCreate } from "../../../../lib/mediaTransform";
 import ExistingPhotos from "../../components/inputs/ExistingPhotos";
+import { BooleanInput } from "react-admin";
 
 function ServiceCreateToolbar() {
   return (
@@ -63,6 +64,8 @@ export default function ServiceCreate() {
               min={0}
               step={5}
             />
+
+            <BooleanInput label="Private" source="privateService" />
           </section>
 
           {/* Right: media & live preview */}

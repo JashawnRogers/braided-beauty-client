@@ -105,6 +105,7 @@ export async function transformServiceCreate(data: any) {
     description: data.description,
     price: data.price,
     durationMinutes: data.durationMinutes,
+    privateService: Boolean(data.privateService),
     photoKeys,
   };
 }
@@ -149,6 +150,7 @@ export async function transformServiceEdit(
     durationMinutes: data.durationMinutes,
     addPhotoKeys,
     removePhotoKeys,
+    privateService: Boolean(data.privateService),
     addOnIds: data.addOnIds,
   };
 }
