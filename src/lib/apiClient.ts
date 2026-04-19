@@ -4,6 +4,18 @@ import { logger, toSafePath } from "./logger";
 const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 const ADMIN_API_BASE_URL = import.meta.env.VITE_SERVER_ADMIN_API_URL;
 
+class ApiRequestError extends Error {
+  status?: number;
+  data?: unknown;
+
+  constructor(message: string, status?: number, data?: unknown) {
+    super(message);
+    this.name = "ApiRequestError";
+    this.status = status;
+    this.data = data;
+  }
+}
+
 async function request<T>(
   path: string,
   init: RequestInit = {},
@@ -84,7 +96,11 @@ async function request<T>(
       path: toSafePath(url),
       status: res.status,
     });
-    throw new Error(data?.message || data?.error || "Request failed");
+    throw new ApiRequestError(
+      data?.message || data?.error || "Request failed",
+      res.status,
+      data
+    );
   }
 
   if (res.status === 204) return undefined as T;
@@ -126,7 +142,11 @@ async function publicRequest<T>(
       path: toSafePath(url),
       status: res.status,
     });
-    throw new Error(data?.message || data?.error || "Request failed");
+    throw new ApiRequestError(
+      data?.message || data?.error || "Request failed",
+      res.status,
+      data
+    );
   }
 
   if (res.status === 204) return undefined as T;

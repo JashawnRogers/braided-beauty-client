@@ -149,9 +149,21 @@ function LandingPage() {
       />
       <motion.div
         className="absolute left-[-7rem] top-40 -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        animate={reduceMotion ? undefined : { x: [0, 10, 0], y: [0, -12, 0] }}
+        transition={{
+          duration: 11,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "easeInOut",
+        }}
       />
       <motion.div
         className="absolute right-[-5rem] top-24 -z-10 h-64 w-64 rounded-full bg-amber-100 blur-3xl"
+        animate={reduceMotion ? undefined : { x: [0, -10, 0], y: [0, 12, 0] }}
+        transition={{
+          duration: 12,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "easeInOut",
+        }}
       />
 
       <section className="px-6 pb-20 pt-32 sm:pt-36 lg:px-8 lg:pb-24">
@@ -259,20 +271,20 @@ function LandingPage() {
                     className="h-[20rem] w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.03] sm:h-[23rem]"
                   />
                 </div>
-                <div className="grid grid-cols-2 items-stretch gap-4 sm:gap-5">
-                  <div className="min-h-32 overflow-hidden rounded-[1.6rem] border border-white/60 bg-stone-200 sm:min-h-36">
+                <div className="grid grid-cols-2 gap-4 sm:gap-5">
+                  <div className="overflow-hidden rounded-[1.6rem] border border-white/60 bg-stone-200">
                     <img
                       src={featuredPic1}
                       alt="Braided hairstyle close-up"
-                      className="h-full w-full object-cover object-top transition-transform duration-700 ease-out hover:scale-[1.04]"
+                      className="h-32 w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04] sm:h-36"
                     />
                   </div>
-                  <div className="flex min-h-32 min-w-0 flex-col justify-center rounded-[1.6rem] border border-primary/15 bg-white/80 p-4 text-left backdrop-blur sm:min-h-36 sm:p-5">
+                  <div className="rounded-[1.6rem] border border-primary/15 bg-white/80 p-5 backdrop-blur text-left">
                     <MapPin className="h-5 w-5 text-primary" />
                     <p className="mt-3 text-sm uppercase tracking-[0.18em] text-foreground/52">
                       Based in
                     </p>
-                    <p className="mt-1 whitespace-nowrap font-serif text-base leading-tight text-stone-950 sm:text-lg">
+                    <p className="mt-1 font-serif  text-md text-stone-950">
                       Phoenix
                     </p>
                     <p className="mt-1 text-sm text-foreground/66">

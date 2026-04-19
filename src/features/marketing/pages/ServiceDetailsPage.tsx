@@ -23,6 +23,7 @@ import { apiGet, apiPost } from "@/lib/apiClient";
 import { formatJavaDate } from "@/lib/date";
 import { formatDurationMinutes } from "@/lib/formatDuration";
 import { logger } from "@/lib/logger";
+import { clearStoredBookingHold, storeBookingHold } from "@/lib/bookingHold";
 import {
   CreateAppointmentDTO,
   AvailableTimeSlotsDTO,
@@ -32,6 +33,7 @@ import {
 } from "@/features/account/types";
 
 import { useUser } from "@/context/UserContext";
+import { useBusinessSettingsContext } from "@/context/useBusinessSettingsContext";
 import ServiceGallery from "./components/ServiceGallery";
 import BookingDetailsDialog from "./components/BookingDetailsDialog";
 import ReviewsCard from "./components/ReviewsCard";
@@ -72,6 +74,7 @@ export default function ServiceDetailsPage() {
   const [previewError, setPreviewError] = useState<string | null>(null);
 
   const { user } = useUser();
+  const businessSettings = useBusinessSettingsContext();
 
   const navigate = useNavigate();
 
@@ -118,45 +121,45 @@ export default function ServiceDetailsPage() {
     return debounced;
   }
 
-  useEffect(() => {
+  const loadAvailability = async () => {
     if (!serviceId || !date) return;
 
-    const getAvailability = async () => {
-      try {
-        setIsLoadingSlots(true);
-        setAvailabilityError(null);
-        setNote(null);
-        setPromoCode("");
+    try {
+      setIsLoadingSlots(true);
+      setAvailabilityError(null);
+      setNote(null);
+      setPromoCode("");
 
-        const dateStr = toISO(date);
+      const dateStr = toISO(date);
 
-        const addOnIdsArray = Array.from(selectedAddOnIds);
-        const addOnsQuery = addOnIdsArray.length
-          ? `&${addOnIdsArray
-              .map((id) => `addOnIds=${encodeURIComponent(id)}`)
-              .join("&")}`
-          : "";
+      const addOnIdsArray = Array.from(selectedAddOnIds);
+      const addOnsQuery = addOnIdsArray.length
+        ? `&${addOnIdsArray
+            .map((id) => `addOnIds=${encodeURIComponent(id)}`)
+            .join("&")}`
+        : "";
 
-        const data = await apiGet<AvailableTimeSlotsDTO[]>(
-          `/availability?serviceId=${serviceId}&date=${encodeURIComponent(
-            dateStr
-          )}${addOnsQuery}`
-        );
+      const data = await apiGet<AvailableTimeSlotsDTO[]>(
+        `/availability?serviceId=${serviceId}&date=${encodeURIComponent(
+          dateStr
+        )}${addOnsQuery}`
+      );
 
-        setTimeSlots(toTimeSlots(data));
-      } catch (err) {
-        logger.error("booking.availability.load_failed", err, {
-          serviceId,
-          selectedAddOnCount: selectedAddOnIds.size,
-        });
-        setAvailabilityError("Failed to load time slots");
-        setTimeSlots([]);
-      } finally {
-        setIsLoadingSlots(false);
-      }
-    };
+      setTimeSlots(toTimeSlots(data));
+    } catch (err) {
+      logger.error("booking.availability.load_failed", err, {
+        serviceId,
+        selectedAddOnCount: selectedAddOnIds.size,
+      });
+      setAvailabilityError("Failed to load time slots");
+      setTimeSlots([]);
+    } finally {
+      setIsLoadingSlots(false);
+    }
+  };
 
-    getAvailability();
+  useEffect(() => {
+    loadAvailability();
   }, [serviceId, date, selectedAddOnIds]);
 
   useEffect(() => {
@@ -229,6 +232,8 @@ export default function ServiceDetailsPage() {
       setIsBookingModalOpen(false);
 
       if (!res.paymentRequired) {
+        clearStoredBookingHold();
+
         if (!res.confirmationToken) {
           throw new Error("Missing confirmation token from server");
         }
@@ -239,6 +244,12 @@ export default function ServiceDetailsPage() {
         return;
       }
 
+      storeBookingHold({
+        appointmentId: res.appointmentId,
+        serviceId,
+        categoryId: service.categoryId,
+      });
+
       window.location.href = res.checkoutUrl!;
     } catch (err) {
       logger.error("booking.submit.failed", err, {
@@ -247,8 +258,23 @@ export default function ServiceDetailsPage() {
         selectedAddOnCount: selectedAddOnIds.size,
         hasPromoCode: Boolean(promoCode.trim()),
       });
-      setAppointmentError("Failed to book appointment");
-      navigate("/book/cancel");
+
+      const errorMessage =
+        err instanceof Error && err.message
+          ? err.message
+          : "Failed to start checkout. Please review your details and try again.";
+
+      setAppointmentError(errorMessage);
+
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "status" in err &&
+        (err as { status?: number }).status === 409
+      ) {
+        setTime(null);
+        void loadAvailability();
+      }
     } finally {
       setIsLoadingAppointment(false);
     }
@@ -442,6 +468,13 @@ export default function ServiceDetailsPage() {
                 <p className="mt-3 text-sm leading-7 text-foreground/68">
                   Select a date and time to continue with booking.
                 </p>
+                {typeof businessSettings?.appointmentBufferTime === "number" &&
+                  businessSettings.appointmentBufferTime > 0 && (
+                    <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                      Appointment times include a {businessSettings.appointmentBufferTime}
+                      -minute buffer between bookings.
+                    </p>
+                  )}
 
                 <div className="mt-6">
                   {availabilityError && (

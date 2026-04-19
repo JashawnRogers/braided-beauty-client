@@ -5,6 +5,7 @@ export type BusinessSettings = {
   companyAddress: string;
   companyPhoneNumber: string;
   companyEmail: string;
+  appointmentBufferTime?: number | null;
 };
 
 export function useBusinessSettings() {

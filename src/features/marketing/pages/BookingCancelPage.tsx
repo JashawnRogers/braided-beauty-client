@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { apiDelete } from "@/lib/apiClient";
+import { clearStoredBookingHold, getStoredBookingHold } from "@/lib/bookingHold";
 import { AlertCircle, CalendarDays, ChevronRight, Clock3 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const recoverySteps = [
   "Return to the service list and choose a new date or time.",
@@ -9,6 +12,38 @@ const recoverySteps = [
 ];
 
 export default function BookingCancelPage() {
+  const navigate = useNavigate();
+  const [isReleasingHold, setIsReleasingHold] = useState(false);
+  const [releaseError, setReleaseError] = useState<string | null>(null);
+  const bookingHold = useMemo(() => getStoredBookingHold(), []);
+
+  const restartHref = bookingHold
+    ? `/book/service/${bookingHold.serviceId}`
+    : "/categories";
+
+  const handleReleaseHold = async () => {
+    if (!bookingHold) {
+      navigate(restartHref);
+      return;
+    }
+
+    try {
+      setIsReleasingHold(true);
+      setReleaseError(null);
+
+      await apiDelete(`/appointments/holds/${bookingHold.appointmentId}`);
+      clearStoredBookingHold();
+
+      navigate(restartHref);
+    } catch {
+      setReleaseError(
+        "We couldn’t release that appointment hold. Please try again."
+      );
+    } finally {
+      setIsReleasingHold(false);
+    }
+  };
+
   return (
     <section className="min-h-[75vh] py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -26,9 +61,8 @@ export default function BookingCancelPage() {
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
               No payment was captured and your booking was not finalized. If
-              you closed checkout early, your selected time may no longer be
-              held. You can start again and choose another available slot in a
-              few taps.
+              you closed checkout early, use the button below to release your
+              held appointment before starting over.
             </p>
           </div>
 
@@ -59,8 +93,8 @@ export default function BookingCancelPage() {
                   </h2>
                 </div>
                 <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                  Start a new booking flow to pick an open appointment time,
-                  then complete checkout again when you are ready.
+                  Return to the service flow, pick a new open appointment time,
+                  and complete checkout again when you are ready.
                 </p>
               </div>
             </div>
@@ -78,8 +112,8 @@ export default function BookingCancelPage() {
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link to="/categories">Book Appointment</Link>
+              <Button size="lg" onClick={handleReleaseHold} disabled={isReleasingHold}>
+                {isReleasingHold ? "Releasing hold..." : "Back to Booking"}
               </Button>
               <Button asChild variant="outline" size="lg">
                 <Link to="/contact">Contact Support</Link>
@@ -91,6 +125,10 @@ export default function BookingCancelPage() {
                 </Link>
               </Button>
             </div>
+
+            {releaseError && (
+              <p className="mt-4 text-sm text-destructive">{releaseError}</p>
+            )}
           </div>
         </div>
       </div>

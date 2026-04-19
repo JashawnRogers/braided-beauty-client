@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { apiGet } from "@/lib/apiClient";
+import { clearStoredBookingHold } from "@/lib/bookingHold";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
 import { ReceiptCard } from "./components/ReceiptCard";
@@ -53,6 +54,7 @@ export default function BookingSuccessPage() {
                   sessionId
                 )}`
               );
+              clearStoredBookingHold();
               setConfirmation(data);
             } catch (err: any) {
               if (err?.status === 202 && attempts < maxAttempts) {
@@ -77,7 +79,7 @@ export default function BookingSuccessPage() {
           const data = await apiGet<BookingConfirmation>(
             `/appointments/confirm?id=${id}&token=${encodeURIComponent(token)}`
           );
-          console.log("Confirmation", data);
+          clearStoredBookingHold();
           setConfirmation(data);
           return;
         }
@@ -128,8 +130,8 @@ export default function BookingSuccessPage() {
   if (!confirmation) {
     return (
       <div className="max-w-xl min-h-[70vh] mx-auto py-16 text-center">
-        <h1 className="text-2xl font-semibold mt-48">Booking successful!</h1>
-        <p className="mt-4">We're confirming your appointment...</p>
+        <h1 className="text-2xl font-semibold mt-48">Payment received</h1>
+        <p className="mt-4">We&apos;re waiting for the booking confirmation to finish.</p>
 
         {sessionId && (
           <p className="mt-2 text-sm text-muted-foreground">
@@ -145,7 +147,7 @@ export default function BookingSuccessPage() {
       <div className="max-w-xl w-full mx-auto px-6 text-center">
         <ReceiptCard
           heading="You’re booked!"
-          subheading="Your appointment has been successfully scheduled."
+          subheading="Your appointment details are shown below once the confirmed booking is available."
           serviceName={confirmation.serviceName}
           servicePrice={confirmation.servicePrice}
           appointmentTime={confirmation.appointmentTime}
